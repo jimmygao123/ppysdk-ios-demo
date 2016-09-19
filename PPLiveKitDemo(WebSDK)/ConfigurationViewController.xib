@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ConfigurationViewController">
+            <connections>
+                <outlet property="ConstraitCenterY" destination="tUq-43-ZP8" id="yXy-iU-VDx"/>
+                <outlet property="btnGroup480P" destination="3gH-m8-kDw" id="Skj-q6-LVJ"/>
+                <outlet property="btnGroup540P" destination="tqu-F1-L5b" id="rZz-1y-27v"/>
+                <outlet property="btnGroup720P" destination="IXw-yN-9XJ" id="hNE-uI-MuW"/>
+                <outlet property="btnOK" destination="37k-CD-EbV" id="I4n-Wh-hhz"/>
+                <outlet property="textField" destination="7be-Yf-Rml" id="wxc-ai-gfJ"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg.png" translatesAutoresizingMaskIntoConstraints="NO" id="HGG-3E-lmE">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IXw-yN-9XJ">
+                    <rect key="frame" x="222" y="276" width="54" height="16"/>
+                    <state key="normal" backgroundImage="高清-亮.png"/>
+                    <connections>
+                        <action selector="do720P:" destination="-1" eventType="touchUpInside" id="UXR-yB-ucx"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tqu-F1-L5b">
+                    <rect key="frame" x="133" y="276" width="54" height="16"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="54" id="JRn-8r-xWj"/>
+                        <constraint firstAttribute="height" constant="16" id="wzz-sc-mWT"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="标清-亮.png"/>
+                    <connections>
+                        <action selector="do540P:" destination="-1" eventType="touchUpInside" id="YIS-un-oH9"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3gH-m8-kDw">
+                    <rect key="frame" x="41" y="276" width="54" height="16"/>
+                    <state key="normal" backgroundImage="流畅-亮.png"/>
+                    <connections>
+                        <action selector="do480P:" destination="-1" eventType="touchUpInside" id="KCw-lx-gck"/>
+                    </connections>
+                </button>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入房间号" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7be-Yf-Rml">
+                    <rect key="frame" x="93" y="206" width="204" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="204" id="4a9-Gh-CjA"/>
+                        <constraint firstAttribute="height" constant="30" id="8ac-Eu-iOK"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t1u-8h-ZrL">
+                    <rect key="frame" x="272" y="8" width="40" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="ipH-tp-gK5"/>
+                        <constraint firstAttribute="width" constant="40" id="rsa-VS-Uae"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="组-15.png"/>
+                    <connections>
+                        <action selector="doExit:" destination="-1" eventType="touchUpInside" id="jUS-dT-z6a"/>
+                    </connections>
+                </button>
+                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="C1W-MD-YHm">
+                    <rect key="frame" x="93" y="236" width="204" height="2"/>
+                </progressView>
+                <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="37k-CD-EbV">
+                    <rect key="frame" x="24" y="315" width="273" height="40"/>
+                    <color key="backgroundColor" red="0.015686274509803921" green="0.6470588235294118" blue="0.92156862745098034" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="273" id="9vH-0l-KIZ"/>
+                        <constraint firstAttribute="height" constant="40" id="ll3-GR-JbC"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                    <state key="normal" title="确定">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="doOK:" destination="-1" eventType="touchUpInside" id="3Jd-Dq-K79"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="房间号：" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lo3-Ce-Lia">
+                    <rect key="frame" x="24" y="210" width="71" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="Qtq-0e-PWB"/>
+                        <constraint firstAttribute="width" constant="71" id="yjZ-mM-7sR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="3gH-m8-kDw" firstAttribute="bottom" secondItem="tqu-F1-L5b" secondAttribute="bottom" id="0pU-zD-Jp6"/>
+                <constraint firstAttribute="bottom" secondItem="HGG-3E-lmE" secondAttribute="bottom" id="6fE-8w-IN9"/>
+                <constraint firstItem="C1W-MD-YHm" firstAttribute="leading" secondItem="7be-Yf-Rml" secondAttribute="leading" id="7hx-st-vMF"/>
+                <constraint firstItem="tqu-F1-L5b" firstAttribute="top" secondItem="7be-Yf-Rml" secondAttribute="bottom" constant="40" id="7xi-LN-USp"/>
+                <constraint firstItem="C1W-MD-YHm" firstAttribute="top" secondItem="7be-Yf-Rml" secondAttribute="bottom" id="8A5-RX-3mo"/>
+                <constraint firstItem="IXw-yN-9XJ" firstAttribute="top" secondItem="tqu-F1-L5b" secondAttribute="top" id="B6Y-e0-HVb"/>
+                <constraint firstAttribute="trailing" secondItem="HGG-3E-lmE" secondAttribute="trailing" id="BRf-Gl-2xW"/>
+                <constraint firstItem="37k-CD-EbV" firstAttribute="centerX" secondItem="tqu-F1-L5b" secondAttribute="centerX" id="Lvt-Cc-ePn"/>
+                <constraint firstItem="7be-Yf-Rml" firstAttribute="trailing" secondItem="37k-CD-EbV" secondAttribute="trailing" id="MIJ-Lg-OQe"/>
+                <constraint firstItem="3gH-m8-kDw" firstAttribute="top" secondItem="tqu-F1-L5b" secondAttribute="top" id="NVE-35-A18"/>
+                <constraint firstItem="t1u-8h-ZrL" firstAttribute="trailing" secondItem="HGG-3E-lmE" secondAttribute="trailing" constant="-8" id="TdM-ri-F5x"/>
+                <constraint firstItem="tqu-F1-L5b" firstAttribute="centerX" secondItem="HGG-3E-lmE" secondAttribute="centerX" id="Tyn-mO-VBw"/>
+                <constraint firstItem="t1u-8h-ZrL" firstAttribute="top" secondItem="HGG-3E-lmE" secondAttribute="top" constant="8" id="VI7-eb-c5h"/>
+                <constraint firstItem="tqu-F1-L5b" firstAttribute="leading" secondItem="3gH-m8-kDw" secondAttribute="trailing" constant="38" id="Xaa-G2-BGe"/>
+                <constraint firstItem="C1W-MD-YHm" firstAttribute="trailing" secondItem="7be-Yf-Rml" secondAttribute="trailing" id="YaM-g3-woX"/>
+                <constraint firstItem="HGG-3E-lmE" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="eJK-c5-zkn"/>
+                <constraint firstItem="3gH-m8-kDw" firstAttribute="width" secondItem="tqu-F1-L5b" secondAttribute="width" id="erO-rk-xax"/>
+                <constraint firstItem="IXw-yN-9XJ" firstAttribute="leading" secondItem="tqu-F1-L5b" secondAttribute="trailing" constant="35" id="fnG-ub-dkl"/>
+                <constraint firstItem="tqu-F1-L5b" firstAttribute="top" secondItem="Lo3-Ce-Lia" secondAttribute="bottom" constant="45" id="lGl-tx-CXF"/>
+                <constraint firstItem="HGG-3E-lmE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="lod-Kg-20X"/>
+                <constraint firstItem="Lo3-Ce-Lia" firstAttribute="leading" secondItem="37k-CD-EbV" secondAttribute="leading" id="rh3-aE-VXr"/>
+                <constraint firstItem="IXw-yN-9XJ" firstAttribute="bottom" secondItem="tqu-F1-L5b" secondAttribute="bottom" id="sWT-QF-WGo"/>
+                <constraint firstItem="tqu-F1-L5b" firstAttribute="centerY" secondItem="HGG-3E-lmE" secondAttribute="centerY" id="tUq-43-ZP8"/>
+                <constraint firstItem="IXw-yN-9XJ" firstAttribute="width" secondItem="tqu-F1-L5b" secondAttribute="width" id="xPE-Bn-e20"/>
+                <constraint firstItem="37k-CD-EbV" firstAttribute="top" secondItem="tqu-F1-L5b" secondAttribute="bottom" constant="23" id="xtM-7L-35R"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <point key="canvasLocation" x="252" y="388"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="bg.png" width="375" height="667"/>
+        <image name="标清-亮.png" width="50" height="15"/>
+        <image name="流畅-亮.png" width="50" height="15"/>
+        <image name="组-15.png" width="40" height="40"/>
+        <image name="高清-亮.png" width="50" height="15"/>
+    </resources>
+</document>
