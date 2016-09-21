@@ -9,7 +9,7 @@
 #import "PushViewController.h"
 #import "HTTPManager.h"
 #import "NotifyView.h"
-#import "MBProgressHUD/MBProgressHUD.h"
+#import "MBProgressHUD.h"
 
 
 @interface PushViewController () <PPYPushEngineDelegate>
@@ -295,6 +295,12 @@
             break;
         case PPYPushEngineInfo_RealFPS:
             self.lblFPS.text = [NSString stringWithFormat:@"帧率：%d帧/秒",value];
+            break;
+        case PPYPushEngineInfo_DowngradeBitrate:
+            [[NotifyView getInstance] needShowNotifyMessage: @"当前网络差，正在下调码率..." inView:self.view forSeconds:3];
+            break;
+        case PPYPUshEngineInfo_UpgradeBitrate:
+            [[NotifyView getInstance] needShowNotifyMessage: @"当前网络环境较好，正在上调码率..." inView:self.view forSeconds:3];
             break;
     }
     NSLog(@"didStreamInfoThrowOut %d__%d",type,value);

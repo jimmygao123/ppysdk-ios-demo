@@ -7,7 +7,7 @@
 //
 #import "HTTPManager.h"
 #import "ConfigurationViewController.h"
-#import "MBProgressHUD/MBProgressHUD.h"
+#import "MBProgressHUD.h"
 
 @interface ConfigurationViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *btnOK;
@@ -273,7 +273,11 @@
                 
                 NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
                 NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                [self throwError:15 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
+                if([errCode isEqualToString:@"300005"]){
+                    [self throwError:16 info:@"房间不存在"];
+                }else{
+                    [self throwError:17 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
+                }
             }
         }else{
             dispatch_async(dispatch_get_main_queue(), ^{

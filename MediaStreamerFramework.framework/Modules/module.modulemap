@@ -1,6 +1,0 @@
-framework module MediaStreamerFramework {
-  umbrella header "MediaStreamerFramework.h"
-
-  export *
-  module * { export * }
-}

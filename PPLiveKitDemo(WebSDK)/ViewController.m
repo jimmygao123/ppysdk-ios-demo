@@ -16,7 +16,7 @@
 
 
 
-@interface ViewController ()<HTTPManagerDelegate,PullViewControllerDelegate,PushViewControllerDelegate,ConfigurationViewControllerDelegate>
+@interface ViewController ()<HTTPManagerDelegate,PushViewControllerDelegate,ConfigurationViewControllerDelegate>
 @property (nonatomic, strong) PushViewController *pushVC;
 @property (nonatomic, strong) PullViewController *pullVC;
 @property (nonatomic, strong) ConfigurationViewController *pushConfigVC;
@@ -35,11 +35,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    
     self.httpMgr = [HTTPManager shareInstance];
     self.httpMgr.delegate = self;
     [HTTPManager startMonitor];
+    
+  
+    self.pullVC = [[PullViewController alloc]init];
+    
     [self initUI];
 }
 
@@ -72,11 +74,6 @@
     [self presentViewController:self.pullConfigVC animated:NO completion:nil];
 }
 
--(void)didPullViewControllerDismiss{
-    [self.pullVC dismissViewControllerAnimated:YES completion:nil];
-    self.pushVC = nil;
-}
-
 #pragma mark --ConfigurationViewControllerDelegate--
 -(void)viewControllerDoExit:(ConfigurationViewController *)controller{
     if(controller == self.pushConfigVC){
@@ -105,8 +102,7 @@
 }
 -(void)viewController:(ConfigurationViewController *)controller didFetchPullRTMPAddress:(NSString *)rtmpAddr{
     if(controller == self.pullConfigVC){
-        self.pullVC = [[PullViewController alloc]init];
-        self.pullVC.delegate = self;
+        
         self.pullVC.playAddress = rtmpAddr;
         NSLog(@"Pull address = %@",rtmpAddr);
         [self.pullConfigVC dismissViewControllerAnimated:NO completion:nil];
