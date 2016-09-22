@@ -21,7 +21,6 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnTorch;
 @property (weak, nonatomic) IBOutlet UIButton *btnFocus;
 
-@property (weak, nonatomic) IBOutlet UIButton *btnStart;
 @property (weak, nonatomic) IBOutlet UILabel *lblRoomID;
 @property (weak, nonatomic) IBOutlet UIButton *btnMute;
 @property (weak, nonatomic) IBOutlet UILabel *lblFPS;
@@ -34,7 +33,7 @@
 @property (assign, nonatomic) BOOL isPushing;
 @property (assign, nonatomic) BOOL needReConnect;
 @property (assign, nonatomic) BOOL isDoingReconnect;
-
+@property (assign, nonatomic) int maxReconnectCount;
 
 
 #pragma mark --UIElement--
@@ -52,58 +51,19 @@
 
 @end
 
-
-
-
-
-
 @implementation PushViewController
 
 
-
-
-#pragma mark --Actions--
-
+#pragma mark --Life Cycle--
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initData];
     [self InitUI];
-    
 }
-
--(void)initData{
-    self.isDataShowed = YES;
-}
--(void)InitUI{
-    self.lblBitrate.textColor = [UIColor whiteColor];
-    self.lblFPS.textColor = [UIColor whiteColor];
-    self.lblRoomID.textColor = [UIColor whiteColor];
-    self.lblResolution.textColor = [UIColor whiteColor];
-    self.lblResolution.text = [NSString stringWithFormat:@"分辨率：%dx%d",self.width,self.height];
-    
-//    self.lblFPS.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-//    self.lblBitrate.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-    self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-    
-    self.lblRoomID.layer.cornerRadius = 10;
-    self.lblFPS.layer.cornerRadius = 6;
-    self.lblBitrate.layer.cornerRadius = 6;
-
-    self.lblRoomID.layer.masksToBounds  = YES;
-    self.lblFPS.layer.masksToBounds = YES;
-    self.lblBitrate.layer.masksToBounds = YES;
-    
-    [self.lblRoomID clipsToBounds];
-    [self.lblFPS clipsToBounds];
-    [self.lblBitrate clipsToBounds];
-}
-
-
 
 -(void)viewWillAppear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
-
-    self.btnStart.hidden = NO;
+    
     NSString *roomID = [HTTPManager shareInstance].roomID;
     self.lblRoomID.text = [NSString stringWithFormat:@"     房间号: %@   ", roomID];
     
@@ -115,7 +75,73 @@
     self.pushEngine.running = YES;
     self.pushEngine.delegate = self;
     [self updateUI];
+    
+    [self doLive];
 }
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [self.indicator stopAnimating];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
+}
+
+
+#pragma mark --custom method--
+
+-(void)initData{
+    self.isDataShowed = YES;
+}
+
+-(void)InitUI{
+    self.lblRoomID.textColor = [UIColor whiteColor];
+    self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+    self.lblRoomID.layer.cornerRadius = 10;
+    self.lblRoomID.layer.masksToBounds  = YES;
+    [self.lblRoomID clipsToBounds];
+    
+    self.lblBitrate.textColor = [UIColor whiteColor];
+    self.lblBitrate.layer.cornerRadius = 6;
+    self.lblBitrate.layer.masksToBounds = YES;
+    [self.lblBitrate clipsToBounds];
+    
+    self.lblFPS.textColor = [UIColor whiteColor];
+    self.lblFPS.layer.cornerRadius = 6;
+    self.lblFPS.layer.masksToBounds = YES;
+    [self.lblFPS clipsToBounds];
+    
+    self.lblResolution.textColor = [UIColor whiteColor];
+    self.lblResolution.text = [NSString stringWithFormat:@"分辨率：%dx%d",self.width,self.height];
+}
+
+-(void)updateUI{
+    
+    BOOL canSwitchCamera = ([AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo].count > 1);
+    self.btnCamera.userInteractionEnabled = canSwitchCamera;
+    self.btnTorch.userInteractionEnabled = self.pushEngine.hasTorch;
+    if(self.pushEngine.hasTorch){
+        NSLog(@"self.isTorch = %d",self.pushEngine.isTorch);
+        [self.btnTorch setBackgroundImage:[UIImage imageNamed:(self.pushEngine.isTorch ? @"闪光灯-启用" : @"闪光灯-禁用")] forState:UIControlStateNormal];
+    }
+    NSLog(@"self.mute = %d",self.pushEngine.isMute);
+    [self.btnMute setBackgroundImage:[UIImage imageNamed:(self.pushEngine.isMute ? @"麦克风-禁用" : @"麦克风-启用")] forState:UIControlStateNormal];
+    
+    [self.btnData setBackgroundImage:[UIImage imageNamed:(self.isDataShowed ? @"数据分析-启用" : @"数据分析-禁用")] forState:UIControlStateNormal];
+    NSLog(@"self.beauty = %d",self.pushEngine.isBeautify);
+    
+    NSLog(@"self.mirror = %d",self.pushEngine.isMirror);
+}
+
+- (void)doLive{
+    if(self.rtmpAddress == nil) return;
+    NSLog(@"self.rtmpAddress = %@",self.rtmpAddress);
+    
+    [self.pushEngine start];
+    
+    if(![self.indicator isAnimating]){
+        [self.indicator startAnimating];
+    }
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+}
+
 -(PPYCaptureSessionPreset)configurationWithWidth:(int)width andHeight:(int)height{
     if(width == 480 && height == 640)
         return PPYCaptureSessionPreset360x640;
@@ -129,11 +155,7 @@
     }
 }
 
--(void)viewWillDisappear:(BOOL)animated{
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
-    [self.indicator stopAnimating];
-}
+
 -(void)showNetworkState:(NSNotification *)info{
     NSNumber *value = (NSNumber *)info.object;
     NSString *tip = nil;
@@ -162,28 +184,47 @@
     [[NotifyView getInstance] needShowNotifyMessage:tip inView:self.view forSeconds:3];
 }
 
--(void)updateUI{
-    
-    BOOL canSwitchCamera = ([AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo].count > 1);
-    self.btnCamera.userInteractionEnabled = canSwitchCamera;
-    self.btnTorch.userInteractionEnabled = self.pushEngine.hasTorch;
-    if(self.pushEngine.hasTorch){
-        NSLog(@"self.isTorch = %d",self.pushEngine.isTorch);
-        [self.btnTorch setBackgroundImage:[UIImage imageNamed:(self.pushEngine.isTorch ? @"闪光灯-启用" : @"闪光灯-禁用")] forState:UIControlStateNormal];
-    }
-    NSLog(@"self.mute = %d",self.pushEngine.isMute);
-    [self.btnMute setBackgroundImage:[UIImage imageNamed:(self.pushEngine.isMute ? @"麦克风-禁用" : @"麦克风-启用")] forState:UIControlStateNormal];
-    
-    [self.btnData setBackgroundImage:[UIImage imageNamed:(self.isDataShowed ? @"数据分析-启用" : @"数据分析-禁用")] forState:UIControlStateNormal];
-    NSLog(@"self.beauty = %d",self.pushEngine.isBeautify);
-    
-    NSLog(@"self.mirror = %d",self.pushEngine.isMirror);
-}
+
 
 
 
 -(void)doReConnection{
     [self.pushEngine start];
+}
+
+-(void)reDoSyncStartStateToServer{
+     __weak typeof(self) weakSelf = self;
+     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[HTTPManager shareInstance] syncPushStartStateToServerSuccess:^(NSDictionary *dic) {
+            [weakSelf.indicator stopAnimating];
+            if(dic != nil){
+                if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                    [[NotifyView getInstance] needShowNotifyMessage:@"推流成功" inView:self.view forSeconds:3];
+                }else{
+                    NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
+                    NSString *errCode = (NSString *)[dic objectForKey:@"err"];
+                    [weakSelf throwError:3 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
+                }
+            }
+        } failured:^(NSError *err) {
+            [weakSelf.indicator stopAnimating];
+        }];
+    });
+}
+
+-(void)throwError:(int)errorCode info:(NSString *)errorInfo{
+    __weak typeof(self) weakSelf = self;
+    NSString *displayInfo = errorInfo;
+    if(errorCode == 3){  //sync start errorcode
+        NSArray *componets = [errorInfo componentsSeparatedByString:@":"];
+        NSLog(@"componets = %@",componets);
+        if([componets[0] isEqualToString:@"1006"]){
+            [weakSelf reDoSyncStartStateToServer];
+        }
+    }
+    if(errorCode == 0){ //AFNetworking errorcode
+        [[NotifyView getInstance] needShowNotifyMessage:displayInfo inView:self.view forSeconds:3];
+    }
 }
 
 #pragma mark --<PPYPushEngineDelegate>
@@ -196,13 +237,26 @@
             
             break;
         case PPYConnectionStatus_Started:
-            [self.indicator stopAnimating];
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             if(!self.needReConnect){
-                [[HTTPManager shareInstance] syncPushStartStateToServer];
+                [[HTTPManager shareInstance] syncPushStartStateToServerSuccess:^(NSDictionary *dic) {
+                    if(dic != nil){
+                        if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                            [self.indicator stopAnimating];
+                           [[NotifyView getInstance] needShowNotifyMessage:@"推流成功" inView:self.view forSeconds:3];
+                        }else{
+                            NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
+                            NSString *errCode = (NSString *)[dic objectForKey:@"err"];
+                            [self throwError:3 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
+                        }
+                    }
+                } failured:^(NSError *err) {
+                    [self.indicator stopAnimating];
+                    [self throwError:0 info:@"AFNetworking Error"];
+                }];
             }
             if(self.isDoingReconnect){
-                
+                [self.indicator stopAnimating];
                 [[NotifyView getInstance] needShowNotifyMessage:@"重连成功" inView:self.view forSeconds:3];
                 self.isDoingReconnect = NO;
                 self.needReConnect = NO;
@@ -225,20 +279,21 @@
                 if([self.indicator isAnimating]){
                     [self.indicator stopAnimating];
                 }
+                __weak typeof (self) weakSelf = self;
                 [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
                     if(dic != nil){
                         if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                            [[NotifyView getInstance] needShowNotifyMessage:@"断流成功" inView:self.view forSeconds:3];
+                            [[NotifyView getInstance] needShowNotifyMessage:@"断流成功" inView:weakSelf.view forSeconds:3];
                         }else{
 //                            NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
 //                            NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                            [[NotifyView getInstance] needShowNotifyMessage:@"同步断流失败" inView:self.view forSeconds:3];
+                            [[NotifyView getInstance] needShowNotifyMessage:@"同步断流失败" inView:weakSelf.view forSeconds:3];
                         }
                     }
                     [self.delegate didPushViewControllerDismiss];
                     
                 } failured:^(NSError *err) {
-                    [[NotifyView getInstance] needShowNotifyMessage:@"同步断流失败" inView:self.view forSeconds:3];
+                    [[NotifyView getInstance] needShowNotifyMessage:@"同步断流失败" inView:weakSelf.view forSeconds:3];
                     [self.delegate didPushViewControllerDismiss];
                 }];
             }
@@ -246,6 +301,7 @@
     }
     NSLog(@"PPYPushEngineStreamStatus __%lu",(unsigned long)status);
 }
+
 
 -(void)didStreamErrorOccured:(PPYPushEngineErrorType)error{
     
@@ -257,15 +313,9 @@
         case PPYPushEngineError_ConnectFailed:
             tip = @"无法连接到服务器，正在尝试重连...";
             self.needReConnect = YES;
-            if(self.isPushing){
-                [self.pushEngine stop];
-            }
             break;
         case PPYPushEngineError_TransferFailed:
             self.needReConnect = YES;
-            if(self.isPushing){
-                [self.pushEngine stop];
-            }
             tip = @"网络异常，正在尝试重连...";
             break;
         case PPYPushEngineError_FatalError:
@@ -341,6 +391,7 @@
 - (IBAction)doShowData:(id)sender {
     self.lblBitrate.hidden = !self.isDataShowed;
     self.lblFPS.hidden = !self.isDataShowed;
+    self.lblResolution.hidden = !self.isDataShowed;
     [self updateUI];
     
     self.isDataShowed = !self.isDataShowed;
@@ -364,20 +415,6 @@
 - (IBAction)doMute:(id)sender {
     self.pushEngine.mute = !self.pushEngine.isMute;
     [self updateUI];
-}
-
-- (IBAction)doLive:(id)sender {
-    self.btnStart.hidden = YES;
-  
-    if(self.rtmpAddress == nil) return;
-    NSLog(@"self.rtmpAddress = %@",self.rtmpAddress);
-    
-    [self.pushEngine start];
-    
-    if(![self.indicator isAnimating]){
-        [self.indicator startAnimating];
-    }
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 }
 
 - (IBAction)doBeauty:(UISwitch *)sender {

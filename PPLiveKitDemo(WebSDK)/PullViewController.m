@@ -27,6 +27,7 @@
 
 @implementation PullViewController
 
+#pragma mark --Action--
 - (IBAction)doExit:(id)sender {
     [self dismissViewControllerAnimated:NO completion:nil];
 }
@@ -152,7 +153,7 @@
             [self reconnect];
             break;
     }
-    JPlayControllerLog(@"state = %d",state);
+    JPlayControllerLog(@"state = %lu",(unsigned long)state);
 }
 -(void)didPPYPlayEngineVideoResolutionCaptured:(int)width VideoHeight:(int)height{
     JPlayControllerLog(@"width = %d,height = %d",width,height);

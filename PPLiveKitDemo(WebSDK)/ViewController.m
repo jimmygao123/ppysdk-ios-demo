@@ -127,10 +127,6 @@
     });
 }
 
--(void)DidSyncStartStateToServerSuccess{
-    [[NotifyView getInstance] needShowNotifyMessage:@"推流成功" inView:self.pushVC.view forSeconds:3];
-    [self.pushVC.indicator stopAnimating];
-}
 -(void)DidSyncStopStareToServerSuccess{
     [[NotifyView getInstance] needShowNotifyMessage:@"推流已经断开" inView:self.view forSeconds:3];
 }

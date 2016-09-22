@@ -122,6 +122,7 @@
 		BFFADA8B1D923270007ADF56 /* p数据分析-禁用@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA871D923270007ADF56 /* p数据分析-禁用@3x.png */; };
 		BFFADA8C1D923270007ADF56 /* p数据分析-启用@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA881D923270007ADF56 /* p数据分析-启用@2x.png */; };
 		BFFADA8D1D923270007ADF56 /* p数据分析-启用@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA891D923270007ADF56 /* p数据分析-启用@3x.png */; };
+		BFFADA911D93840E007ADF56 /* MessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFADA901D93840E007ADF56 /* MessageManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -270,6 +271,8 @@
 		BFFADA871D923270007ADF56 /* p数据分析-禁用@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "p数据分析-禁用@3x.png"; path = "icon/PullViewController/p数据分析-禁用@3x.png"; sourceTree = "<group>"; };
 		BFFADA881D923270007ADF56 /* p数据分析-启用@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "p数据分析-启用@2x.png"; path = "icon/PullViewController/p数据分析-启用@2x.png"; sourceTree = "<group>"; };
 		BFFADA891D923270007ADF56 /* p数据分析-启用@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "p数据分析-启用@3x.png"; path = "icon/PullViewController/p数据分析-启用@3x.png"; sourceTree = "<group>"; };
+		BFFADA8F1D93840E007ADF56 /* MessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageManager.h; sourceTree = "<group>"; };
+		BFFADA901D93840E007ADF56 /* MessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +346,7 @@
 				BF375D011D6FDA03009C0E57 /* HTTPManager.m */,
 				BFF6133C1D70394C0064FB81 /* NotifyView.h */,
 				BFF6133D1D70394C0064FB81 /* NotifyView.m */,
+				BFFADA8E1D925BA8007ADF56 /* MessageHandle */,
 				BF375CD11D6F12B7009C0E57 /* Main.storyboard */,
 				BF53F1481D7FE111002700AD /* Icons3 */,
 				BF0E85651D728A0F00681A44 /* Icons2 */,
@@ -535,6 +539,15 @@
 			name = AFNetworking;
 			sourceTree = "<group>";
 		};
+		BFFADA8E1D925BA8007ADF56 /* MessageHandle */ = {
+			isa = PBXGroup;
+			children = (
+				BFFADA8F1D93840E007ADF56 /* MessageManager.h */,
+				BFFADA901D93840E007ADF56 /* MessageManager.m */,
+			);
+			name = MessageHandle;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -709,6 +722,7 @@
 				BFFADA6F1D91241F007ADF56 /* AFHTTPSessionManager.m in Sources */,
 				BF375CEA1D6F183C009C0E57 /* PushViewController.m in Sources */,
 				BF375D021D6FDA03009C0E57 /* HTTPManager.m in Sources */,
+				BFFADA911D93840E007ADF56 /* MessageManager.m in Sources */,
 				BFF6133E1D70394C0064FB81 /* NotifyView.m in Sources */,
 				BF375CCA1D6F12B7009C0E57 /* main.m in Sources */,
 				BFFADA711D91241F007ADF56 /* AFSecurityPolicy.m in Sources */,
@@ -834,9 +848,9 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pplive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c73268ea-1c16-4eed-95b7-4f536ad82575";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -854,9 +868,9 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pplive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c73268ea-1c16-4eed-95b7-4f536ad82575";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
