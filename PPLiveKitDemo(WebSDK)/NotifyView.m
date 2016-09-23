@@ -7,7 +7,7 @@
 //
 
 #import "NotifyView.h"
-
+#define KLableTag 1000
 @implementation NotifyView
 static NotifyView* viewMrg = nil;
 
@@ -26,12 +26,15 @@ static NotifyView* viewMrg = nil;
         notifyLabel.textAlignment = NSTextAlignmentCenter;
         notifyLabel.textColor = [UIColor whiteColor];
         [notifyLabel sizeToFit];
-        notifyLabel.center = view.center;
+        
+        CGPoint center = [self calculateDisplayCenterOfLable:notifyLabel];
+        
+        notifyLabel.center = CGPointMake(center.x, center.y - 30);
         
         CGRect viewFrame = notifyLabel.frame;
         notifyLabel.layer.frame = CGRectInset(viewFrame, -10, -10);
         notifyLabel.layer.cornerRadius = 7;
-        notifyLabel.layer.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6].CGColor;
+        notifyLabel.layer.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2].CGColor;
         
         [UIView animateWithDuration:0.5 animations:^{
             [view addSubview:notifyLabel];
@@ -46,4 +49,49 @@ static NotifyView* viewMrg = nil;
     });
 }
 
+-(void)needShwoNotifyMessage:(NSString *)text inView:(UIView *)view{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 100)];
+        notifyLabel.tag = KLableTag;
+        notifyLabel.text = text;
+        notifyLabel.textAlignment = NSTextAlignmentCenter;
+        notifyLabel.textColor = [UIColor whiteColor];
+        [notifyLabel sizeToFit];
+        notifyLabel.center = [self calculateDisplayCenterOfLable:notifyLabel];
+        
+        CGRect viewFrame = notifyLabel.frame;
+        notifyLabel.layer.frame = CGRectInset(viewFrame, -10, -10);
+        notifyLabel.layer.cornerRadius = 7;
+        notifyLabel.layer.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2].CGColor;
+        
+        [view addSubview:notifyLabel];
+    });
+}
+
+-(void)dismissNotifyMessageInView:(UIView *)view{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];
+        for (id subview in subviewsEnum){
+            if([subview isKindOfClass:[UILabel class]]){
+                UILabel *label = (UILabel *)subview;
+                if(label.tag == KLableTag){
+                    [label removeFromSuperview];
+                }
+            }
+        }
+    });
+}
+
+-(CGPoint)calculateDisplayCenterOfLable:(UILabel *)displayLabel{
+    int screenHeight = [UIScreen mainScreen].bounds.size.height;
+    int screenWidth = [UIScreen mainScreen].bounds.size.width;
+    
+    int labelWidth = displayLabel.frame.size.width;
+    
+    int x = screenWidth - labelWidth/2;
+    int y = screenHeight - 60;
+    
+    return CGPointMake(x, y);
+};
 @end

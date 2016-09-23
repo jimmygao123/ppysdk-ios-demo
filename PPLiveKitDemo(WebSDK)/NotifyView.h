@@ -12,7 +12,8 @@
 @interface NotifyView : NSObject
 
 +(instancetype)getInstance;
-
 -(void)needShowNotifyMessage:(NSString *)text inView:(UIView*)view forSeconds:(NSInteger)second;
 
+-(void)dismissNotifyMessageInView:(UIView *)view;
+-(void)needShwoNotifyMessage:(NSString *)text inView:(UIView *)view;
 @end
