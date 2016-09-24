@@ -51,6 +51,17 @@ static NotifyView* viewMrg = nil;
 
 -(void)needShwoNotifyMessage:(NSString *)text inView:(UIView *)view{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];
+        for (id subview in subviewsEnum){
+            if([subview isKindOfClass:[UILabel class]]){
+                UILabel *label = (UILabel *)subview;
+                if(label.tag == KLableTag){
+                    [label removeFromSuperview];
+                }
+            }
+        }
+
+        
         UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 100)];
         notifyLabel.tag = KLableTag;
         notifyLabel.text = text;
@@ -94,4 +105,5 @@ static NotifyView* viewMrg = nil;
     
     return CGPointMake(x, y);
 };
+
 @end

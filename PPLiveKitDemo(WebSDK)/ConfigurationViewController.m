@@ -208,6 +208,12 @@
         if([componets[0] isEqualToString:@"399995"]){
             displayInfo = @"房间号已经存在";
         }
+    }else if(errorCode == 17){
+        NSArray *componets = [errorInfo componentsSeparatedByString:@":"];
+        NSLog(@"componets = %@",componets);
+        displayInfo = @"获取拉流地址失败";
+    }else if(errorCode == 13){
+        displayInfo = @"流状态错误";
     }
     
     

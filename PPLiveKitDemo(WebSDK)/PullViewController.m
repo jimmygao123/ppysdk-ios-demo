@@ -20,8 +20,12 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblRes;
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
 
+@property (strong, nonatomic) UIView *fuzzyView;
+
+@property (assign, nonatomic) BOOL isReconnecting;
 @property (assign, nonatomic) BOOL isDataShowed;
 @property (assign, nonatomic) int reconnectCount;
+@property (assign, nonatomic) BOOL isInitLoading;
 @property (strong, nonatomic) MBProgressHUD *hud;
 @end
 
@@ -61,16 +65,16 @@
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
 
-    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.hud.label.text = @"正在拼命加载...";
-    [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
-    
+    self.isInitLoading = YES;
+    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..."];
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
     self.lblRoomID.layer.cornerRadius = 10;
     self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
     self.lblRoomID.layer.masksToBounds = YES;
     [self.lblRoomID clipsToBounds];
     
+    
+    [self startPullStream];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -80,20 +84,16 @@
     [[PPYPlayEngine shareInstance] stop:YES];
 }
 
-
 -(void)reconnect{
-    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.hud.label.text = @"网络异常，正在尝试重练...";
-    __weak typeof(self) weakSelf = self;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-         [[PPYPlayEngine shareInstance] startPlayFromURL:weakSelf.playAddress];
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [weakSelf throwError:10];
+        [weakSelf doPullStream];
         weakSelf.reconnectCount++;
-        if(weakSelf.reconnectCount > 10){
+        if(weakSelf.reconnectCount > 3){
             weakSelf.reconnectCount = 0;
-            
-            [weakSelf.hud hideAnimated:YES];
-            [weakSelf needShowToastMessage:@"重连失败"];
+            [weakSelf throwError:9];
         }
     });
 }
@@ -103,9 +103,15 @@
     JPlayControllerLog(@"PlayerController delloc");
 }
 -(void)didPPYPlayEngineErrorOccured:(PPYPlayEngineErrorType)error{
+    if(self.isInitLoading){
+        [self dismissFuzzyView];
+        self.isInitLoading = NO;
+    }
+    
     switch (error) {
         case PPYPlayEngineError_InvalidSourceURL:
-            [self needShowToastMessage:@"无效资源"];
+//            [self needShowToastMessage:@"无效资源"];
+            [self throwError:7];
             break;
         case PPYPlayEngineError_ConnectFailed:
             [self reconnect];
@@ -114,15 +120,19 @@
             [self reconnect];
             break;
         case PPYPlayEngineError_FatalError:
-            [self needShowToastMessage:@"解码器出错"];
+            [self throwError:7];
+//            [self needShowToastMessage:@"解码器出错"];
             break;
     }
     JPlayControllerLog(@"error = %d",error);
 }
 -(void)didPPYPlayEngineInfoThrowOut:(PPYPlayEngineInfoType)type andValue:(int)value{
+    if(self.isInitLoading){
+        [self dismissFuzzyView];
+        self.isInitLoading = NO;
+    }
     switch (type) {
         case PPYPlayEngineInfo_BufferingDuration:
-            
             break;
         case PPYPlayEngineInfo_RealBirate:
             self.lblBitrate.text = [NSString stringWithFormat:@" 码率：%dkbps",value];
@@ -134,22 +144,25 @@
     JPlayControllerLog(@"type = %d,value = %d",type,value);
 }
 -(void)didPPYPlayEngineStateChanged:(PPYPlayEngineStatus)state{
+    if(self.isInitLoading){
+        [self dismissFuzzyView];
+        self.isInitLoading = NO;
+    }
+
     switch (state) {
         case PPYPlayEngineStatus_StartCaching:
-            self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            self.hud.label.text = @"正在缓冲...";
+            [self throwError:4];
             break;
         case PPYPlayEngineStatus_EndCaching:
-            [self.hud hideAnimated:YES];
+            [self throwError:5];
             break;
         case PPYPlayEngineStatus_FisrtKeyFrameComing:
-            self.reconnectCount = 0;
-            [self.hud hideAnimated:YES];
+            [self throwError:6];
             break;
         case PPYPlayEngineStatus_RenderingStart:
-            
             break;
         case PPYPlayEngineStatus_ReceiveEOF:
+            [self throwError:8];
             [self reconnect];
             break;
     }
@@ -160,6 +173,59 @@
     self.lblRes.text = [NSString stringWithFormat:@" 分辨率：%dx%d",width,height];
 }
 
+
+-(void)showNetworkState:(NSNotification *)info{
+    NSNumber *value = (NSNumber *)info.object;
+    switch (value.integerValue) {
+        case AFNetworkReachabilityStatusUnknown:
+            break;
+            
+        case AFNetworkReachabilityStatusNotReachable:
+            [[PPYPlayEngine shareInstance] stop:NO];
+            [self throwError:11];
+            break;
+            
+        case AFNetworkReachabilityStatusReachableViaWWAN:
+            [[PPYPlayEngine shareInstance] stop:NO];
+            [self startPullStream];
+            break;
+            
+        case AFNetworkReachabilityStatusReachableViaWiFi:
+            [[PPYPlayEngine shareInstance] stop:NO];
+            [self throwError:12];
+            [self doPullStream];
+            break;
+    }
+}
+
+
+
+#pragma mark --UIElelment--
+
+-(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info{
+    
+    UILabel *label = [[UILabel alloc]init];
+    label.text = info;
+    label.font = [UIFont boldSystemFontOfSize:25];
+    label.textColor = [UIColor whiteColor];
+    label.textAlignment = NSTextAlignmentCenter;
+    [label sizeToFit];
+    
+    label.center = self.view.center;
+    [self.fuzzyView addSubview:label];
+    
+    [view addSubview:self.fuzzyView];
+}
+-(void)dismissFuzzyView{
+    [self.fuzzyView removeFromSuperview];
+}
+-(UIView *)fuzzyView{
+    if(_fuzzyView == nil){
+        _fuzzyView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+        _fuzzyView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    }
+    return _fuzzyView;
+}
 - (BOOL)prefersStatusBarHidde{
     return YES;
 }
@@ -168,33 +234,107 @@
     __weak typeof(self) weakSelf = self;
     [[NotifyView getInstance] needShowNotifyMessage:message inView:weakSelf.view forSeconds:3];
 }
--(void)showNetworkState:(NSNotification *)info{
-    NSNumber *value = (NSNumber *)info.object;
-    NSString *tip = nil;
-    switch (value.integerValue) {
-        case AFNetworkReachabilityStatusUnknown:
-            [self.hud hideAnimated:YES];
-            [[PPYPlayEngine shareInstance] stop:NO];
-            tip = @"网络异常发生未知错误";
-            break;
-        case AFNetworkReachabilityStatusNotReachable:
-            [self.hud hideAnimated:YES];
-            [[PPYPlayEngine shareInstance] stop:NO];
-            tip = @"网络断开,请检查网络";
-            break;
-        case AFNetworkReachabilityStatusReachableViaWWAN:
-            [self.hud hideAnimated:YES];
-            [[PPYPlayEngine shareInstance] stop:NO];
-            [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
-            tip = @"当前使用3G/4G网络";
-            break;
-        case AFNetworkReachabilityStatusReachableViaWiFi:
-            [self.hud hideAnimated:YES];
-            [[PPYPlayEngine shareInstance] stop:NO];
-            [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
-            tip = @"当前使用Wi-Fi";
-            break;
+
+#pragma mark --NetworkRequest--
+-(void)startPullStream{
+    if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusReachableViaWWAN){
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用移动流量，是否继续观看？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self doPullStream];
+        }];
+        UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [alert addAction:btnOK];
+        [alert addAction:btnCancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else{
+        [self doPullStream];
     }
-    [[NotifyView getInstance] needShowNotifyMessage:tip inView:self.view forSeconds:3];
+
+}
+
+-(void)doPullStream{
+    [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
+        if(dic != nil){
+            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+                NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
+                NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
+                
+                if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
+                    [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
+                }else{
+                    [self throwError:3];
+                }
+                
+                NSString *status = [NSString stringWithFormat:@"live status:%@,streaStatus:%@",liveState,streamState];
+                NSLog(@"%s,%@",__FUNCTION__,status);
+            }else{
+                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
+                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
+                NSLog(@"%s,%@:%@",__FUNCTION__,errCode,errorInfo);
+                [self throwError:2];
+            }
+        }else{
+            [self throwError:1];
+        }
+    } failured:^(NSError *err) {
+        [self throwError:0];
+    }];
+}
+
+-(void)throwError:(int)errCode{
+    NSString *tip = nil;
+    if(errCode == 0){
+        NSLog(@"AFNetworking connection error");
+    }else if(errCode == 1){
+        NSLog(@"AFNetworking return object error");
+    }else if(errCode == 2){
+        tip = @"直播已经结束";
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"直播已经结束" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }];
+        [alert addAction:btnOK];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else if(errCode == 3){
+        tip = @"主播离开一会儿，不要离开啊";
+        
+    }else if(errCode == 4){
+        tip = @"网络有些卡顿，正在拼命缓冲...";  //start caching
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+    }else if(errCode == 5){
+        tip = @"网络卡顿恢复结束";             //end caching
+        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+    }else if(errCode == 6){                     //receive fisrt key frame mark as pull stream success
+        if(self.isReconnecting){
+            self.isReconnecting = NO;
+            tip = @"重连成功";
+            [self needShowToastMessage:tip];
+        }else{
+            tip = @"拉流成功";
+            [self needShowToastMessage:tip];
+        }
+    }else if(errCode == 7){
+        NSLog(@"解码器错误或者资源错误");
+    }else if(errCode == 8){
+        NSLog(@"收到EOF包，暂时用重连逻辑代替");
+    }else if(errCode == 9){
+        tip = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将为您重新连接";
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+        self.isReconnecting = NO;
+    }else if(errCode == 10){
+        tip = @"当前网络环境异常，正在重新连接...";
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+        self.isReconnecting = YES;
+    }else if(errCode == 11){        //AFNetworking 断网事件
+        tip = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将为您重新连接";
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+    }else if(errCode == 12){        //AFNetworking wifi连接事件
+        tip = @"当前使用Wi-Fi网络,正在重新连接...";
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+    }
 }
 @end
