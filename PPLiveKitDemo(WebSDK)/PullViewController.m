@@ -25,6 +25,7 @@
 @property (assign, nonatomic) BOOL isReconnecting;
 @property (assign, nonatomic) BOOL isDataShowed;
 @property (assign, nonatomic) int reconnectCount;
+@property (assign, nonatomic) int reconnectCountWhenStreamError;
 @property (assign, nonatomic) BOOL isInitLoading;
 @property (strong, nonatomic) MBProgressHUD *hud;
 @end
@@ -94,6 +95,18 @@
         if(weakSelf.reconnectCount > 3){
             weakSelf.reconnectCount = 0;
             [weakSelf throwError:9];
+        }
+    });
+}
+
+-(void)doReconnectWhenStreamError{
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [weakSelf doPullStream];
+        weakSelf.reconnectCountWhenStreamError++;
+        if(weakSelf.reconnectCountWhenStreamError > 18){  //3min
+            weakSelf.reconnectCountWhenStreamError = 0;
+            [weakSelf throwError:2];
         }
     });
 }
@@ -264,9 +277,17 @@
                 NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
                 
                 if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
+                    if(self.reconnectCountWhenStreamError > 0){
+                        self.reconnectCountWhenStreamError = 0;
+                        [self throwError:13];
+                    }
                     [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
-                }else{
+                }else if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"error"]){
                     [self throwError:3];
+                }else if([liveState isEqualToString:@"broken"] && [streamState isEqualToString:@"error"]){
+                    [self throwError:3];
+                }else{
+                    [self throwError:2];
                 }
                 
                 NSString *status = [NSString stringWithFormat:@"live status:%@,streaStatus:%@",liveState,streamState];
@@ -300,8 +321,14 @@
         [alert addAction:btnOK];
         [self presentViewController:alert animated:YES completion:nil];
     }else if(errCode == 3){
-        tip = @"主播离开一会儿，不要离开啊";
-        
+        if(self.reconnectCountWhenStreamError == 0){
+            tip = @"主播离开一会儿，不要离开啊";
+            [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+        }
+        [self doReconnectWhenStreamError];
+    }else if(errCode == 13){
+        tip = @"主播回来了";
+        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
     }else if(errCode == 4){
         tip = @"网络有些卡顿，正在拼命缓冲...";  //start caching
         [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
