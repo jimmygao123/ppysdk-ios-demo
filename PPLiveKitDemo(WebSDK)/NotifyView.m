@@ -21,11 +21,16 @@ static NotifyView* viewMrg = nil;
 
 -(void)needShowNotifyMessage:(NSString *)text inView:(UIView*)view forSeconds:(NSInteger)second{
     dispatch_async(dispatch_get_main_queue(), ^{
-        UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 100)];
+        UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,100,200)];
         notifyLabel.text = text;
         notifyLabel.textAlignment = NSTextAlignmentCenter;
         notifyLabel.textColor = [UIColor whiteColor];
         [notifyLabel sizeToFit];
+        
+       
+        
+        
+
         
         CGPoint center = [self calculateDisplayCenterOfLable:notifyLabel];
         
@@ -62,19 +67,25 @@ static NotifyView* viewMrg = nil;
         }
 
         
-        UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 100)];
+        UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 250, 100)];
         notifyLabel.tag = KLableTag;
         notifyLabel.text = text;
-        notifyLabel.textAlignment = NSTextAlignmentCenter;
+        notifyLabel.textAlignment = NSTextAlignmentLeft;
         notifyLabel.textColor = [UIColor whiteColor];
+//        [notifyLabel sizeToFit];
+//         NSLog(@"notifyLabel width = %@",NSStringFromCGRect(notifyLabel.frame));
+//        if(notifyLabel.frame.size.width > [UIScreen mainScreen].bounds.size.width){
+            notifyLabel.numberOfLines = 0;
         [notifyLabel sizeToFit];
-        notifyLabel.center = [self calculateDisplayCenterOfLable:notifyLabel];
-        
+//            notifyLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//            [notifyLabel setFrame:CGRectMake(0, 0, 250, 300)];
+//        }
         CGRect viewFrame = notifyLabel.frame;
         notifyLabel.layer.frame = CGRectInset(viewFrame, -10, -10);
         notifyLabel.layer.cornerRadius = 7;
         notifyLabel.layer.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2].CGColor;
-        
+        notifyLabel.center = [self calculateDisplayCenterOfLable:notifyLabel];
+//
         [view addSubview:notifyLabel];
     });
 }

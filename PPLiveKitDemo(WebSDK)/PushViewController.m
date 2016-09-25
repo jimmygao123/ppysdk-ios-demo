@@ -24,13 +24,15 @@ typedef NS_ENUM(int, NetWorkState){
 @property (weak, nonatomic) IBOutlet UIButton *btnCamera;
 @property (weak, nonatomic) IBOutlet UIButton *btnTorch;
 @property (weak, nonatomic) IBOutlet UIButton *btnFocus;
+@property (weak, nonatomic) IBOutlet UIButton *btnMirror;
 
 @property (weak, nonatomic) IBOutlet UILabel *lblRoomID;
 @property (weak, nonatomic) IBOutlet UIButton *btnMute;
 @property (weak, nonatomic) IBOutlet UILabel *lblFPS;
 @property (weak, nonatomic) IBOutlet UILabel *lblBitrate;
 @property (weak, nonatomic) IBOutlet UILabel *lblResolution;
-
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contraitBtnCameraTraingToBtnMute;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contraitBtnMirrorLeadingToBtnMute;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
 
@@ -81,7 +83,7 @@ typedef NS_ENUM(int, NetWorkState){
     self.pushEngine.delegate = self;
     [self updateUI];
     
-    [self doLive];
+    [self startDoLive];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -115,6 +117,12 @@ typedef NS_ENUM(int, NetWorkState){
     
     self.lblResolution.textColor = [UIColor whiteColor];
     self.lblResolution.text = [NSString stringWithFormat:@"分辨率：%dx%d",self.width,self.height];
+    
+    self.contraitBtnCameraTraingToBtnMute.constant = (self.btnMute.center.x -self.btnTorch.center.x)/2 - self.btnMute.frame.size.width;
+    NSLog(@"self.contraitBtnCameraTraingToBtnMute.constant = %f",self.contraitBtnCameraTraingToBtnMute.constant );
+    [self.btnCamera layoutIfNeeded];
+    self.contraitBtnMirrorLeadingToBtnMute.constant = (self.btnData.center.x - self.btnMute.center.x)/2 - self.btnMute.frame.size.width;
+    [self.btnMirror layoutIfNeeded];
 }
 
 -(void)updateUI{
@@ -133,6 +141,24 @@ typedef NS_ENUM(int, NetWorkState){
     NSLog(@"self.beauty = %d",self.pushEngine.isBeautify);
     
     NSLog(@"self.mirror = %d",self.pushEngine.isMirror);
+}
+
+-(void)startDoLive{
+    if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusReachableViaWWAN){
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用移动流量，是否继续直播？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self doLive];
+        }];
+        UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [self.delegate didPushViewControllerDismiss];
+        }];
+        [alert addAction:btnOK];
+        [alert addAction:btnCancel];
+        [self presentViewController:alert animated:YES completion:nil];
+    }else{
+        [self doLive];
+    }
 }
 
 - (void)doLive{
@@ -192,7 +218,7 @@ typedef NS_ENUM(int, NetWorkState){
         }
             break;
         case AFNetworkReachabilityStatusReachableViaWiFi:
-            tip = @"当前使用Wi-Fi";
+//            tip = @"当前使用Wi-Fi";
             self.isNetworkDisconnect = YES;
             self.needReConnect = YES;
             [[NotifyView getInstance] dismissNotifyMessageInView:self.view];

@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblFPS;
 @property (weak, nonatomic) IBOutlet UILabel *lblRes;
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
+@property (weak, nonatomic) IBOutlet UIButton *btnExit;
 
 @property (strong, nonatomic) UIView *fuzzyView;
 
@@ -26,6 +27,7 @@
 @property (assign, nonatomic) BOOL isDataShowed;
 @property (assign, nonatomic) int reconnectCount;
 @property (assign, nonatomic) int reconnectCountWhenStreamError;
+@property (assign, nonatomic) int reconnectCountOfCaching;
 @property (assign, nonatomic) BOOL isInitLoading;
 @property (strong, nonatomic) MBProgressHUD *hud;
 @end
@@ -67,7 +69,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
 
     self.isInitLoading = YES;
-    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..."];
+    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
     self.lblRoomID.layer.cornerRadius = 10;
     self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
@@ -79,6 +81,11 @@
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
+    if(self.fuzzyView){
+        [self.fuzzyView removeFromSuperview];
+        self.fuzzyView = nil;
+    }
+    [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
     
@@ -89,9 +96,7 @@
     
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf throwError:10];
         [weakSelf doPullStream];
-        weakSelf.reconnectCount++;
         if(weakSelf.reconnectCount > 3){
             weakSelf.reconnectCount = 0;
             [weakSelf throwError:9];
@@ -103,10 +108,21 @@
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [weakSelf doPullStream];
-        weakSelf.reconnectCountWhenStreamError++;
         if(weakSelf.reconnectCountWhenStreamError > 18){  //3min
             weakSelf.reconnectCountWhenStreamError = 0;
             [weakSelf throwError:2];
+        }
+    });
+}
+-(void)doStopWhenCachingMoreThanTenSeconds{
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[PPYPlayEngine shareInstance] stop:NO];
+        [weakSelf doPullStream];
+        weakSelf.reconnectCountOfCaching ++;
+        if(weakSelf.reconnectCountOfCaching > 6){  //1min
+            weakSelf.reconnectCountOfCaching = 0;
+            [weakSelf throwError:9];
         }
     });
 }
@@ -127,9 +143,13 @@
             [self throwError:7];
             break;
         case PPYPlayEngineError_ConnectFailed:
+            [self throwError:10];
+            self.reconnectCount++;
             [self reconnect];
             break;
         case PPYPlayEngineError_TransferFailed:
+            [self throwError:10];
+            self.reconnectCount++;
             [self reconnect];
             break;
         case PPYPlayEngineError_FatalError:
@@ -157,6 +177,7 @@
     JPlayControllerLog(@"type = %d,value = %d",type,value);
 }
 -(void)didPPYPlayEngineStateChanged:(PPYPlayEngineStatus)state{
+    __weak typeof(self) weakSelf = self;
     if(self.isInitLoading){
         [self dismissFuzzyView];
         self.isInitLoading = NO;
@@ -164,9 +185,13 @@
 
     switch (state) {
         case PPYPlayEngineStatus_StartCaching:
+        {
+            [weakSelf performSelector:@selector(doStopWhenCachingMoreThanTenSeconds) withObject:weakSelf afterDelay:10];
             [self throwError:4];
+        }
             break;
         case PPYPlayEngineStatus_EndCaching:
+            [NSObject cancelPreviousPerformRequestsWithTarget:weakSelf selector:@selector(doStopWhenCachingMoreThanTenSeconds) object:nil];
             [self throwError:5];
             break;
         case PPYPlayEngineStatus_FisrtKeyFrameComing:
@@ -176,7 +201,7 @@
             break;
         case PPYPlayEngineStatus_ReceiveEOF:
             [self throwError:8];
-            [self reconnect];
+            [self startPullStream];
             break;
     }
     JPlayControllerLog(@"state = %lu",(unsigned long)state);
@@ -215,11 +240,11 @@
 
 #pragma mark --UIElelment--
 
--(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info{
+-(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
     
     UILabel *label = [[UILabel alloc]init];
     label.text = info;
-    label.font = [UIFont boldSystemFontOfSize:25];
+    label.font = [UIFont systemFontOfSize:25];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     [label sizeToFit];
@@ -227,10 +252,26 @@
     label.center = self.view.center;
     [self.fuzzyView addSubview:label];
     
+    if(needLoading){
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        [indicator hidesWhenStopped];
+        indicator.center = CGPointMake(self.view.center.x, self.view.center.y + 30);
+        [indicator startAnimating];
+
+        [self.fuzzyView addSubview:indicator];
+    }
+    
+    UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
+    [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
+    [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
+    [self.fuzzyView addSubview:exitBtn];
+
     [view addSubview:self.fuzzyView];
 }
+
 -(void)dismissFuzzyView{
     [self.fuzzyView removeFromSuperview];
+    self.fuzzyView = nil;
 }
 -(UIView *)fuzzyView{
     if(_fuzzyView == nil){
@@ -283,8 +324,10 @@
                     }
                     [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
                 }else if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"error"]){
+                    self.reconnectCountWhenStreamError++;
                     [self throwError:3];
                 }else if([liveState isEqualToString:@"broken"] && [streamState isEqualToString:@"error"]){
+                    self.reconnectCountWhenStreamError++;
                     [self throwError:3];
                 }else{
                     [self throwError:2];
@@ -313,13 +356,15 @@
     }else if(errCode == 1){
         NSLog(@"AFNetworking return object error");
     }else if(errCode == 2){
+        
         tip = @"直播已经结束";
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"直播已经结束" message:nil preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }];
-        [alert addAction:btnOK];
-        [self presentViewController:alert animated:YES completion:nil];
+        [self presentFuzzyViewOnView:self.view WithMessage:tip loadingNeeded:NO];
+//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"直播已经结束" message:nil preferredStyle:UIAlertControllerStyleAlert];
+//        UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//            [self dismissViewControllerAnimated:YES completion:nil];
+//        }];
+//        [alert addAction:btnOK];
+//        [self presentViewController:alert animated:YES completion:nil];
     }else if(errCode == 3){
         if(self.reconnectCountWhenStreamError == 0){
             tip = @"主播离开一会儿，不要离开啊";
@@ -340,9 +385,13 @@
             self.isReconnecting = NO;
             tip = @"重连成功";
             [self needShowToastMessage:tip];
+            [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+        }else if(self.reconnectCountOfCaching > 0){
+            
         }else{
             tip = @"拉流成功";
             [self needShowToastMessage:tip];
+            [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
         }
     }else if(errCode == 7){
         NSLog(@"解码器错误或者资源错误");
