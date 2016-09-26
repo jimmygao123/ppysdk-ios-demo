@@ -356,15 +356,8 @@
     }else if(errCode == 1){
         NSLog(@"AFNetworking return object error");
     }else if(errCode == 2){
-        
         tip = @"直播已经结束";
         [self presentFuzzyViewOnView:self.view WithMessage:tip loadingNeeded:NO];
-//        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"直播已经结束" message:nil preferredStyle:UIAlertControllerStyleAlert];
-//        UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//            [self dismissViewControllerAnimated:YES completion:nil];
-//        }];
-//        [alert addAction:btnOK];
-//        [self presentViewController:alert animated:YES completion:nil];
     }else if(errCode == 3){
         if(self.reconnectCountWhenStreamError == 0){
             tip = @"主播离开一会儿，不要离开啊";
