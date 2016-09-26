@@ -848,9 +848,9 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pplive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c73268ea-1c16-4eed-95b7-4f536ad82575";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -868,9 +868,9 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.pplive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "c73268ea-1c16-4eed-95b7-4f536ad82575";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

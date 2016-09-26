@@ -310,6 +310,7 @@
 }
 
 -(void)doPullStream{
+    __weak typeof(self)weakSelf = self;
     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
         if(dic != nil){
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
@@ -318,19 +319,19 @@
                 NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
                 
                 if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
-                    if(self.reconnectCountWhenStreamError > 0){
-                        self.reconnectCountWhenStreamError = 0;
-                        [self throwError:13];
+                    if(weakSelf.reconnectCountWhenStreamError > 0){
+                        weakSelf.reconnectCountWhenStreamError = 0;
+                        [weakSelf throwError:13];
                     }
-                    [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress];
+                    [[PPYPlayEngine shareInstance] startPlayFromURL:weakSelf.playAddress];
                 }else if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"error"]){
-                    self.reconnectCountWhenStreamError++;
-                    [self throwError:3];
+                    weakSelf.reconnectCountWhenStreamError++;
+                    [weakSelf throwError:3];
                 }else if([liveState isEqualToString:@"broken"] && [streamState isEqualToString:@"error"]){
-                    self.reconnectCountWhenStreamError++;
-                    [self throwError:3];
+                    weakSelf.reconnectCountWhenStreamError++;
+                    [weakSelf throwError:3];
                 }else{
-                    [self throwError:2];
+                    [weakSelf throwError:2];
                 }
                 
                 NSString *status = [NSString stringWithFormat:@"live status:%@,streaStatus:%@",liveState,streamState];
@@ -339,17 +340,18 @@
                 NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
                 NSString *errCode = (NSString *)[dic objectForKey:@"err"];
                 NSLog(@"%s,%@:%@",__FUNCTION__,errCode,errorInfo);
-                [self throwError:2];
+                [weakSelf throwError:2];
             }
         }else{
-            [self throwError:1];
+            [weakSelf throwError:1];
         }
     } failured:^(NSError *err) {
-        [self throwError:0];
+        [weakSelf throwError:0];
     }];
 }
 
 -(void)throwError:(int)errCode{
+    __weak typeof(self)weakSelf = self;
     NSString *tip = nil;
     if(errCode == 0){
         NSLog(@"AFNetworking connection error");
@@ -357,34 +359,34 @@
         NSLog(@"AFNetworking return object error");
     }else if(errCode == 2){
         tip = @"直播已经结束";
-        [self presentFuzzyViewOnView:self.view WithMessage:tip loadingNeeded:NO];
+        [weakSelf presentFuzzyViewOnView:weakSelf.view WithMessage:tip loadingNeeded:NO];
     }else if(errCode == 3){
-        if(self.reconnectCountWhenStreamError == 0){
+        if(weakSelf.reconnectCountWhenStreamError > 0){
             tip = @"主播离开一会儿，不要离开啊";
-            [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+            [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
         }
-        [self doReconnectWhenStreamError];
+        [weakSelf doReconnectWhenStreamError];
     }else if(errCode == 13){
         tip = @"主播回来了";
-        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+        [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
     }else if(errCode == 4){
         tip = @"网络有些卡顿，正在拼命缓冲...";  //start caching
-        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
     }else if(errCode == 5){
         tip = @"网络卡顿恢复结束";             //end caching
-        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+        [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
     }else if(errCode == 6){                     //receive fisrt key frame mark as pull stream success
-        if(self.isReconnecting){
-            self.isReconnecting = NO;
+        if(weakSelf.isReconnecting){
+            weakSelf.isReconnecting = NO;
             tip = @"重连成功";
-            [self needShowToastMessage:tip];
-            [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
-        }else if(self.reconnectCountOfCaching > 0){
-            
+            [weakSelf needShowToastMessage:tip];
+            [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
+        }else if(weakSelf.reconnectCountOfCaching > 0){
+            weakSelf.reconnectCountOfCaching = 0;
         }else{
             tip = @"拉流成功";
-            [self needShowToastMessage:tip];
-            [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+            [weakSelf needShowToastMessage:tip];
+            [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
         }
     }else if(errCode == 7){
         NSLog(@"解码器错误或者资源错误");
@@ -392,18 +394,18 @@
         NSLog(@"收到EOF包，暂时用重连逻辑代替");
     }else if(errCode == 9){
         tip = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将为您重新连接";
-        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
-        self.isReconnecting = NO;
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
+        weakSelf.isReconnecting = NO;
     }else if(errCode == 10){
         tip = @"当前网络环境异常，正在重新连接...";
-        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
-        self.isReconnecting = YES;
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
+        weakSelf.isReconnecting = YES;
     }else if(errCode == 11){        //AFNetworking 断网事件
         tip = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将为您重新连接";
-        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
     }else if(errCode == 12){        //AFNetworking wifi连接事件
         tip = @"当前使用Wi-Fi网络,正在重新连接...";
-        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:self.view];
+        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
     }
 }
 @end
