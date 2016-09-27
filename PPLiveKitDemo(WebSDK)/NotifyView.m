@@ -8,6 +8,7 @@
 
 #import "NotifyView.h"
 #define KLableTag 1000
+#define kToastLabelTag 1001
 @implementation NotifyView
 static NotifyView* viewMrg = nil;
 
@@ -21,8 +22,19 @@ static NotifyView* viewMrg = nil;
 
 -(void)needShowNotifyMessage:(NSString *)text inView:(UIView*)view forSeconds:(NSInteger)second{
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSEnumerator *subviewsEnum = [view.subviews reverseObjectEnumerator];
+        for (id subview in subviewsEnum){
+            if([subview isKindOfClass:[UILabel class]]){
+                UILabel *label = (UILabel *)subview;
+                if(label.tag == kToastLabelTag){
+                    [label removeFromSuperview];
+                }
+            }
+        }
+        
         UILabel *notifyLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,250,100)];
         notifyLabel.text = text;
+        notifyLabel.tag = kToastLabelTag;
         notifyLabel.textAlignment = NSTextAlignmentLeft;
         notifyLabel.textColor = [UIColor whiteColor];
         notifyLabel.numberOfLines = 0;

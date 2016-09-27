@@ -398,7 +398,7 @@
         weakSelf.isReconnecting = NO;
     }else if(errCode == 10){
         tip = @"当前网络环境异常，正在重新连接...";
-        [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
+        [[NotifyView getInstance] needShowNotifyMessage:tip inView:weakSelf.view forSeconds:3];
         weakSelf.isReconnecting = YES;
     }else if(errCode == 11){        //AFNetworking 断网事件
         tip = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将为您重新连接";
@@ -407,5 +407,6 @@
         tip = @"当前使用Wi-Fi网络,正在重新连接...";
         [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
     }
+    JPlayControllerLog(@"tip = %@",tip);
 }
 @end

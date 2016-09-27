@@ -13,6 +13,7 @@
                 <outlet property="btnBeautySetting" destination="SEr-qZ-aHz" id="nkj-7o-oG9"/>
                 <outlet property="btnCamera" destination="ggg-C7-XUN" id="0n1-4T-8KP"/>
                 <outlet property="btnData" destination="rbt-gs-JXl" id="J5V-7s-ArS"/>
+                <outlet property="btnExit" destination="p3e-pY-fCc" id="yZy-PM-UuD"/>
                 <outlet property="btnFocus" destination="YRH-Q2-5Pz" id="51K-Sn-WwG"/>
                 <outlet property="btnMirror" destination="1wG-By-pyg" id="LZb-Kn-sn7"/>
                 <outlet property="btnMoreSetting" destination="wde-bP-ZyO" id="uFb-wS-6aH"/>
