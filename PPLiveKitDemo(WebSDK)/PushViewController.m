@@ -19,24 +19,27 @@ typedef NS_ENUM(int, NetWorkState){
 };
 
 typedef enum{
-    kAFNetworkUnreachable,
+    kAFNetworkUnreachable,  //local network closed
     kNetworkToWWan,
     kNetworkWifi,
-    kAFNetworkAFNetworkingRequestFailed,
-    
-    kReconnectFailed_30s,
+    kAFNetworkAFNetworkingRequestFailed,   //connect failed
+
+    kReconnectFailed_30s,   //reconnect failed
     kReconnectSuccess,
-    kNetworkNotStable,
-    kStreamCannotRecovery,
+    kStreamCannotRecovery,  //stream state error.直播已结束。
+    kCheck1006State,
     
-    kPushSuccess,
-    kPushEndedNormal,
-    kPushEndedWithError,
+    kRestartPushEngineFailed_3Times,
+    kRestartPushEngineFailed_18Times,
+    
+    kPushSuccess,         //sdk push success;
+    kPushEnded,     //sdk push ended;
+    kPushEndedWithError_NetworkUnreached,
+    kPushEndedWithError_FatalError,
     kSyncStartSuccess,
     kSyncStartFailed,
-    kSyncStopSuccess,
-    kSyncStopFailed,
-    
+    kFetchStreamStateSuccess,
+    kFetchStreamStateFailured,
     
     kDownupgradeBitrate,
 }PushMessage;
@@ -61,13 +64,12 @@ typedef enum{
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *contraitBtnMirrorLeadingToBtnMute;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
-
+@property (assign, nonatomic) BOOL needReconnect;
 @property (assign, nonatomic) BOOL isPushing;
-@property (assign, nonatomic) BOOL needReConnect;
-@property (assign, nonatomic) BOOL isDoingReconnect;
-@property (assign, nonatomic) int reconnectCount;
-@property (assign, nonatomic) BOOL isNetworkDisconnect;
 @property (assign, nonatomic) BOOL isDoExitByClick;
+@property (assign, nonatomic) BOOL isDoExitBySwitchNetWork;
+@property (assign, nonatomic) BOOL isCheckingStreamStatus;
+@property (assign, nonatomic) BOOL isSyncStartSuccess;
 
 #pragma mark --UIElement--
 @property (strong, nonatomic) UIView *fuzzyView;
@@ -87,7 +89,8 @@ typedef enum{
 
 @implementation PushViewController
 {
-//    dispatch_semaphore_t semmphore;
+    dispatch_semaphore_t semmphore;
+    NSTimer *__timer;
 }
 
 #pragma mark --Life Cycle--
@@ -99,7 +102,7 @@ typedef enum{
 
 -(void)viewWillAppear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
-//    semmphore = dispatch_semaphore_create(0);
+    semmphore = dispatch_semaphore_create(0);
     NSString *roomID = [HTTPManager shareInstance].roomID;
     self.lblRoomID.text = [NSString stringWithFormat:@"     房间号: %@   ", roomID];
     
@@ -112,11 +115,16 @@ typedef enum{
     self.pushEngine.delegate = self;
     [self updateUI];
     
+    [self.indicator startAnimating];
     [self startDoLive];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [self.indicator stopAnimating];
+    [__timer invalidate];
+    __timer = nil;
+    self.isCheckingStreamStatus = NO;
+    self.isSyncStartSuccess = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
 }
 
@@ -148,7 +156,6 @@ typedef enum{
     self.lblResolution.text = [NSString stringWithFormat:@"分辨率：%dx%d",self.width,self.height];
     
     self.contraitBtnCameraTraingToBtnMute.constant = (self.btnMute.center.x -self.btnTorch.center.x)/2 - self.btnMute.frame.size.width;
-    NSLog(@"self.contraitBtnCameraTraingToBtnMute.constant = %f",self.contraitBtnCameraTraingToBtnMute.constant );
     [self.btnCamera layoutIfNeeded];
     self.contraitBtnMirrorLeadingToBtnMute.constant = (self.btnData.center.x - self.btnMute.center.x)/2 - self.btnMute.frame.size.width;
     [self.btnMirror layoutIfNeeded];
@@ -195,10 +202,6 @@ typedef enum{
     NSLog(@"self.rtmpAddress = %@",self.rtmpAddress);
     
     [self.pushEngine start];
-    
-    if(![self.indicator isAnimating]){
-        [self.indicator startAnimating];
-    }
 }
 
 -(PPYCaptureSessionPreset)configurationWithWidth:(int)width andHeight:(int)height{
@@ -216,132 +219,258 @@ typedef enum{
 
 
 -(void)showNetworkState:(NSNotification *)info{
+    self.isDoExitBySwitchNetWork = YES;
+    [self.pushEngine stop];
     NSNumber *value = (NSNumber *)info.object;
     NSString *tip = nil;
     switch (value.integerValue) {
         case AFNetworkReachabilityStatusUnknown:
             break;
         case AFNetworkReachabilityStatusNotReachable:
-            self.isNetworkDisconnect = YES;
-            [self throwMessage:kAFNetworkUnreachable];
+            [self sendMessage:kAFNetworkUnreachable];
             break;
         case AFNetworkReachabilityStatusReachableViaWWAN:
-        {
-            self.isNetworkDisconnect = NO;
             tip = @"当前使用3G/4G网络";
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用移动流量，是否继续直播？" message:nil preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"继续直播" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                self.needReConnect = YES;
-                [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
-                [[NotifyView getInstance] needShowNotifyMessage:tip inView:self.view forSeconds:3];
-                [self doReconnectToServer];
-            }];
-            UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出直播" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                [self.indicator stopAnimating];
-                [self.delegate didPushViewControllerDismiss];
-            }];
-            [alert addAction:btnOK];
-            [alert addAction:btnCancel];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
             break;
         case AFNetworkReachabilityStatusReachableViaWiFi:
+            self.needReconnect = YES;
             tip = @"当前使用Wi-Fi网络，正在为您重连...";
-            self.isNetworkDisconnect = YES;
-            self.needReConnect = YES;
             [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
             [[NotifyView getInstance] needShowNotifyMessage:tip inView:self.view forSeconds:3];
-            [self doReconnectToServer];
             break;
     }
 }
+-(void)processWhenUseWWanNetwork{
+    __weak typeof(self) weakSelf = self;
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用移动流量，是否继续直播？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"继续直播" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        weakSelf.needReconnect = YES;
+        [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
+        [[NotifyView getInstance] needShowNotifyMessage:@"当前使用3G/4G网络" inView:weakSelf.view forSeconds:3];
+        [weakSelf doReconnectToServer];
+    }];
+    UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出直播" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [weakSelf.indicator stopAnimating];
+        [weakSelf.delegate didPushViewControllerDismiss];
+    }];
+    [alert addAction:btnOK];
+    [alert addAction:btnCancel];
+    [weakSelf presentViewController:alert animated:YES completion:nil];
+}
 
--(void)doReconnectToServer{
-//    if(!self.needReConnect){
-//        NSLog(@"dispatch_semaphore_wait_wait................................");
-//        dispatch_semaphore_wait(semmphore, DISPATCH_TIME_FOREVER);   //a semphore to ensure reconnect after sync start to server success;
-//    }
+static int count_RestartPushEngine = 0;
+-(void)checkStreamState{
     __weak typeof (self) weakSelf = self;
     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
         if(dic != nil){
+            NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+            NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
+            NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
+            
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-                NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
-
-                if([liveState isEqualToString:@"living"] ||[liveState isEqualToString:@"broken"]){
-                    [weakSelf.pushEngine start];
-                    weakSelf.isDoingReconnect = YES;
-                }else{
-                    [weakSelf throwMessage:kStreamCannotRecovery];
+                if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
+                    [weakSelf sendMessage:kReconnectSuccess];
+                    count_RestartPushEngine = 0;
                 }
-            }else{
-               [weakSelf throwMessage:kStreamCannotRecovery];
             }
+        }else{
+            count_RestartPushEngine ++;
         }
+        if(count_RestartPushEngine == 3){
+            [weakSelf sendMessage:kRestartPushEngineFailed_3Times];
+        }else if(count_RestartPushEngine >= 18){
+            count_RestartPushEngine = 0;
+            [weakSelf sendMessage:kRestartPushEngineFailed_18Times];
+        }
+
     } failured:^(NSError *err) {
-        if(err){
-            [weakSelf throwMessage:kAFNetworkAFNetworkingRequestFailed];
+        count_RestartPushEngine ++;
+        if(count_RestartPushEngine == 3){
+            [weakSelf sendMessage:kRestartPushEngineFailed_3Times];
+        }else if(count_RestartPushEngine >= 18){
+            count_RestartPushEngine = 0;
+            [weakSelf sendMessage:kRestartPushEngineFailed_18Times];
         }
     }];
 }
--(void)reDoSyncStartStateToServer{
-     __weak typeof(self) weakSelf = self;
-     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[HTTPManager shareInstance] syncPushStartStateToServerSuccess:^(NSDictionary *dic) {
+#pragma mark ----Reconnect Logic---
+//过程消息：kAFNetworkAFNetworkingRequestFailed，kReconnectFailed_30s
+//最终结果：kStreamCannotRecovery
+-(void)doReconnectToServer{
+    JPushControllerLog(@"正在检查流状态...");
+    __weak typeof (self) weakSelf = self;
+    [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
+        if(dic != nil){
+            NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+            NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
+            NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
             
-            if(dic != nil){
-                if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                    
-                    count_ReDoSyncStartStateToServer = 0;
-                    [weakSelf throwMessage:kSyncStartSuccess];
+            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
+                    [weakSelf sendMessage:kReconnectSuccess];
+                }else if(([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"error"])
+                         ||[liveState isEqualToString:@"broken"]){
+                    JPushControllerLog(@"监测到流状态错误，重启推流引擎");
+                    if(count_RestartPushEngine == 0){
+                        [weakSelf doLive];
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [weakSelf checkStreamState];
+                        });
+                    }else if(count_RestartPushEngine >= 18){    //重启18次
+                    }else{
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [weakSelf doLive];
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [weakSelf checkStreamState];
+                            });
+                        });
+                    }
                 }else{
-                    NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                    NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                    [weakSelf throwError:3 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
+                    [weakSelf sendMessage:kStreamCannotRecovery];
                 }
+            }else{
+               [weakSelf sendMessage:kStreamCannotRecovery];
             }
-        } failured:^(NSError *err) {
-            [weakSelf.indicator stopAnimating];
-        }];
+            JPushControllerLog(@"当前流状态:livestate = %@, streamState = %@",liveState,streamState);
+        }else{
+            [weakSelf doReconnectToServer30s];
+        }
+    } failured:^(NSError *err) {
+        [weakSelf doReconnectToServer30s];
+    }];
+}
+
+static int count_doReconnectToServer30s = 0;
+-(void)doReconnectToServer30s{
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if(count_doReconnectToServer30s >= 3){
+            count_doReconnectToServer30s = 0;
+            [weakSelf doReconnectToServer3min];
+            [weakSelf sendMessage:kReconnectFailed_30s];  //最遥远的距离...
+        }else{
+            count_doReconnectToServer30s ++;
+            [weakSelf sendMessage:kAFNetworkAFNetworkingRequestFailed];  //网络异常， 重新连接。。。
+            [weakSelf doReconnectToServer];
+        }
+    });
+    
+}
+
+static int count_doReconnectToServer3min = 0;
+-(void)doReconnectToServer3min{
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if(count_doReconnectToServer3min >= 18){
+            count_doReconnectToServer3min = 0;
+            [weakSelf sendMessage:kStreamCannotRecovery];  //超过3分钟，直播结束
+        }else{
+            count_doReconnectToServer3min ++;
+            [weakSelf doReconnectToServer];
+        }
     });
 }
+
+
+
+#pragma mark ----Sync Logic----
+//过程中抛出的状态 kAFNetworkAFNetworkingRequestFaile,kSyncStartFailed
+//最终抛出的状态 kSyncStartSuccess，kStreamCannotRecovery
+-(void)doSyncStateStateToServer{
+    __weak typeof(self) weakSelf = self;
+    [[HTTPManager shareInstance] syncPushStartStateToServerSuccess:^(NSDictionary *dic) {
+        if(dic != nil){
+            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                [weakSelf sendMessage:kSyncStartSuccess];
+                weakSelf.isSyncStartSuccess = YES;
+//                [weakSelf startCheckStreamState];
+            }else{
+                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
+                if([errCode isEqualToString:@"1006"]){
+                    [weakSelf sendMessage:kCheck1006State];
+                    [weakSelf pollingSyncStateFor10times];
+                }else{
+                    [weakSelf sendMessage:kStreamCannotRecovery]; //流状态发生错误，直播结束
+                }
+            }
+        }else{
+            [weakSelf reDoSyncStateStateToServer30s];
+        }
+    } failured:^(NSError *err) {
+        [weakSelf reDoSyncStateStateToServer30s];
+    }];
+}
+static int count_ReDoSyncStartWaitWhen1006 = 0;
+-(void)pollingSyncStateFor10times{
+    __weak typeof(self) weakSelf = self;
+    if(count_ReDoSyncStartWaitWhen1006 >= 10){
+        [weakSelf reDoSyncStateStateToServer30s];
+        count_ReDoSyncStartWaitWhen1006 = 0;
+    }else{
+        count_ReDoSyncStartWaitWhen1006 ++;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+             [weakSelf doSyncStateStateToServer];
+        });
+    }
+}
+static int count_ReDoSyncStart = 0;
+-(void)reDoSyncStateStateToServer30s{
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if(count_ReDoSyncStart >= 3){
+            [weakSelf sendMessage:kSyncStartFailed];   //最遥远的距离。。。
+            count_ReDoSyncStart = 0;
+            [weakSelf reDoSyncState3min];
+        }else{
+            [weakSelf sendMessage:kAFNetworkAFNetworkingRequestFailed];  //网络异常，正在重连接。。。
+            count_ReDoSyncStart ++;
+            [weakSelf doSyncStateStateToServer];
+            if(weakSelf.isPushing == NO){
+                [weakSelf doLive];
+            }
+        }
+    });
+}
+static int count_ReDoSyncStart3min = 0;
+-(void)reDoSyncState3min{
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if(count_ReDoSyncStart3min >= 18){
+            count_ReDoSyncStart3min = 0;
+            [weakSelf sendMessage:kStreamCannotRecovery];  //3min 后直播已结束
+        }else{
+            count_ReDoSyncStart3min ++;
+            [weakSelf doSyncStateStateToServer];
+        }
+    });
+}
+
 -(void)stopSyncStateToService{
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
-        if(dic != nil){
-            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-//                [[NotifyView getInstance] needShowNotifyMessage:@"断流成功" inView:weakSelf.view forSeconds:3];
-            }else{
-                //                            NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                //                            NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-//                [[NotifyView getInstance] needShowNotifyMessage:@"同步断流失败" inView:weakSelf.view forSeconds:3];
-            }
-        }
         [weakSelf.delegate didPushViewControllerDismiss];
-        
     } failured:^(NSError *err) {
-
         [weakSelf.delegate didPushViewControllerDismiss];
     }];
-
 }
 
-
--(void)throwMessage:(PushMessage)message{
+#pragma mark ---Message handle---
+-(void)sendMessage:(PushMessage)message{
     NSString *log = nil;
     NSString *displayInfo = nil;
     if(message == kPushSuccess){
-       log = @"SDK推流成功";
-    }else if(message == kPushEndedNormal){
-        [self.indicator stopAnimating];
-        log = @"SDK正常结束推流";
-    }else if(message == kPushEndedWithError){
-        [self.indicator stopAnimating];
-        log = @"SDK发生错误，结束推流";
-        
+        log = @"SDK推流成功";
+    }else if(message == kPushEnded){
+        log = @"SDK结束推流";
+    }else if(message == kPushEndedWithError_NetworkUnreached){
+        log = @"SDK发生错误,无法连接到服务器";
+    }else if(message == kPushEndedWithError_FatalError){
+        log = @"SDK发生错误，编码或采集错误";
+    }else if(message == kCheck1006State){
+        log = @"检查1006 state。。。";
     }else if(message == kSyncStartSuccess){
         [self.indicator stopAnimating];
-        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
         log = @"同步推流成功";
         displayInfo = @"推流成功";
         [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
@@ -349,170 +478,126 @@ typedef enum{
     }else if(message == kSyncStartFailed){
         [self.indicator stopAnimating];
         log = @"同步推流成功失败";
-        displayInfo = @"推流状态无法同步到服务器，播放端无法观看";
-    }else if(message == kAFNetworkAFNetworkingRequestFailed){
-        log = @"AFNetworking 请求失败";
-        [self.indicator stopAnimating];
+        displayInfo = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将自动为您重连接...";
+        [[NotifyView getInstance] needShwoNotifyMessage:displayInfo inView:self.view ];
     }else if(message == kDownupgradeBitrate){
         displayInfo =  @"当前网络环境差，已经为您重新调整码率...";
-        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
-        [[NotifyView getInstance] needShowNotifyMessage:displayInfo inView:self.view forSeconds:3];
+        log = displayInfo;
+        if(self.isSyncStartSuccess){
+            [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+            [[NotifyView getInstance] needShowNotifyMessage:displayInfo inView:self.view forSeconds:3];
+        }
     }else if(message == kReconnectFailed_30s){
+        [self.indicator stopAnimating];
         displayInfo = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将自动为您重连接...";
+        log = @"重连超过30s";
         [[NotifyView getInstance] needShwoNotifyMessage:displayInfo inView:self.view ];
     }else if(message == kStreamCannotRecovery){
+        [self.indicator stopAnimating];
         displayInfo = @"直播已结束";
+        log = @"直播已结束";
         [self presentFuzzyViewOnView:self.view WithMessage:displayInfo loadingNeeded:NO];
     }else if(message == kAFNetworkUnreachable){
+        [self.indicator stopAnimating];
         displayInfo = @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将自动为您重连接...";
+        log = displayInfo;
         [[NotifyView getInstance] needShwoNotifyMessage:displayInfo inView:self.view ];
-    }else if(message == kNetworkNotStable){
+    }else if(message == kAFNetworkAFNetworkingRequestFailed){
+        [self.indicator startAnimating];
+        log = @"当前网络环境异常，正在重新连接...";
         displayInfo = @"当前网络环境异常，正在重新连接...";
         [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
         [[NotifyView getInstance] needShowNotifyMessage:displayInfo inView:self.view forSeconds:3];
+       
     }else if(message == kReconnectSuccess){
-        displayInfo = @"重连成功";
         [self.indicator stopAnimating];
+        displayInfo = @"重连成功";
+        log = @"重连成功";
         [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
         [[NotifyView getInstance] needShowNotifyMessage:displayInfo inView:self.view forSeconds:3];
+    }else if(message == kRestartPushEngineFailed_3Times){
+        [self.indicator stopAnimating];
+        displayInfo =  @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将自动为您重连接...";
+        log = @"SDK重启3次失败...";
+        [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+        [[NotifyView getInstance] needShowNotifyMessage:displayInfo inView:self.view forSeconds:3];
+    }else if(message == kRestartPushEngineFailed_18Times){
+        [self.indicator stopAnimating];
+        displayInfo = @"直播已结束";
+        log = @"SDK重启18次..";
+        [self presentFuzzyViewOnView:self.view WithMessage:displayInfo loadingNeeded:NO];
     }
-    JPushControllerLog(@"push = %@",log);
-    JPushControllerLog(@"display = %@",displayInfo);
+    JPushControllerLog(@"log = %@",log);
+//    JPushControllerLog(@"display = %@",displayInfo);
 }
 
-static int count_ReDoSyncStartStateToServer = 0;
--(void)throwError:(int)errorCode info:(NSString *)errorInfo{
-    __weak typeof(self) weakSelf = self;
-
-    if(errorCode == 3){  //sync start errorcode
-        
-        NSArray *componets = [errorInfo componentsSeparatedByString:@":"];
-        NSLog(@"componets = %@",componets);
-        if([componets[0] isEqualToString:@"1006"]){
-            count_ReDoSyncStartStateToServer ++;
-            if(count_ReDoSyncStartStateToServer < 20){   //kTimeout 20s
-                 [weakSelf reDoSyncStartStateToServer];
-            }else{
-                 [weakSelf throwMessage:kSyncStartFailed];
-            }
-        }else{
-            [weakSelf throwMessage:kSyncStartFailed];
-        }
-    }
-    
-    [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
-}
 
 #pragma mark --<PPYPushEngineDelegate>
 -(void)didStreamStateChanged:(PPYPushEngineStreamStatus)status{
+    __weak __typeof(self) weakSelf = self;
     switch (status) {
         case PPYConnectionState_Connecting:
-            
             break;
         case PPYConnectionState_Connected:
-            
             break;
         case PPYConnectionStatus_Started:
-            if(!self.needReConnect){
-                [self throwMessage:kPushSuccess];
-                [[HTTPManager shareInstance] syncPushStartStateToServerSuccess:^(NSDictionary *dic) {
-                    if(dic != nil){
-                        if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                            self.isPushing = YES;
-//                            NSLog(@"dispatch_semaphore_wait_send.............");
-//                            dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//                                dispatch_semaphore_signal(semmphore);
-//                            });
-                            [self throwMessage:kSyncStartSuccess];
-                        }else{
-                            NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                            NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                            [self throwError:3 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
-                        }
-                    }
-                } failured:^(NSError *err) {
-                    [self throwMessage:kAFNetworkAFNetworkingRequestFailed];
-                }];
-            }
-            if(self.isDoingReconnect){
-                
-                [self throwMessage:kReconnectSuccess];
-                self.isDoingReconnect = NO;
-                self.needReConnect = NO;
-                self.reconnectCount = 0;
-            }
             self.isPushing = YES;
+            [self sendMessage:kPushSuccess];
+            
+            if(!self.needReconnect){
+                [self doSyncStateStateToServer];
+            }
+            
             break;
         case PPYConnectionStatus_Ended:
-            
+            [self sendMessage:kPushEnded];
             self.isPushing = NO;
-            
-            __weak __typeof(self) weakSelf = self;
+
             if(self.isDoExitByClick){
                 self.isDoExitByClick = NO;
                 [self stopSyncStateToService];
             }else{
-                if(self.needReConnect){
-                    
-                    weakSelf.isDoingReconnect = YES;
-                    weakSelf.needReConnect = NO;
-                    [weakSelf.indicator startAnimating];
-                    [weakSelf doReconnectToServer];
+                if(self.isDoExitBySwitchNetWork){
+                    self.isDoExitBySwitchNetWork = NO;
+                    if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusReachableViaWWAN){
+                        [weakSelf processWhenUseWWanNetwork];
+                    }else if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusReachableViaWiFi){
+                        [weakSelf doReconnectToServer];
+                    }
+                    //do nothing.
+                }else if(!weakSelf.isSyncStartSuccess){
                     
                 }else{
-                    if([weakSelf.indicator isAnimating]){
-                        [weakSelf.indicator stopAnimating];
-                    }
-                    if(weakSelf.isNetworkDisconnect == YES){
-                        NSLog(@"network disconnect");
-                    }else{
-//                        [self stopSyncStateToService];
-                    }
+                    [weakSelf doReconnectToServer];
                 }
             }
             break;
     }
     NSLog(@"PPYPushEngineStreamStatus __%lu",(unsigned long)status);
+//    JPushControllerLog(@"PPYPushEngineStreamStatus = %d",status);
 }
 
-
 -(void)didStreamErrorOccured:(PPYPushEngineErrorType)error{
-    
-    NSString *tip = nil;
     switch (error) {
         case PPYPushEngineError_Unknow:
-//            tip = @"发生未知错误";
+            [self sendMessage:kPushEndedWithError_FatalError];
+            self.needReconnect = NO;
             break;
         case PPYPushEngineError_ConnectFailed:
-            self.needReConnect = YES;
-            [self throwMessage:kNetworkNotStable];
-
+            [self sendMessage:kPushEndedWithError_NetworkUnreached];
+            self.needReconnect = YES;
             break;
         case PPYPushEngineError_TransferFailed:
-            [self throwMessage:kNetworkNotStable];
-            self.needReConnect = YES;
+            [self sendMessage:kPushEndedWithError_NetworkUnreached];
+            self.needReconnect = YES;
             break;
         case PPYPushEngineError_FatalError:
-//            tip = @"采集或编码失败";
+            [self sendMessage:kPushEndedWithError_FatalError]; //"采集或编码失败";
+            self.needReconnect = NO;
             break;
-            
     }
-    if(self.needReConnect){
-        self.reconnectCount ++;
-        if(self.reconnectCount > 5){   //5times * 5s = 25s, 25s to reconnect;
-            self.needReConnect = NO;
-            self.reconnectCount = 0;
-            [self throwMessage:kReconnectFailed_30s];
-            
-        }else{
-            [self.indicator startAnimating];
-        }
-    }else{
-        [[NotifyView getInstance] needShowNotifyMessage:tip inView:self.view forSeconds:3];
-        [self.indicator stopAnimating];
-    }
-    
     NSLog(@"didStreamErrorOccured __%d",error);
+    JPushControllerLog(@"didStreamErrorOccured = %d",error);
     
 }
 -(void)didStreamInfoThrowOut:(PPYPushEngineStreamInfoType)type infoValue:(int)value{
@@ -520,7 +605,6 @@ static int count_ReDoSyncStartStateToServer = 0;
     switch (type) {
             
         case PPYPushEngineInfo_BufferingBytes:
-//            [[NotifyView getInstance] needShowNotifyMessage:@"当前网络信号较差" inView:self.view forSeconds:3];
             break;
         case PPYPushEngineInfo_RealBirate:
             self.lblBitrate.text = [NSString stringWithFormat:@"码率：%dkbps",value];
@@ -529,11 +613,11 @@ static int count_ReDoSyncStartStateToServer = 0;
             self.lblFPS.text = [NSString stringWithFormat:@"帧率：%d帧/秒",value];
             break;
         case PPYPushEngineInfo_DowngradeBitrate:
-            [self throwMessage:kDownupgradeBitrate];
+            [self sendMessage:kDownupgradeBitrate];
             
             break;
         case PPYPUshEngineInfo_UpgradeBitrate:
-//            [[NotifyView getInstance] needShowNotifyMessage: @"当前网络环境较好，正在上调码率..." inView:self.view forSeconds:3];
+
             break;
     }
     NSLog(@"didStreamInfoThrowOut %d__%d",type,value);
@@ -726,5 +810,4 @@ static int count_ReDoSyncStartStateToServer = 0;
     }
     return _fuzzyView;
 }
-
 @end
