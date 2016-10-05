@@ -9,6 +9,7 @@
 #import "PushViewController.h"
 #import "HTTPManager.h"
 #import "NotifyView.h"
+#import "UserTips.h"
 
 #define JPushControllerLog(format, ...) NSLog((@"PushController_"format), ##__VA_ARGS__)
 
@@ -182,7 +183,7 @@ typedef enum{
 -(void)startDoLive{
     if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusReachableViaWWAN){
         
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用移动流量，是否继续直播？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:kTips_SwitchWWANOnPusher message:nil preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"继续" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [self doLive];
         }];

@@ -16,7 +16,7 @@
 
 
 
-@interface ViewController ()<HTTPManagerDelegate,PushViewControllerDelegate,ConfigurationViewControllerDelegate>
+@interface ViewController ()<PushViewControllerDelegate,ConfigurationViewControllerDelegate>
 @property (nonatomic, strong) PushViewController *pushVC;
 @property (nonatomic, strong) PullViewController *pullVC;
 @property (nonatomic, strong) ConfigurationViewController *pushConfigVC;
@@ -36,7 +36,6 @@
     [super viewDidLoad];
     
     self.httpMgr = [HTTPManager shareInstance];
-    self.httpMgr.delegate = self;
     [HTTPManager startMonitor];
     
   
@@ -110,46 +109,6 @@
         [self presentViewController:self.pullVC animated:YES completion:nil];
     }
 }
-
-#pragma mark --<HTTPManagerDelegate>--
--(void)HTTPRequestErrorOccured:(NSString *)errorInfo andErrorCode:(NSString *)errorCode{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"errorInfo = %@,errorCode = %@",errorInfo,errorCode);
-        if([errorCode isEqualToString:@"300005"]){
-            [[NotifyView getInstance] needShowNotifyMessage:@"房间不存在" inView:self.view forSeconds:3];
-        }else if ([errorCode isEqualToString:@"1006"]){
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self.httpMgr syncPushStartStateToServer];
-            });
-        }else{
-            [[NotifyView getInstance] needShowNotifyMessage:errorInfo inView:self.view forSeconds:3];
-        }
-    });
-}
-
--(void)DidSyncStopStareToServerSuccess{
-    [[NotifyView getInstance] needShowNotifyMessage:@"推流已经断开" inView:self.view forSeconds:3];
-}
-
--(void)DidFetchPullAddressSuccess:(NSString *)pullURL{
-    self.pullVC.playAddress = pullURL;
-    [self.httpMgr fetchStreamStatus];
-  
-}
-
--(void)DidFetchLiveStatusSuccess:(NSString *)liveStatus andStreamStatusSuccess:(NSString *)streamStatus{
-    if(streamStatus == nil){
-        [[NotifyView getInstance] needShowNotifyMessage:@"资源不存在" inView:self.view forSeconds:3];
-    }else if([streamStatus isEqualToString:@"ok"] && [liveStatus isEqualToString:@"stopped"]){
-            [[NotifyView getInstance] needShowNotifyMessage:@"主播已离开房间" inView:self.view forSeconds:3];
-    }else if([streamStatus isEqualToString:@"ok"] && [liveStatus isEqualToString:@"living"]){
-        [self presentViewController:self.pullVC animated:YES completion:nil];
-    }else{
-        NSString *status = [NSString stringWithFormat:@"live status:%@,streaStatus:%@",liveStatus,streamStatus];
-        [[NotifyView getInstance] needShowNotifyMessage:status inView:self.view forSeconds:3];
-    }
-}
-
 
 
 -(void)showAlertWithMessage:(NSString *)message{

@@ -57,50 +57,12 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     NSLog(@"SyncPushStateToServerURL = %@",requestURL);
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
 }
--(void)syncPushStartStateToServer{
-    NSString *requestURL = [kURLSyncPushStateToServer stringByAppendingPathComponent:self.roomID];
-    NSLog(@"SyncPushStateToServerURL = %@",requestURL);
-    [self requestURL:requestURL success:^(NSDictionary *dic) {
-        if(dic != nil){
-            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                [self.delegate DidSyncStartStateToServerSuccess];
-            }else{
-                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                [self.delegate HTTPRequestErrorOccured:errorInfo andErrorCode:errCode];
-            }
-        }
-    } failured:^(NSError *error) {
-        if(error){
-            [self.delegate HTTPRequestErrorOccured:@"AFNetworking error" andErrorCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
-        }
-    }];
-}
 
 -(void)syncPushStopStateToServerSuccess:(void (^)(NSDictionary *))successBlock
                                failured:(void (^)(NSError *))failuredBlock{
     NSString *requestURL = [kURLSyncPushStopToServer stringByAppendingPathComponent:self.roomID];
     NSLog(@"kURLSyncPushStopToServer = %@",requestURL);
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
-}
--(void)syncPushStopStateToServer{
-    NSString *requestURL = [kURLSyncPushStopToServer stringByAppendingPathComponent:self.roomID];
-    NSLog(@"kURLSyncPushStopToServer = %@",requestURL);
-    [self requestURL:requestURL success:^(NSDictionary *dic) {
-        if(dic != nil){
-            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                [self.delegate DidSyncStopStareToServerSuccess];
-            }else{
-                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                [self.delegate HTTPRequestErrorOccured:errorInfo andErrorCode:errCode];
-            }
-        }
-    } failured:^(NSError *error) {
-        if(error){
-            [self.delegate HTTPRequestErrorOccured:@"AFNetworking error" andErrorCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
-        }
-    }];
 }
 
 -(void)fetchPullRTMPAddrSuccess:(void (^)(NSDictionary *))successBlock
@@ -110,60 +72,13 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
 }
 
--(void)fetchPullRTMPAddr{
-    NSString *requestURL = [kURLGetPullRTMPAddr stringByAppendingPathComponent:self.roomID];
-    NSLog(@"kURLGetPullRTMPAddr = %@",requestURL);
-    [self requestURL:requestURL success:^(NSDictionary *dic) {
-        if(dic != nil){
-            NSLog(@"jimmy_dic = %@",dic);
-            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-                NSString *url = (NSString *)[data objectForKey:@"rtmpUrl"];
-                [self.delegate DidFetchPullAddressSuccess:url];
-            }else{
-                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                [self.delegate HTTPRequestErrorOccured:errorInfo andErrorCode:errCode];
-            }
-        }
-    } failured:^(NSError *error) {
-        if(error){
-            [self.delegate HTTPRequestErrorOccured:@"AFNetworking error" andErrorCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
-        }
-    }];
-}
 
 -(void)fetchStreamStatusSuccess:(void (^)(NSDictionary *))successBlock
                        failured:(void (^)(NSError *))failuredBlock
 {
     NSString *requestURL = [kURLGetStreamStatus stringByAppendingPathComponent:self.roomID];
     NSLog(@"kURLGetStreamStatus = %@",requestURL);
-    NSString *requestURL1 = [[kURLGetStreamStatus stringByAppendingString:@"/"] stringByAppendingString:self.roomID];
-     NSLog(@"kURLGetStreamStatus1 = %@",requestURL1);
-    [self requestURL:requestURL1 success:successBlock failured:failuredBlock];
-}
-
--(void)fetchStreamStatus{
-    NSString *requestURL = [kURLGetStreamStatus stringByAppendingPathComponent:self.roomID];
-    NSLog(@"kURLGetStreamStatus = %@",requestURL);
-    [self requestURL:requestURL success:^(NSDictionary *dic) {
-        if(dic != nil){
-            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-                NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
-                NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
-                [self.delegate DidFetchLiveStatusSuccess:liveState andStreamStatusSuccess:streamState];
-            }else{
-                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                [self.delegate HTTPRequestErrorOccured:errorInfo andErrorCode:errCode];
-            }
-        }
-    } failured:^(NSError *error) {
-        if(error){
-            [self.delegate HTTPRequestErrorOccured:@"AFNetworking error" andErrorCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
-        }
-    }];
+    [self requestURL:requestURL success:successBlock failured:failuredBlock];
 }
 
 #pragma mark --custom method--

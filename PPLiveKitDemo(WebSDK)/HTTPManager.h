@@ -11,20 +11,9 @@
 
 FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
 
-@protocol HTTPManagerDelegate<NSObject>
-@optional
--(void)HTTPRequestErrorOccured:(NSString *)errorInfo andErrorCode:(NSString *)errorCode;
--(void)DidFetchPushAddressSuccess:(NSString *)pushURL;
--(void)DidFetchPullAddressSuccess:(NSString *)pullURL;
--(void)DidSyncStartStateToServerSuccess;
--(void)DidSyncStopStareToServerSuccess;
--(void)DidFetchLiveStatusSuccess:(NSString *)streamStatus andStreamStatusSuccess:(NSString *)liveStatus;
-@end
-
 @interface HTTPManager : NSObject
 
 @property (copy, nonatomic) NSString *roomID;
-@property (weak, nonatomic) id<HTTPManagerDelegate> delegate;
 @property (assign, nonatomic, readonly) AFNetworkReachabilityStatus currentNetworkStatus;
 
 +(instancetype)shareInstance;
@@ -32,10 +21,6 @@ FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
 +(void)startMonitor;
 +(void)stopMonitor;
 
--(void)fetchPullRTMPAddr;
--(void)syncPushStartStateToServer;
--(void)syncPushStopStateToServer;
--(void)fetchStreamStatus;
 -(void)fetchPushRTMPAddressSuccess:(void (^)(NSDictionary*))successBlock
                           failured:(void (^)(NSError *))failuredBlock;
 -(void)syncPushStartStateToServerSuccess:(void (^)(NSDictionary*))successBlock

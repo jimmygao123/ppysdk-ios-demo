@@ -235,6 +235,7 @@
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
                 NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
                 NSString *url = (NSString *)[data objectForKey:@"rtmpUrl"];
+                NSString *flvURL = [data objectForKey:@"hdlUrl"];
                 if(url){
                     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
                         if(dic != nil){
