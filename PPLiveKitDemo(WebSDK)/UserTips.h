@@ -14,7 +14,6 @@
 #define kTips_ReconnectSuccess @"重连成功"
 #define kTips_ReconnectFailued @"世界上最遥远的距离就是断网，请检查您的网络设置，网络恢复后将为您重新连接"
 #define kTips_UseWifiToReconnect @"当前使用Wi-Fi网络,正在为您重连..."
-#define kTips_UseWWan @"当前使用3G/4G网络"
 
 //推流
 #define kTips_PushSuccess @"推流成功"
