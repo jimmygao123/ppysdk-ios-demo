@@ -52,7 +52,7 @@
     [self initData];
     [self initUI];
     [PPYPlayEngine shareInstance].delegate = self;
-    [[PPYPlayEngine shareInstance] setPreviewOnView:self.view];
+    [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
 }
 -(void)initData{
     self.isDataShowed = YES;
@@ -76,8 +76,16 @@
     self.lblRoomID.layer.masksToBounds = YES;
     [self.lblRoomID clipsToBounds];
     
+    if(self.sourceType == 0){
+        [self startPullStream];
+    }else if(self.sourceType == 1){
+        [self startPlayBack];
+    }
     
-    [self startPullStream];
+}
+#pragma mark ---PlayBack---
+-(void)startPlayBack{
+    [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
 }
 
 -(void)viewDidDisappear:(BOOL)animated{
@@ -89,7 +97,7 @@
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
     
-    [[PPYPlayEngine shareInstance] stop:YES];
+    [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:YES];
 }
 
 -(void)reconnect{
@@ -117,7 +125,7 @@
 -(void)doStopWhenCachingMoreThanTenSeconds{
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [[PPYPlayEngine shareInstance] stop:NO];
+        [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
         [weakSelf doPullStream];
         weakSelf.reconnectCountOfCaching ++;
         if(weakSelf.reconnectCountOfCaching > 6){  //1min
@@ -172,6 +180,8 @@
             break;
         case PPYPlayEngineInfo_RealFPS:
             self.lblFPS.text = [NSString stringWithFormat:@" 帧率：%d帧/秒",value];
+        case PPYPlayEngineInfo_BufferingUpdatePercent:
+            
             break;
     }
     JPlayControllerLog(@"type = %d,value = %d",type,value);
@@ -201,7 +211,14 @@
             break;
         case PPYPlayEngineStatus_ReceiveEOF:
             [self throwError:8];
-            [self startPullStream];
+            if(self.sourceType == 1){
+                
+            }else{
+                [self startPullStream];
+            }
+            
+            break;
+        case PPYPlayEngineStatus_SeekComplete:
             break;
     }
     JPlayControllerLog(@"state = %lu",(unsigned long)state);
@@ -219,17 +236,17 @@
             break;
             
         case AFNetworkReachabilityStatusNotReachable:
-            [[PPYPlayEngine shareInstance] stop:NO];
+            [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
             [self throwError:11];
             break;
             
         case AFNetworkReachabilityStatusReachableViaWWAN:
-            [[PPYPlayEngine shareInstance] stop:NO];
+            [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
             [self startPullStream];
             break;
             
         case AFNetworkReachabilityStatusReachableViaWiFi:
-            [[PPYPlayEngine shareInstance] stop:NO];
+            [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
             [self throwError:12];
             [self doPullStream];
             break;
@@ -323,7 +340,7 @@
                         weakSelf.reconnectCountWhenStreamError = 0;
                         [weakSelf throwError:13];
                     }
-                    [[PPYPlayEngine shareInstance] startPlayFromURL:weakSelf.playAddress];
+                    [[PPYPlayEngine shareInstance] startPlayFromURL:weakSelf.playAddress WithType:PPYSourceType_Live];
                 }else if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"error"]){
                     weakSelf.reconnectCountWhenStreamError++;
                     [weakSelf throwError:3];

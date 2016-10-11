@@ -32,6 +32,6 @@ FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
 -(void)syncPushStopStateToServerSuccess:(void (^)(NSDictionary *))successBlock
                                failured:(void (^)(NSError *))failuredBlock;
 
--(void)fetchPullRTMPAddrSuccess:(void (^)(NSDictionary *))successBlock
-                       Failured:(void (^)(NSError *))failuredBlock;
+-(void)fetchPlayURL:(void (^)(NSDictionary *))successBlock
+                    Failured:(void (^)(NSError *))failuredBlock;
 @end

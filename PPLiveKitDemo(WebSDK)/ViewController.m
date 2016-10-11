@@ -64,6 +64,20 @@
     [self.pushVC dismissViewControllerAnimated:NO completion:nil];
     self.pushVC = nil;
 }
+-(void)needPlayBack{
+    [self.pushVC dismissViewControllerAnimated:NO completion:nil];
+    self.pushVC = nil;
+    [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
+        NSLog(@"fetchPlayURL = %@",dic);
+        NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+        NSString *m3u8Url = (NSString *)[data objectForKey:@"m3u8Url"];
+        self.pullVC.playAddress = m3u8Url;
+        self.pullVC.sourceType = 1;
+        [self presentViewController:self.pullVC animated:NO completion:nil];
+    } Failured:^(NSError *err) {
+    }];
+
+}
 
 
 - (IBAction)doPull:(id)sender {

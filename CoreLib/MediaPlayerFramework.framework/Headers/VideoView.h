@@ -57,6 +57,8 @@ enum DataSourceType {
 - (void)gotInfoWithInfoType:(int)infoType InfoValue:(int)infoValue;
 - (void)gotComplete;
 - (void)gotVideoSizeChangedWithVideoWidth:(int)width VideoHeight:(int)height;
+- (void)gotBufferingUpdateWithPercent:(int)percent;
+- (void)gotSeekComplete;
 @optional
 @end
 
@@ -68,10 +70,14 @@ enum DataSourceType {
 - (void)start;
 - (void)pause;
 - (void)stop:(BOOL)blackDisplay;
+- (void)seekTo:(NSTimeInterval)seekPosMs;
 - (void)terminate;
 
 - (void)setScreenOn:(BOOL)on;
 
 @property (nonatomic, weak) id<VideoViewDelegate> delegate;
+
+@property (nonatomic, readonly) NSTimeInterval duration;
+@property (nonatomic, readonly) NSTimeInterval currentPlaybackTime;
 
 @end

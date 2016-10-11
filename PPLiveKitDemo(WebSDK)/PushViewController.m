@@ -10,6 +10,7 @@
 #import "HTTPManager.h"
 #import "NotifyView.h"
 #import "UserTips.h"
+#import "PullViewController.h"
 
 #define JPushControllerLog(format, ...) NSLog((@"PushController_"format), ##__VA_ARGS__)
 
@@ -50,6 +51,7 @@ typedef enum{
 @property (strong, nonatomic) PPYAudioConfiguration *audioConfig;
 @property (strong, nonatomic) PPYVideoConfiguration *videoConfig;
 
+@property (strong, nonatomic) IBOutlet UIView *viewEndLiving;
 @property (weak, nonatomic) IBOutlet UIButton *btnCamera;
 @property (weak, nonatomic) IBOutlet UIButton *btnTorch;
 @property (weak, nonatomic) IBOutlet UIButton *btnFocus;
@@ -160,6 +162,8 @@ typedef enum{
     [self.btnCamera layoutIfNeeded];
     self.contraitBtnMirrorLeadingToBtnMute.constant = (self.btnData.center.x - self.btnMute.center.x)/2 - self.btnMute.frame.size.width;
     [self.btnMirror layoutIfNeeded];
+    
+    [self.viewEndLiving setFrame:[UIScreen mainScreen].bounds];
 }
 
 -(void)updateUI{
@@ -450,7 +454,12 @@ static int count_ReDoSyncStart3min = 0;
 -(void)stopSyncStateToService{
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
-        [weakSelf.delegate didPushViewControllerDismiss];
+        if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+            [weakSelf.view addSubview:weakSelf.viewEndLiving];
+        }else{
+            [weakSelf.delegate didPushViewControllerDismiss];
+        }
+        
     } failured:^(NSError *err) {
         [weakSelf.delegate didPushViewControllerDismiss];
     }];
@@ -634,8 +643,6 @@ static int count_ReDoSyncStart3min = 0;
         [self.indicator stopAnimating];
         if(self.isPushing){
             [self.pushEngine stop];
-        }else{
-            [self.delegate didPushViewControllerDismiss];
         }
     }];
     
@@ -811,4 +818,15 @@ static int count_ReDoSyncStart3min = 0;
     }
     return _fuzzyView;
 }
+
+#pragma mark --End living--
+- (IBAction)doExitWhenEndLiving:(id)sender {
+    [self.fuzzyView removeFromSuperview];
+    [self.delegate didPushViewControllerDismiss];
+}
+- (IBAction)doPlayBack:(id)sender {
+//    [self.delegate didPushViewControllerDismiss];
+    [self.delegate needPlayBack];
+}
+
 @end

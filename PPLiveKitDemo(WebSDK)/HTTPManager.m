@@ -65,7 +65,7 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
 }
 
--(void)fetchPullRTMPAddrSuccess:(void (^)(NSDictionary *))successBlock
+-(void)fetchPlayURL:(void (^)(NSDictionary *))successBlock
                        Failured:(void (^)(NSError *))failuredBlock{
     NSString *requestURL = [kURLGetPullRTMPAddr stringByAppendingPathComponent:self.roomID];
     NSLog(@"kURLGetPullRTMPAddr = %@",requestURL);

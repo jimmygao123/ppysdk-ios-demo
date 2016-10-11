@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84E1DCF91DACD9DC0079D0B6 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DCF81DACD9DC0079D0B6 /* PlayerView.m */; };
 		BF0E85731D728A2500681A44 /* beauty_off.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85661D728A2500681A44 /* beauty_off.png */; };
 		BF0E85741D728A2500681A44 /* beauty_on.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85671D728A2500681A44 /* beauty_on.png */; };
 		BF0E85751D728A2500681A44 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85681D728A2500681A44 /* close.png */; };
@@ -143,6 +144,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		84E1DCF71DACD9DC0079D0B6 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerView.h; path = Player/PlayerView.h; sourceTree = "<group>"; };
+		84E1DCF81DACD9DC0079D0B6 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayerView.m; path = Player/PlayerView.m; sourceTree = "<group>"; };
 		BF0E85661D728A2500681A44 /* beauty_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_off.png; path = icons/beauty_off.png; sourceTree = SOURCE_ROOT; };
 		BF0E85671D728A2500681A44 /* beauty_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_on.png; path = icons/beauty_on.png; sourceTree = SOURCE_ROOT; };
 		BF0E85681D728A2500681A44 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = icons/close.png; sourceTree = SOURCE_ROOT; };
@@ -293,6 +296,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		84E1DCFA1DACE4530079D0B6 /* 播放器 */ = {
+			isa = PBXGroup;
+			children = (
+				84E1DCF71DACD9DC0079D0B6 /* PlayerView.h */,
+				84E1DCF81DACD9DC0079D0B6 /* PlayerView.m */,
+			);
+			name = "播放器";
+			sourceTree = "<group>";
+		};
 		BF0E85651D728A0F00681A44 /* Icons2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,6 +352,7 @@
 				BF53F15F1D8003B9002700AD /* ConfigurationViewController.xib */,
 				BF375CCE1D6F12B7009C0E57 /* ViewController.h */,
 				BF375CCF1D6F12B7009C0E57 /* ViewController.m */,
+				84E1DCFA1DACE4530079D0B6 /* 播放器 */,
 				BFF80D081DA4EECA00588F3F /* WebSDK */,
 				BFF80D071DA4EEB500588F3F /* 拉流 */,
 				BFF80D061DA4EEA500588F3F /* 推流 */,
@@ -749,6 +762,7 @@
 				BFFADA721D91241F007ADF56 /* AFURLRequestSerialization.m in Sources */,
 				BF53F1601D8003B9002700AD /* ConfigurationViewController.m in Sources */,
 				BFFADA731D91241F007ADF56 /* AFURLResponseSerialization.m in Sources */,
+				84E1DCF91DACD9DC0079D0B6 /* PlayerView.m in Sources */,
 				BFFADA771D912429007ADF56 /* MBProgressHUD.m in Sources */,
 				BFFADA6F1D91241F007ADF56 /* AFHTTPSessionManager.m in Sources */,
 				BF375CEA1D6F183C009C0E57 /* PushViewController.m in Sources */,
@@ -882,7 +896,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "88cd9104-e500-4253-8f79-035a25fe90ea";
 			};
 			name = Debug;
 		};
@@ -902,7 +916,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "88cd9104-e500-4253-8f79-035a25fe90ea";
 			};
 			name = Release;
 		};

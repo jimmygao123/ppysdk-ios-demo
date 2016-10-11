@@ -14,7 +14,7 @@
 		</data>
 		<key>Headers/PPYPlayEngine.h</key>
 		<data>
-		2DL/d9D+QlACPbLzHeZ/l0Xzd64=
+		mJy3GNHMdwOEZED4sS7lTkuz4Us=
 		</data>
 		<key>Headers/PPYPushEngine.h</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		SYgEh5PDrusXvDcJ+zvVFoOMY3Q=
+		L0PvmTZYlI0NTt9/L+oca/rXa90=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -61,11 +61,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			2DL/d9D+QlACPbLzHeZ/l0Xzd64=
+			mJy3GNHMdwOEZED4sS7lTkuz4Us=
 			</data>
 			<key>hash2</key>
 			<data>
-			CnSVXCDt1/PrceC00MITUit7oRLU2B7ZPwFhzW+mTtI=
+			GNUCZHSlPukJ+medDw8bkm8Seofl95l79jbe9BIEJYE=
 			</data>
 		</dict>
 		<key>Headers/PPYPushEngine.h</key>
@@ -120,6 +120,11 @@
 			<key>weight</key>
 			<real>1100</real>
 		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
+		</dict>
 		<key>^version.plist$</key>
 		<true/>
 	</dict>
@@ -164,6 +169,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^Info\.plist$</key>
 		<dict>

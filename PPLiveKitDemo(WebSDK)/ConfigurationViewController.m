@@ -229,7 +229,7 @@
 -(void)getPullURLWithRoomID{
     __weak typeof (self) weakSelf = self;
     [HTTPManager shareInstance].roomID = self.room;
-    [[HTTPManager shareInstance] fetchPullRTMPAddrSuccess:^(NSDictionary *dic) {
+    [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
         if(dic != nil){
             NSLog(@"jimmy_dic = %@",dic);
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){

@@ -11,6 +11,7 @@
 
 @interface PullViewController : UIViewController
 @property (copy, nonatomic) NSString *playAddress;
+@property (assign, nonatomic) int sourceType;  //live: 0, vod: 1
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indictor;
 
 @end
