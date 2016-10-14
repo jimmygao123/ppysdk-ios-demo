@@ -20,9 +20,16 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblRes;
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
 @property (weak, nonatomic) IBOutlet UIButton *btnExit;
+@property (weak, nonatomic) IBOutlet UIButton *btnPlayOrPause;
+@property (weak, nonatomic) IBOutlet UILabel *lblPlayTime;
+@property (weak, nonatomic) IBOutlet UIProgressView *pgsPlayProgress;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitLiveCtrToBottom;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitVODCtrToBottom;
 
 @property (strong, nonatomic) UIView *fuzzyView;
 
+@property (assign, nonatomic) BOOL isPlaying;
 @property (assign, nonatomic) BOOL isReconnecting;
 @property (assign, nonatomic) BOOL isDataShowed;
 @property (assign, nonatomic) int reconnectCount;
@@ -77,8 +84,13 @@
     [self.lblRoomID clipsToBounds];
     
     if(self.sourceType == 0){
+        [self dismissVODControlPannel];
+        [self presentLiveControlPannel];
         [self startPullStream];
+        
     }else if(self.sourceType == 1){
+        [self dismissLiveControlPannel];
+        [self presentVODControlPannel];
         [self startPlayBack];
     }
     
@@ -86,7 +98,23 @@
 #pragma mark ---PlayBack---
 -(void)startPlayBack{
     [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
+    
+    self.isPlaying = YES;
 }
+-(void)doSwipeLeft{
+    
+}
+
+- (IBAction)doPauseOrPlay:(id)sender {
+    if(self.isPlaying){
+        [[PPYPlayEngine shareInstance] pause];
+        self.isPlaying = NO;
+    }else{
+        [[PPYPlayEngine shareInstance] resume];
+        self.isPlaying = YES;
+    }
+}
+
 
 -(void)viewDidDisappear:(BOOL)animated{
     if(self.fuzzyView){
@@ -256,6 +284,25 @@
 
 
 #pragma mark --UIElelment--
+
+
+-(void)presentLiveControlPannel{
+    self.constraitLiveCtrToBottom.constant = 0;
+    [self.view updateConstraints];
+}
+-(void)dismissLiveControlPannel{
+    self.constraitLiveCtrToBottom.constant = -1000;
+    [self.view updateConstraints];
+}
+
+-(void)presentVODControlPannel{
+    self.constraitVODCtrToBottom.constant = 0;
+    [self.view updateConstraints];
+}
+-(void)dismissVODControlPannel{
+    self.constraitVODCtrToBottom.constant = -1000;
+    [self.view updateConstraints];
+}
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
     

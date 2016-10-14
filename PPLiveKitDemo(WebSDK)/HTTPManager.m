@@ -17,6 +17,8 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 #define kURLSyncPushStateToServer @"http://115.231.44.26:8081/live/start"
 #define kURLSyncPushStopToServer @"http://115.231.44.26:8081/live/stop"
 #define kURLGetStreamStatus @"http://115.231.44.26:8081/live/status"
+#define kURLGetLiveList @"http://115.231.44.26:8081/live/living/list"
+#define kURLGetVODList @"http://115.231.44.26:8081/live/vod/list"
 
 @interface HTTPManager ()
 @property (strong, nonatomic) AFHTTPSessionManager *httpManager;
@@ -39,7 +41,7 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
         self.httpManager.requestSerializer = [AFJSONRequestSerializer serializer];
         self.httpManager.requestSerializer.timeoutInterval = 5;
         self.httpManager.responseSerializer = [AFJSONResponseSerializer serializer];
-        self.httpManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/plain"];
+        self.httpManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     }
     return self;
 }
@@ -81,6 +83,22 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
 }
 
+-(void)fetchLiveListWithPageNum:(int)num
+                        Success:(void (^)(NSDictionary *))successBlock
+                       Failured:(void (^)(NSError *))failuredBlock{
+    NSString *requestURL = [NSString stringWithFormat:@"%@/?page_size=10&page_num=%d",kURLGetLiveList,num];
+    NSLog(@"kURLGetLiveList = %@",requestURL);
+    [self requestURL:requestURL success:successBlock failured:failuredBlock];
+}
+
+-(void)fetchVODListWithPageNum:(int)num
+                        Success:(void (^)(NSDictionary *))successBlock
+                       Failured:(void (^)(NSError *))failuredBlock{
+    NSString *requestURL = [NSString stringWithFormat:@"%@/?page_size=10&page_num=%d",kURLGetVODList,num];
+    NSLog(@"kURLGetLiveList = %@",requestURL);
+    [self requestURL:requestURL success:successBlock failured:failuredBlock];
+}
+
 #pragma mark --custom method--
 -(void)requestURL:(NSString *)url
           success:(void (^)(NSDictionary*))successBlock
@@ -112,4 +130,16 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
 
+
+-(NSData *)downloadWebImageWithURL:(NSString *)url{
+    NSError *error=nil;
+    NSURLRequest *request=[[NSURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
+    NSData *imgData=[NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
+    if(imgData)
+    {
+        return imgData;
+    }else{
+        return nil;
+    }
+}
 @end

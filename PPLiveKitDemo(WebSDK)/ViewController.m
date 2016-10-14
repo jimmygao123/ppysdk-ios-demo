@@ -13,7 +13,7 @@
 #import "HTTPManager.h"
 #import "NotifyView.h"
 
-
+#import "PlayListController.h"
 
 
 @interface ViewController ()<PushViewControllerDelegate,ConfigurationViewControllerDelegate>
@@ -64,27 +64,23 @@
     [self.pushVC dismissViewControllerAnimated:NO completion:nil];
     self.pushVC = nil;
 }
--(void)needPlayBack{
+-(void)needPlayBack:(NSString *)url{
     [self.pushVC dismissViewControllerAnimated:NO completion:nil];
     self.pushVC = nil;
-    [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
-        NSLog(@"fetchPlayURL = %@",dic);
-        NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-        NSString *m3u8Url = (NSString *)[data objectForKey:@"m3u8Url"];
-        self.pullVC.playAddress = m3u8Url;
-        self.pullVC.sourceType = 1;
-        [self presentViewController:self.pullVC animated:NO completion:nil];
-    } Failured:^(NSError *err) {
-    }];
-
+    
+    self.pullVC.playAddress = url;
+    self.pullVC.sourceType = 1;
+    [self presentViewController:self.pullVC animated:NO completion:nil];
 }
 
 
 - (IBAction)doPull:(id)sender {
-    self.pullConfigVC = [[ConfigurationViewController alloc]init];
-    self.pullConfigVC.delegate = self;
-    self.pullConfigVC.type = 1;
-    [self presentViewController:self.pullConfigVC animated:NO completion:nil];
+//    self.pullConfigVC = [[ConfigurationViewController alloc]init];
+//    self.pullConfigVC.delegate = self;
+//    self.pullConfigVC.type = 1;
+//    [self presentViewController:self.pullConfigVC animated:NO completion:nil];
+    PlayListController *playListVC = [[PlayListController alloc]initWithNibName:@"PlayListController" bundle:nil];
+    [self presentViewController:playListVC animated:NO completion:nil];
 }
 
 #pragma mark --ConfigurationViewControllerDelegate--

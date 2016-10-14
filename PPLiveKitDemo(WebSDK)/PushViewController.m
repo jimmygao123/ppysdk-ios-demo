@@ -73,6 +73,7 @@ typedef enum{
 @property (assign, nonatomic) BOOL isDoExitBySwitchNetWork;
 @property (assign, nonatomic) BOOL isCheckingStreamStatus;
 @property (assign, nonatomic) BOOL isSyncStartSuccess;
+@property (copy, nonatomic) NSString *VODURL;
 
 #pragma mark --UIElement--
 @property (strong, nonatomic) UIView *fuzzyView;
@@ -389,6 +390,14 @@ static int count_doReconnectToServer3min = 0;
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
                 [weakSelf sendMessage:kSyncStartSuccess];
                 weakSelf.isSyncStartSuccess = YES;
+                [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
+                    if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                        NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+                        NSString *m3u8Url = (NSString *)[data objectForKey:@"m3u8Url"];
+                        weakSelf.VODURL = m3u8Url;
+                    }
+                } Failured:^(NSError *err) {
+                }];
 //                [weakSelf startCheckStreamState];
             }else{
                 NSString *errCode = (NSString *)[dic objectForKey:@"err"];
@@ -455,7 +464,7 @@ static int count_ReDoSyncStart3min = 0;
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
         if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-            [weakSelf.view addSubview:weakSelf.viewEndLiving];
+            [weakSelf.delegate didPushViewControllerDismiss];
         }else{
             [weakSelf.delegate didPushViewControllerDismiss];
         }
@@ -565,7 +574,11 @@ static int count_ReDoSyncStart3min = 0;
 
             if(self.isDoExitByClick){
                 self.isDoExitByClick = NO;
-                [self stopSyncStateToService];
+                if(self.VODURL){
+                   [weakSelf.view addSubview:weakSelf.viewEndLiving];
+                }else{
+                    [self stopSyncStateToService];
+                }
             }else{
                 if(self.isDoExitBySwitchNetWork){
                     self.isDoExitBySwitchNetWork = NO;
@@ -821,12 +834,12 @@ static int count_ReDoSyncStart3min = 0;
 
 #pragma mark --End living--
 - (IBAction)doExitWhenEndLiving:(id)sender {
-    [self.fuzzyView removeFromSuperview];
     [self.delegate didPushViewControllerDismiss];
 }
+
 - (IBAction)doPlayBack:(id)sender {
-//    [self.delegate didPushViewControllerDismiss];
-    [self.delegate needPlayBack];
+    [self stopSyncStateToService];
+    [self.delegate needPlayBack:self.VODURL];
 }
 
 @end

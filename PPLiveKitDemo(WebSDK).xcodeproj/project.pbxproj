@@ -8,6 +8,33 @@
 
 /* Begin PBXBuildFile section */
 		84E1DCF91DACD9DC0079D0B6 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DCF81DACD9DC0079D0B6 /* PlayerView.m */; };
+		84E1DD031DAE071F0079D0B6 /* 开始播放@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DCFF1DAE071F0079D0B6 /* 开始播放@2x.png */; };
+		84E1DD041DAE071F0079D0B6 /* 开始播放@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD001DAE071F0079D0B6 /* 开始播放@3x.png */; };
+		84E1DD051DAE071F0079D0B6 /* 暂停播放@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD011DAE071F0079D0B6 /* 暂停播放@2x.png */; };
+		84E1DD061DAE071F0079D0B6 /* 暂停播放3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD021DAE071F0079D0B6 /* 暂停播放3x.png */; };
+		84E1DD521DAF1FEA0079D0B6 /* PlayListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DD501DAF1FEA0079D0B6 /* PlayListController.m */; };
+		84E1DD531DAF1FEA0079D0B6 /* PlayListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD511DAF1FEA0079D0B6 /* PlayListController.xib */; };
+		84E1DDB21DAF567C0079D0B6 /* 标注合集.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDA51DAF567C0079D0B6 /* 标注合集.jpg */; };
+		84E1DDB31DAF567C0079D0B6 /* 形状-1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDA61DAF567C0079D0B6 /* 形状-1@2x.png */; };
+		84E1DDB41DAF567C0079D0B6 /* 形状-1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDA71DAF567C0079D0B6 /* 形状-1@3x.png */; };
+		84E1DDB51DAF567C0079D0B6 /* 形状-3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDA81DAF567C0079D0B6 /* 形状-3@2x.png */; };
+		84E1DDB61DAF567C0079D0B6 /* 形状-3@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDA91DAF567C0079D0B6 /* 形状-3@3x.png */; };
+		84E1DDB71DAF567C0079D0B6 /* 组-4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDAA1DAF567C0079D0B6 /* 组-4@2x.png */; };
+		84E1DDB81DAF567C0079D0B6 /* 组-4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDAB1DAF567C0079D0B6 /* 组-4@3x.png */; };
+		84E1DDB91DAF567C0079D0B6 /* 组-6@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDAC1DAF567C0079D0B6 /* 组-6@2x.png */; };
+		84E1DDBA1DAF567C0079D0B6 /* 组-6@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDAD1DAF567C0079D0B6 /* 组-6@3x.png */; };
+		84E1DDBB1DAF567C0079D0B6 /* live@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDAE1DAF567C0079D0B6 /* live@2x.png */; };
+		84E1DDBC1DAF567C0079D0B6 /* live@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDAF1DAF567C0079D0B6 /* live@3x.png */; };
+		84E1DDBD1DAF567C0079D0B6 /* sss@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDB01DAF567C0079D0B6 /* sss@2x.png */; };
+		84E1DDBE1DAF567C0079D0B6 /* sss@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDB11DAF567C0079D0B6 /* sss@3x.png */; };
+		84E1DDC21DAF59390079D0B6 /* FlowCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDC01DAF59390079D0B6 /* FlowCell.m */; };
+		84E1DDC31DAF59390079D0B6 /* FlowCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDC11DAF59390079D0B6 /* FlowCell.xib */; };
+		84E1DDC91DAF67AC0079D0B6 /* defalutFlow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDC71DAF67AC0079D0B6 /* defalutFlow@2x.png */; };
+		84E1DDCA1DAF67AC0079D0B6 /* defalutFlow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDC81DAF67AC0079D0B6 /* defalutFlow@3x.png */; };
+		84E1DDD01DAF72C10079D0B6 /* PlayListHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDCF1DAF72C10079D0B6 /* PlayListHelper.m */; };
+		84E1DDD71DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDD41DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m */; };
+		84E1DDD81DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */; };
+		84E1DDDA1DB0CAA00079D0B6 /* PlayerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDD91DB0CAA00079D0B6 /* PlayerView.xib */; };
 		BF0E85731D728A2500681A44 /* beauty_off.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85661D728A2500681A44 /* beauty_off.png */; };
 		BF0E85741D728A2500681A44 /* beauty_on.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85671D728A2500681A44 /* beauty_on.png */; };
 		BF0E85751D728A2500681A44 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85681D728A2500681A44 /* close.png */; };
@@ -146,6 +173,39 @@
 /* Begin PBXFileReference section */
 		84E1DCF71DACD9DC0079D0B6 /* PlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayerView.h; path = Player/PlayerView.h; sourceTree = "<group>"; };
 		84E1DCF81DACD9DC0079D0B6 /* PlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayerView.m; path = Player/PlayerView.m; sourceTree = "<group>"; };
+		84E1DCFF1DAE071F0079D0B6 /* 开始播放@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "开始播放@2x.png"; path = "icon/PullViewController/开始播放@2x.png"; sourceTree = "<group>"; };
+		84E1DD001DAE071F0079D0B6 /* 开始播放@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "开始播放@3x.png"; path = "icon/PullViewController/开始播放@3x.png"; sourceTree = "<group>"; };
+		84E1DD011DAE071F0079D0B6 /* 暂停播放@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "暂停播放@2x.png"; path = "icon/PullViewController/暂停播放@2x.png"; sourceTree = "<group>"; };
+		84E1DD021DAE071F0079D0B6 /* 暂停播放3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "暂停播放3x.png"; path = "icon/PullViewController/暂停播放3x.png"; sourceTree = "<group>"; };
+		84E1DD4F1DAF1FEA0079D0B6 /* PlayListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListController.h; sourceTree = "<group>"; };
+		84E1DD501DAF1FEA0079D0B6 /* PlayListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayListController.m; sourceTree = "<group>"; };
+		84E1DD511DAF1FEA0079D0B6 /* PlayListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayListController.xib; sourceTree = "<group>"; };
+		84E1DDA51DAF567C0079D0B6 /* 标注合集.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = "标注合集.jpg"; path = "Player/切图标注/标注合集.jpg"; sourceTree = "<group>"; };
+		84E1DDA61DAF567C0079D0B6 /* 形状-1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "形状-1@2x.png"; path = "Player/切图标注/形状-1@2x.png"; sourceTree = "<group>"; };
+		84E1DDA71DAF567C0079D0B6 /* 形状-1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "形状-1@3x.png"; path = "Player/切图标注/形状-1@3x.png"; sourceTree = "<group>"; };
+		84E1DDA81DAF567C0079D0B6 /* 形状-3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "形状-3@2x.png"; path = "Player/切图标注/形状-3@2x.png"; sourceTree = "<group>"; };
+		84E1DDA91DAF567C0079D0B6 /* 形状-3@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "形状-3@3x.png"; path = "Player/切图标注/形状-3@3x.png"; sourceTree = "<group>"; };
+		84E1DDAA1DAF567C0079D0B6 /* 组-4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "组-4@2x.png"; path = "Player/切图标注/组-4@2x.png"; sourceTree = "<group>"; };
+		84E1DDAB1DAF567C0079D0B6 /* 组-4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "组-4@3x.png"; path = "Player/切图标注/组-4@3x.png"; sourceTree = "<group>"; };
+		84E1DDAC1DAF567C0079D0B6 /* 组-6@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "组-6@2x.png"; path = "Player/切图标注/组-6@2x.png"; sourceTree = "<group>"; };
+		84E1DDAD1DAF567C0079D0B6 /* 组-6@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "组-6@3x.png"; path = "Player/切图标注/组-6@3x.png"; sourceTree = "<group>"; };
+		84E1DDAE1DAF567C0079D0B6 /* live@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "live@2x.png"; path = "Player/切图标注/live@2x.png"; sourceTree = "<group>"; };
+		84E1DDAF1DAF567C0079D0B6 /* live@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "live@3x.png"; path = "Player/切图标注/live@3x.png"; sourceTree = "<group>"; };
+		84E1DDB01DAF567C0079D0B6 /* sss@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sss@2x.png"; path = "Player/切图标注/sss@2x.png"; sourceTree = "<group>"; };
+		84E1DDB11DAF567C0079D0B6 /* sss@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sss@3x.png"; path = "Player/切图标注/sss@3x.png"; sourceTree = "<group>"; };
+		84E1DDBF1DAF59390079D0B6 /* FlowCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowCell.h; path = Player/FlowCell.h; sourceTree = "<group>"; };
+		84E1DDC01DAF59390079D0B6 /* FlowCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlowCell.m; path = Player/FlowCell.m; sourceTree = "<group>"; };
+		84E1DDC11DAF59390079D0B6 /* FlowCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = FlowCell.xib; path = Player/FlowCell.xib; sourceTree = "<group>"; };
+		84E1DDC71DAF67AC0079D0B6 /* defalutFlow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "defalutFlow@2x.png"; path = "../../PPYProject/PPY Project/二期/切图标注/defalutFlow@2x.png"; sourceTree = "<group>"; };
+		84E1DDC81DAF67AC0079D0B6 /* defalutFlow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "defalutFlow@3x.png"; path = "../../PPYProject/PPY Project/二期/切图标注/defalutFlow@3x.png"; sourceTree = "<group>"; };
+		84E1DDCE1DAF72C10079D0B6 /* PlayListHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayListHelper.h; path = Player/PlayListHelper.h; sourceTree = "<group>"; };
+		84E1DDCF1DAF72C10079D0B6 /* PlayListHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayListHelper.m; path = Player/PlayListHelper.m; sourceTree = "<group>"; };
+		84E1DDD21DB06DEC0079D0B6 /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SVPullToRefresh.h; path = OpenSource/SVPullToRefresh/SVPullToRefresh.h; sourceTree = SOURCE_ROOT; };
+		84E1DDD31DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+SVInfiniteScrolling.h"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVInfiniteScrolling.h"; sourceTree = SOURCE_ROOT; };
+		84E1DDD41DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SVInfiniteScrolling.m"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVInfiniteScrolling.m"; sourceTree = SOURCE_ROOT; };
+		84E1DDD51DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+SVPullToRefresh.h"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVPullToRefresh.h"; sourceTree = SOURCE_ROOT; };
+		84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SVPullToRefresh.m"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVPullToRefresh.m"; sourceTree = SOURCE_ROOT; };
+		84E1DDD91DB0CAA00079D0B6 /* PlayerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerView.xib; sourceTree = "<group>"; };
 		BF0E85661D728A2500681A44 /* beauty_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_off.png; path = icons/beauty_off.png; sourceTree = SOURCE_ROOT; };
 		BF0E85671D728A2500681A44 /* beauty_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_on.png; path = icons/beauty_on.png; sourceTree = SOURCE_ROOT; };
 		BF0E85681D728A2500681A44 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = icons/close.png; sourceTree = SOURCE_ROOT; };
@@ -301,8 +361,59 @@
 			children = (
 				84E1DCF71DACD9DC0079D0B6 /* PlayerView.h */,
 				84E1DCF81DACD9DC0079D0B6 /* PlayerView.m */,
+				84E1DDD91DB0CAA00079D0B6 /* PlayerView.xib */,
 			);
 			name = "播放器";
+			sourceTree = "<group>";
+		};
+		84E1DD491DAF1BB00079D0B6 /* 播放列表 */ = {
+			isa = PBXGroup;
+			children = (
+				84E1DDBF1DAF59390079D0B6 /* FlowCell.h */,
+				84E1DDC01DAF59390079D0B6 /* FlowCell.m */,
+				84E1DDC11DAF59390079D0B6 /* FlowCell.xib */,
+				84E1DD4F1DAF1FEA0079D0B6 /* PlayListController.h */,
+				84E1DD501DAF1FEA0079D0B6 /* PlayListController.m */,
+				84E1DD511DAF1FEA0079D0B6 /* PlayListController.xib */,
+				84E1DDCE1DAF72C10079D0B6 /* PlayListHelper.h */,
+				84E1DDCF1DAF72C10079D0B6 /* PlayListHelper.m */,
+				84E1DDA41DAF566C0079D0B6 /* icon */,
+			);
+			name = "播放列表";
+			sourceTree = "<group>";
+		};
+		84E1DDA41DAF566C0079D0B6 /* icon */ = {
+			isa = PBXGroup;
+			children = (
+				84E1DDC71DAF67AC0079D0B6 /* defalutFlow@2x.png */,
+				84E1DDC81DAF67AC0079D0B6 /* defalutFlow@3x.png */,
+				84E1DDA51DAF567C0079D0B6 /* 标注合集.jpg */,
+				84E1DDA61DAF567C0079D0B6 /* 形状-1@2x.png */,
+				84E1DDA71DAF567C0079D0B6 /* 形状-1@3x.png */,
+				84E1DDA81DAF567C0079D0B6 /* 形状-3@2x.png */,
+				84E1DDA91DAF567C0079D0B6 /* 形状-3@3x.png */,
+				84E1DDAA1DAF567C0079D0B6 /* 组-4@2x.png */,
+				84E1DDAB1DAF567C0079D0B6 /* 组-4@3x.png */,
+				84E1DDAC1DAF567C0079D0B6 /* 组-6@2x.png */,
+				84E1DDAD1DAF567C0079D0B6 /* 组-6@3x.png */,
+				84E1DDAE1DAF567C0079D0B6 /* live@2x.png */,
+				84E1DDAF1DAF567C0079D0B6 /* live@3x.png */,
+				84E1DDB01DAF567C0079D0B6 /* sss@2x.png */,
+				84E1DDB11DAF567C0079D0B6 /* sss@3x.png */,
+			);
+			name = icon;
+			sourceTree = "<group>";
+		};
+		84E1DDD11DB06D740079D0B6 /* SVPullToRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				84E1DDD21DB06DEC0079D0B6 /* SVPullToRefresh.h */,
+				84E1DDD31DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.h */,
+				84E1DDD41DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m */,
+				84E1DDD51DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.h */,
+				84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */,
+			);
+			name = SVPullToRefresh;
 			sourceTree = "<group>";
 		};
 		BF0E85651D728A0F00681A44 /* Icons2 */ = {
@@ -352,6 +463,7 @@
 				BF53F15F1D8003B9002700AD /* ConfigurationViewController.xib */,
 				BF375CCE1D6F12B7009C0E57 /* ViewController.h */,
 				BF375CCF1D6F12B7009C0E57 /* ViewController.m */,
+				84E1DD491DAF1BB00079D0B6 /* 播放列表 */,
 				84E1DCFA1DACE4530079D0B6 /* 播放器 */,
 				BFF80D081DA4EECA00588F3F /* WebSDK */,
 				BFF80D071DA4EEB500588F3F /* 拉流 */,
@@ -460,6 +572,10 @@
 		BF53F14C1D7FE189002700AD /* PullViewController */ = {
 			isa = PBXGroup;
 			children = (
+				84E1DCFF1DAE071F0079D0B6 /* 开始播放@2x.png */,
+				84E1DD001DAE071F0079D0B6 /* 开始播放@3x.png */,
+				84E1DD011DAE071F0079D0B6 /* 暂停播放@2x.png */,
+				84E1DD021DAE071F0079D0B6 /* 暂停播放3x.png */,
 				BFFADA861D923270007ADF56 /* p数据分析-禁用@2x.png */,
 				BFFADA871D923270007ADF56 /* p数据分析-禁用@3x.png */,
 				BFFADA881D923270007ADF56 /* p数据分析-启用@2x.png */,
@@ -547,6 +663,7 @@
 		BFFADA5F1D9123CF007ADF56 /* OpenSource */ = {
 			isa = PBXGroup;
 			children = (
+				84E1DDD11DB06D740079D0B6 /* SVPullToRefresh */,
 				BFFADA611D912410007ADF56 /* AFNetworking */,
 				BFFADA601D9123E7007ADF56 /* MBProgressHUD */,
 			);
@@ -655,17 +772,24 @@
 				BF0E85791D728A2500681A44 /* mirror.png in Resources */,
 				BF53F15B1D7FE1A8002700AD /* bg@2x.png in Resources */,
 				BF8AF7291D716A72009731FB /* lsq_icon_volume_on.png in Resources */,
+				84E1DDCA1DAF67AC0079D0B6 /* defalutFlow@3x.png in Resources */,
 				BF53F1BC1D8020E7002700AD /* 数据分析-启用@3x.png in Resources */,
+				84E1DDC31DAF59390079D0B6 /* FlowCell.xib in Resources */,
 				BF53F1CA1D8020E7002700AD /* 组-8@3x.png in Resources */,
+				84E1DDDA1DB0CAA00079D0B6 /* PlayerView.xib in Resources */,
+				84E1DDB51DAF567C0079D0B6 /* 形状-3@2x.png in Resources */,
 				BF53F1C91D8020E7002700AD /* 组-8@2x.png in Resources */,
 				BF53F1AA1D8020E7002700AD /* 镜头翻转@3x.png in Resources */,
 				BF53F1AD1D8020E7002700AD /* 麦克风-禁用@2x.png in Resources */,
+				84E1DDB71DAF567C0079D0B6 /* 组-4@2x.png in Resources */,
 				BF53F1AF1D8020E7002700AD /* 麦克风-启用@2x.png in Resources */,
 				BF53F1A71D8020E7002700AD /* 关闭@2x.png in Resources */,
 				BFFADA8A1D923270007ADF56 /* p数据分析-禁用@2x.png in Resources */,
 				BF0E85811D728FE400681A44 /* more.png in Resources */,
 				BF53F1711D800ADC002700AD /* 标清-亮@2x.png in Resources */,
+				84E1DDB31DAF567C0079D0B6 /* 形状-1@2x.png in Resources */,
 				BF53F15C1D7FE1A8002700AD /* bg@3x.png in Resources */,
+				84E1DDB61DAF567C0079D0B6 /* 形状-3@3x.png in Resources */,
 				BF8AF7281D716A72009731FB /* lsq_icon_volume_off.png in Resources */,
 				BF53F1CE1D8020E7002700AD /* 组-10@3x.png in Resources */,
 				BF0E85751D728A2500681A44 /* close.png in Resources */,
@@ -678,8 +802,10 @@
 				BF53F1B21D8020E7002700AD /* 美颜-禁用@3x.png in Resources */,
 				BF53F1A81D8020E7002700AD /* 关闭@3x.png in Resources */,
 				BF53F1551D7FE1A8002700AD /* 组-13@2x.png in Resources */,
+				84E1DD531DAF1FEA0079D0B6 /* PlayListController.xib in Resources */,
 				BF53F17A1D800ADC002700AD /* 流畅-亮@3x.png in Resources */,
 				BF53F1C11D8020E7002700AD /* 形状-11-拷贝@2x.png in Resources */,
+				84E1DDB41DAF567C0079D0B6 /* 形状-1@3x.png in Resources */,
 				BF53F1B71D8020E7002700AD /* 闪光灯-启用@2x.png in Resources */,
 				BF53F1B11D8020E7002700AD /* 美颜-禁用@2x.png in Resources */,
 				BF0E85761D728A2500681A44 /* focus1.png in Resources */,
@@ -687,27 +813,36 @@
 				BF53F1AC1D8020E7002700AD /* 矩形-16@3x.png in Resources */,
 				BF0E85771D728A2500681A44 /* focus2.png in Resources */,
 				BF53F1781D800ADC002700AD /* 流畅-暗@3x.png in Resources */,
+				84E1DD061DAE071F0079D0B6 /* 暂停播放3x.png in Resources */,
+				84E1DD031DAE071F0079D0B6 /* 开始播放@2x.png in Resources */,
 				BF53F1B81D8020E7002700AD /* 闪光灯-启用@3x.png in Resources */,
+				84E1DDB21DAF567C0079D0B6 /* 标注合集.jpg in Resources */,
 				BF53F1B41D8020E7002700AD /* 美颜-启用@3x.png in Resources */,
 				BF53F1761D800ADC002700AD /* 高清-亮@3x.png in Resources */,
 				BF53F1771D800ADC002700AD /* 流畅-暗@2x.png in Resources */,
 				BF0E85781D728A2500681A44 /* focus3.png in Resources */,
 				BF375CD51D6F12B7009C0E57 /* Assets.xcassets in Resources */,
+				84E1DDC91DAF67AC0079D0B6 /* defalutFlow@2x.png in Resources */,
 				BF53F1701D800ADC002700AD /* 标清-暗@3x.png in Resources */,
 				BF0E857F1D728A2500681A44 /* torch_on.png in Resources */,
+				84E1DDBC1DAF567C0079D0B6 /* live@3x.png in Resources */,
 				BF8AF72B1D716AA5009731FB /* lsq_icon_closed.png in Resources */,
 				BF53F1751D800ADC002700AD /* 高清-亮@2x.png in Resources */,
 				BF53F1B61D8020E7002700AD /* 闪光灯-禁用@3x.png in Resources */,
 				BF53F1CB1D8020E7002700AD /* 组-9@2x.png in Resources */,
 				BF0E857A1D728A2500681A44 /* mute_off.png in Resources */,
+				84E1DDBD1DAF567C0079D0B6 /* sss@2x.png in Resources */,
 				BF375CEB1D6F183C009C0E57 /* PushViewController.xib in Resources */,
 				BF53F1BF1D8020E7002700AD /* 形状-1@2x.png in Resources */,
 				BF8AF7241D716A72009731FB /* lsq_icon_beauty_on.png in Resources */,
 				BF8AF7231D716A72009731FB /* lsq_icon_beauty_off.png in Resources */,
 				BF53F1BD1D8020E7002700AD /* 显性@2x.png in Resources */,
+				84E1DDBE1DAF567C0079D0B6 /* sss@3x.png in Resources */,
 				BF53F1B31D8020E7002700AD /* 美颜-启用@2x.png in Resources */,
+				84E1DD051DAE071F0079D0B6 /* 暂停播放@2x.png in Resources */,
 				BF53F15A1D7FE1A8002700AD /* 组-15@3x.png in Resources */,
 				BF53F1B51D8020E7002700AD /* 闪光灯-禁用@2x.png in Resources */,
+				84E1DDB91DAF567C0079D0B6 /* 组-6@2x.png in Resources */,
 				BF8AF7251D716A72009731FB /* lsq_icon_camera_flip.png in Resources */,
 				BF0E857C1D728A2500681A44 /* startlive.png in Resources */,
 				BF53F1C71D8020E7002700AD /* 形状-14@2x.png in Resources */,
@@ -725,14 +860,18 @@
 				BF53F1BE1D8020E7002700AD /* 显性@3x.png in Resources */,
 				BF8AF7261D716A72009731FB /* lsq_icon_flash_off.png in Resources */,
 				BF53F1C41D8020E7002700AD /* 形状-11@3x.png in Resources */,
+				84E1DD041DAE071F0079D0B6 /* 开始播放@3x.png in Resources */,
 				BF53F1571D7FE1A8002700AD /* 组-14@2x.png in Resources */,
 				BFFADA8C1D923270007ADF56 /* p数据分析-启用@2x.png in Resources */,
 				BF53F1C61D8020E7002700AD /* 形状-13@3x.png in Resources */,
 				BF53F1611D8003B9002700AD /* ConfigurationViewController.xib in Resources */,
+				84E1DDB81DAF567C0079D0B6 /* 组-4@3x.png in Resources */,
+				84E1DDBB1DAF567C0079D0B6 /* live@2x.png in Resources */,
 				BF53F1B91D8020E7002700AD /* 数据分析-禁用@2x.png in Resources */,
 				BF53F1A91D8020E7002700AD /* 镜头翻转@2x.png in Resources */,
 				BF53F1CD1D8020E7002700AD /* 组-10@2x.png in Resources */,
 				BFFADA8B1D923270007ADF56 /* p数据分析-禁用@3x.png in Resources */,
+				84E1DDBA1DAF567C0079D0B6 /* 组-6@3x.png in Resources */,
 				BF53F1791D800ADC002700AD /* 流畅-亮@2x.png in Resources */,
 				BF53F1AB1D8020E7002700AD /* 矩形-16@2x.png in Resources */,
 				BF8AF7271D716A72009731FB /* lsq_icon_flash_on.png in Resources */,
@@ -756,16 +895,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF375CD01D6F12B7009C0E57 /* ViewController.m in Sources */,
+				84E1DDC21DAF59390079D0B6 /* FlowCell.m in Sources */,
 				BF375CCD1D6F12B7009C0E57 /* AppDelegate.m in Sources */,
 				BFFADA701D91241F007ADF56 /* AFNetworkReachabilityManager.m in Sources */,
 				BFFADA741D91241F007ADF56 /* AFURLSessionManager.m in Sources */,
 				BFFADA721D91241F007ADF56 /* AFURLRequestSerialization.m in Sources */,
 				BF53F1601D8003B9002700AD /* ConfigurationViewController.m in Sources */,
 				BFFADA731D91241F007ADF56 /* AFURLResponseSerialization.m in Sources */,
+				84E1DDD01DAF72C10079D0B6 /* PlayListHelper.m in Sources */,
 				84E1DCF91DACD9DC0079D0B6 /* PlayerView.m in Sources */,
 				BFFADA771D912429007ADF56 /* MBProgressHUD.m in Sources */,
+				84E1DDD81DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m in Sources */,
+				84E1DD521DAF1FEA0079D0B6 /* PlayListController.m in Sources */,
 				BFFADA6F1D91241F007ADF56 /* AFHTTPSessionManager.m in Sources */,
 				BF375CEA1D6F183C009C0E57 /* PushViewController.m in Sources */,
+				84E1DDD71DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				BF375D021D6FDA03009C0E57 /* HTTPManager.m in Sources */,
 				BFF80D0B1DA4F4EF00588F3F /* PushVCHelper.m in Sources */,
 				BFFADA911D93840E007ADF56 /* MessageManager.m in Sources */,

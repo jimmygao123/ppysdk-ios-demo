@@ -34,4 +34,16 @@ FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
 
 -(void)fetchPlayURL:(void (^)(NSDictionary *))successBlock
                     Failured:(void (^)(NSError *))failuredBlock;
+
+-(void)fetchLiveListWithPageNum:(int)num
+                        Success:(void (^)(NSDictionary *))successBlock
+                       Failured:(void (^)(NSError *))failuredBlock;
+
+-(void)fetchVODListWithPageNum:(int)num
+                       Success:(void (^)(NSDictionary *))successBlock
+                      Failured:(void (^)(NSError *))failuredBlock;
+
+
+-(NSData *)downloadWebImageWithURL:(NSString *)url;
+
 @end

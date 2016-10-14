@@ -9,9 +9,13 @@
             <connections>
                 <outlet property="btnData" destination="nGF-Pm-8kq" id="QGc-de-Ugq"/>
                 <outlet property="btnExit" destination="HdJ-jL-wMX" id="o72-oZ-X2K"/>
+                <outlet property="btnPlayOrPause" destination="rcW-WO-U9h" id="Res-8D-7vO"/>
+                <outlet property="constraitLiveCtrToBottom" destination="bcZ-gG-rBt" id="Aml-wW-Tn0"/>
+                <outlet property="constraitVODCtrToBottom" destination="PPs-vH-Dfz" id="wmu-DX-8gH"/>
                 <outlet property="indictor" destination="dAJ-lW-8hH" id="bux-cm-12u"/>
                 <outlet property="lblBitrate" destination="3f3-rF-p5o" id="tFL-Lt-HIk"/>
                 <outlet property="lblFPS" destination="jJ7-LJ-U8t" id="8xn-mD-NTh"/>
+                <outlet property="lblPlayTime" destination="mEC-gg-Hpy" id="Y5l-ii-0a2"/>
                 <outlet property="lblRes" destination="CGw-5e-7II" id="udD-Sf-qPg"/>
                 <outlet property="lblRoomID" destination="4uk-iK-YQ4" id="tzR-mP-sXn"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -77,31 +81,71 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nGF-Pm-8kq">
-                    <rect key="frame" x="8" y="525" width="35" height="35"/>
+                <view alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jCg-Ow-jhB" userLabel="viewVODPlayCtr">
+                    <rect key="frame" x="0.0" y="440" width="320" height="61"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="00:00:00/00:00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mEC-gg-Hpy">
+                            <rect key="frame" x="216" y="21" width="96" height="19"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Kae-NP-hB2">
+                            <rect key="frame" x="44" y="16" width="166" height="31"/>
+                        </slider>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rcW-WO-U9h">
+                            <rect key="frame" x="8" y="17" width="25" height="25"/>
+                            <state key="normal" backgroundImage="暂停播放.png"/>
+                            <connections>
+                                <action selector="doPauseOrPlay:" destination="-1" eventType="touchUpInside" id="Nyw-i4-2jp"/>
+                                <action selector="onPauseOrPlay:" destination="-1" eventType="touchUpInside" id="SVA-SV-UFc"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="35" id="KpL-QM-qbb"/>
-                        <constraint firstAttribute="height" constant="35" id="XfS-hD-kMO"/>
+                        <constraint firstAttribute="height" constant="61" id="iFX-aa-dOB"/>
                     </constraints>
-                    <state key="normal" backgroundImage="p数据分析-启用.png"/>
-                    <connections>
-                        <action selector="doShowData:" destination="-1" eventType="touchUpInside" id="j39-Hd-lrY"/>
-                    </connections>
-                </button>
+                </view>
+                <view alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5nR-De-jih" userLabel="viewLivePlayCtr">
+                    <rect key="frame" x="0.0" y="516" width="320" height="52"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nGF-Pm-8kq">
+                            <rect key="frame" x="8" y="9" width="35" height="35"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="35" id="KpL-QM-qbb"/>
+                                <constraint firstAttribute="height" constant="35" id="XfS-hD-kMO"/>
+                            </constraints>
+                            <state key="normal" backgroundImage="p数据分析-启用.png"/>
+                            <connections>
+                                <action selector="doShowData:" destination="-1" eventType="touchUpInside" id="j39-Hd-lrY"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="52" id="Rql-wF-CLC"/>
+                        <constraint firstItem="nGF-Pm-8kq" firstAttribute="leading" secondItem="5nR-De-jih" secondAttribute="leading" constant="8" id="ZpV-yU-5UZ"/>
+                        <constraint firstItem="nGF-Pm-8kq" firstAttribute="centerY" secondItem="5nR-De-jih" secondAttribute="centerY" id="tRe-gz-fRb"/>
+                    </constraints>
+                </view>
             </subviews>
-            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="nGF-Pm-8kq" secondAttribute="bottom" constant="8" id="3gf-vQ-gc3"/>
+                <constraint firstAttribute="trailing" secondItem="jCg-Ow-jhB" secondAttribute="trailing" id="0Rm-dz-PNt"/>
                 <constraint firstItem="3f3-rF-p5o" firstAttribute="leading" secondItem="4uk-iK-YQ4" secondAttribute="leading" id="8a9-na-4su"/>
                 <constraint firstItem="jJ7-LJ-U8t" firstAttribute="top" secondItem="3f3-rF-p5o" secondAttribute="bottom" id="A3C-2m-wOY"/>
                 <constraint firstItem="4uk-iK-YQ4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="GgM-WZ-UA2"/>
+                <constraint firstItem="5nR-De-jih" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Ljr-El-yRO"/>
+                <constraint firstAttribute="bottom" secondItem="jCg-Ow-jhB" secondAttribute="bottom" constant="67" id="PPs-vH-Dfz"/>
+                <constraint firstItem="jCg-Ow-jhB" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="QRP-if-ADN"/>
                 <constraint firstItem="3f3-rF-p5o" firstAttribute="top" secondItem="4uk-iK-YQ4" secondAttribute="bottom" constant="8" id="Vfj-0l-Ckd"/>
                 <constraint firstItem="4uk-iK-YQ4" firstAttribute="centerY" secondItem="HdJ-jL-wMX" secondAttribute="centerY" id="W6g-zk-yBd"/>
                 <constraint firstItem="jJ7-LJ-U8t" firstAttribute="leading" secondItem="3f3-rF-p5o" secondAttribute="leading" id="WMB-Yh-wR0"/>
+                <constraint firstAttribute="bottom" secondItem="5nR-De-jih" secondAttribute="bottom" id="bcZ-gG-rBt"/>
                 <constraint firstItem="CGw-5e-7II" firstAttribute="top" secondItem="jJ7-LJ-U8t" secondAttribute="bottom" id="fiv-DR-LQC"/>
+                <constraint firstAttribute="trailing" secondItem="5nR-De-jih" secondAttribute="trailing" id="gQy-yb-xS9"/>
                 <constraint firstAttribute="trailing" secondItem="HdJ-jL-wMX" secondAttribute="trailing" constant="8" id="ny8-sy-97a"/>
                 <constraint firstItem="HdJ-jL-wMX" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="8" id="pni-6T-4xy"/>
-                <constraint firstItem="nGF-Pm-8kq" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="r7O-al-6Pq"/>
                 <constraint firstItem="CGw-5e-7II" firstAttribute="leading" secondItem="jJ7-LJ-U8t" secondAttribute="leading" id="xBB-Uk-Ctp"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -146,5 +190,6 @@
     <resources>
         <image name="p数据分析-启用.png" width="40" height="40"/>
         <image name="关闭.png" width="40" height="40"/>
+        <image name="暂停播放.png" width="30" height="30"/>
     </resources>
 </document>

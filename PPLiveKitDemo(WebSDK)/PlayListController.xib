@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayListController">
+            <connections>
+                <outlet property="flowView" destination="nYD-fI-C5A" id="cFE-Y5-xaM"/>
+                <outlet property="imgBackground" destination="s9D-3C-wJb" id="sIY-q4-oYO"/>
+                <outlet property="lblTip" destination="qVq-g4-EBp" id="USB-oo-9JH"/>
+                <outlet property="navBar" destination="faD-EU-Apy" id="OVc-Qm-WUm"/>
+                <outlet property="navItem" destination="yje-r0-iQR" id="MHm-uw-CIR"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nYD-fI-C5A">
+                    <rect key="frame" x="0.0" y="48" width="320" height="520"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bXt-Mw-aqV">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="形状-3.png" translatesAutoresizingMaskIntoConstraints="NO" id="s9D-3C-wJb">
+                    <rect key="frame" x="110" y="163" width="100" height="80"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="80" id="LmF-Ah-hW4"/>
+                        <constraint firstAttribute="width" constant="100" id="nXr-Me-cEF"/>
+                    </constraints>
+                </imageView>
+                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faD-EU-Apy">
+                    <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                    <items>
+                        <navigationItem title="聚力云Demo" id="yje-r0-iQR"/>
+                    </items>
+                </navigationBar>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVq-g4-EBp">
+                    <rect key="frame" x="43" y="251" width="234" height="36"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="234" id="2Nl-fZ-1en"/>
+                        <constraint firstAttribute="height" constant="36" id="ajv-Ta-4lA"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.96854597330093384" green="0.96868151426315308" blue="0.96850329637527466" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="s9D-3C-wJb" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="0Nl-hq-Mzy"/>
+                <constraint firstItem="nYD-fI-C5A" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="1dq-BV-jt0"/>
+                <constraint firstAttribute="trailing" secondItem="nYD-fI-C5A" secondAttribute="trailing" id="4Gf-kj-vXO"/>
+                <constraint firstAttribute="bottom" secondItem="nYD-fI-C5A" secondAttribute="bottom" id="57K-7a-vHr"/>
+                <constraint firstItem="faD-EU-Apy" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="22" id="CeT-v4-Kho"/>
+                <constraint firstItem="nYD-fI-C5A" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="-195" id="EMj-Qj-84c"/>
+                <constraint firstItem="qVq-g4-EBp" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="8" id="RSN-U4-S7N"/>
+                <constraint firstItem="qVq-g4-EBp" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="fQ9-ys-Tbm"/>
+                <constraint firstItem="faD-EU-Apy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="hos-vB-J5A"/>
+                <constraint firstItem="s9D-3C-wJb" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="-81" id="kwg-Ls-1Od"/>
+                <constraint firstAttribute="trailing" secondItem="faD-EU-Apy" secondAttribute="trailing" id="pdm-3t-HpE"/>
+            </constraints>
+            <point key="canvasLocation" x="147" y="161"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="形状-3.png" width="76" height="66"/>
+    </resources>
+</document>
