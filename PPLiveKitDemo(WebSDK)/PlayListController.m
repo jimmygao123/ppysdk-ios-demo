@@ -263,7 +263,7 @@ static NSString * reuseIdentifier = @"flowcell";
         if(data){
             cell.imgBackground.image = [UIImage imageWithData:data];
         }else{
-            cell.imgBackground.image = [UIImage imageNamed:@"defalutFlow.png"];
+//            cell.imgBackground.image = [UIImage imageNamed:@"defalutFlow.png"];
         }
     }];
     return cell;
