@@ -12,7 +12,7 @@
 #import "PlayListHelper.h"
 #import "NotifyView.h"
 #import <PPYLiveKit/PPYLiveKit.h>
-
+#import "PullViewController.h"
 
 
 static NSString * reuseIdentifier = @"flowcell";
@@ -210,21 +210,28 @@ static NSString * reuseIdentifier = @"flowcell";
     NSLog(@"index = %@",indexPath);
     if(self.playerType == PlayerType_Live){
         NSDictionary *model = (NSDictionary *)self.liveList[indexPath.item];
-        [self.helper startPlayWithType:PlayerType_Live withNeededInfo:model];
+        [self.helper fetchLivingURLsWithRoomID: [model objectForKey:kRoomName] SuccessBlock:^(NSDictionary *dic) {
+            NSString *RTMPURL = (NSString *)[dic objectForKey:kRTMPURL];
+            PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
+            pullController.sourceType = PPYSourceType_Live;
+            pullController.playAddress = RTMPURL;
+            [self presentViewController:pullController animated:YES completion:nil];
+        } FailuredBlock:^(int errCode, NSString *errInfo) {
+            NSLog(@"流地址获取失败,errCode = %d,erroInfo = %@",errCode,errInfo);
+        }];
+        
     }else if(self.playerType == PlayerType_VOD){
         NSDictionary *model = (NSDictionary *)self.VODList[indexPath.item];
         NSString *VODURL = [self.helper fetchVodURLWithChannelWebID: [model objectForKey:kChannelWebID]];
         
-        [[PPYPlayEngine shareInstance] startPlayFromURL:VODURL WithType:PPYSourceType_VOD];
-        UIView *displayView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
-        [[PPYPlayEngine shareInstance] presentPreviewOnView:displayView];
-        [self.view addSubview:displayView];
-
+        PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
+        pullController.sourceType = PPYSourceType_VOD;
+        pullController.playAddress = VODURL;
+        [self presentViewController:pullController animated:YES completion:nil];
     }else{
-        
     }
-    
 }
+
 #pragma mark ---UICollectionViewDataSource---
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
@@ -263,7 +270,7 @@ static NSString * reuseIdentifier = @"flowcell";
         if(data){
             cell.imgBackground.image = [UIImage imageWithData:data];
         }else{
-//            cell.imgBackground.image = [UIImage imageNamed:@"defalutFlow.png"];
+            cell.imgBackground.image = [UIImage imageNamed:@"defalutFlow.png"];
         }
     }];
     return cell;

@@ -40,7 +40,10 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
         self.httpManager = [AFHTTPSessionManager manager];
         self.httpManager.requestSerializer = [AFJSONRequestSerializer serializer];
         self.httpManager.requestSerializer.timeoutInterval = 5;
-        self.httpManager.responseSerializer = [AFJSONResponseSerializer serializer];
+        
+        AFJSONResponseSerializer *jsonSerizlizer = [AFJSONResponseSerializer serializer];
+        jsonSerizlizer.removesKeysWithNullValues = YES;
+        self.httpManager.responseSerializer = jsonSerizlizer;
         self.httpManager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"application/json"];
     }
     return self;

@@ -10,24 +10,32 @@
 #import "HTTPManager.h"
 #import "NotifyView.h"
 #import "MBProgressHUD.h"
+#import "JGPlayerControlPanel.h"
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
 @interface PullViewController ()<PPYPlayEngineDelegate>
+
+@property (weak, nonatomic) IBOutlet UIButton *btnExit;
+//info
 @property (weak, nonatomic) IBOutlet UILabel *lblRoomID;
 @property (weak, nonatomic) IBOutlet UILabel *lblBitrate;
 @property (weak, nonatomic) IBOutlet UILabel *lblFPS;
 @property (weak, nonatomic) IBOutlet UILabel *lblRes;
+//live
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
-@property (weak, nonatomic) IBOutlet UIButton *btnExit;
+
+//vod
 @property (weak, nonatomic) IBOutlet UIButton *btnPlayOrPause;
 @property (weak, nonatomic) IBOutlet UILabel *lblPlayTime;
-@property (weak, nonatomic) IBOutlet UIProgressView *pgsPlayProgress;
+@property (weak, nonatomic) IBOutlet UISlider *pgsPlayProgress;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitLiveCtrToBottom;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitVODCtrToBottom;
 
 @property (strong, nonatomic) UIView *fuzzyView;
+
+@property (strong, nonatomic) JGPlayerControlPanel *viewControlPanel;
 
 @property (assign, nonatomic) BOOL isPlaying;
 @property (assign, nonatomic) BOOL isReconnecting;
@@ -70,6 +78,11 @@
     self.lblFPS.textColor = [UIColor whiteColor];
     self.lblRoomID.textColor = [UIColor whiteColor];
     self.lblRes.textColor = [UIColor whiteColor];
+    [self dismissVODControlPannel];
+    [self dismissLiveControlPannel];
+    if(self.sourceType == 1){
+        self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
+    }
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -91,18 +104,20 @@
     }else if(self.sourceType == 1){
         [self dismissLiveControlPannel];
         [self presentVODControlPannel];
+
+//        int height = [UIScreen mainScreen].bounds.size.height - self.viewControlPanel.frame.size.height/2;
+//        self.viewControlPanel.center = CGPointMake(self.viewControlPanel.center.x, height);
+//        [self.view addSubview:self.viewControlPanel];
         [self startPlayBack];
     }
     
 }
+
 #pragma mark ---PlayBack---
 -(void)startPlayBack{
     [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
     
     self.isPlaying = YES;
-}
--(void)doSwipeLeft{
-    
 }
 
 - (IBAction)doPauseOrPlay:(id)sender {

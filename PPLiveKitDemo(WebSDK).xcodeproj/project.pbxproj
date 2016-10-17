@@ -31,6 +31,8 @@
 		84E1DDD01DAF72C10079D0B6 /* PlayListHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDCF1DAF72C10079D0B6 /* PlayListHelper.m */; };
 		84E1DDD71DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDD41DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m */; };
 		84E1DDD81DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */; };
+		84E1DDDD1DB463420079D0B6 /* defalutFlow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDDB1DB463420079D0B6 /* defalutFlow@2x.png */; };
+		84E1DDDE1DB463420079D0B6 /* defalutFlow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDDC1DB463420079D0B6 /* defalutFlow@3x.png */; };
 		BF0E85731D728A2500681A44 /* beauty_off.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85661D728A2500681A44 /* beauty_off.png */; };
 		BF0E85741D728A2500681A44 /* beauty_on.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85671D728A2500681A44 /* beauty_on.png */; };
 		BF0E85751D728A2500681A44 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85681D728A2500681A44 /* close.png */; };
@@ -199,6 +201,8 @@
 		84E1DDD41DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SVInfiniteScrolling.m"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVInfiniteScrolling.m"; sourceTree = SOURCE_ROOT; };
 		84E1DDD51DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+SVPullToRefresh.h"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVPullToRefresh.h"; sourceTree = SOURCE_ROOT; };
 		84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SVPullToRefresh.m"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVPullToRefresh.m"; sourceTree = SOURCE_ROOT; };
+		84E1DDDB1DB463420079D0B6 /* defalutFlow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "defalutFlow@2x.png"; path = "Player/切图标注/defalutFlow@2x.png"; sourceTree = "<group>"; };
+		84E1DDDC1DB463420079D0B6 /* defalutFlow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "defalutFlow@3x.png"; path = "Player/切图标注/defalutFlow@3x.png"; sourceTree = "<group>"; };
 		BF0E85661D728A2500681A44 /* beauty_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_off.png; path = icons/beauty_off.png; sourceTree = SOURCE_ROOT; };
 		BF0E85671D728A2500681A44 /* beauty_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_on.png; path = icons/beauty_on.png; sourceTree = SOURCE_ROOT; };
 		BF0E85681D728A2500681A44 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = icons/close.png; sourceTree = SOURCE_ROOT; };
@@ -371,6 +375,8 @@
 		84E1DDA41DAF566C0079D0B6 /* icon */ = {
 			isa = PBXGroup;
 			children = (
+				84E1DDDB1DB463420079D0B6 /* defalutFlow@2x.png */,
+				84E1DDDC1DB463420079D0B6 /* defalutFlow@3x.png */,
 				84E1DDA51DAF567C0079D0B6 /* 标注合集.jpg */,
 				84E1DDA61DAF567C0079D0B6 /* 形状-1@2x.png */,
 				84E1DDA71DAF567C0079D0B6 /* 形状-1@3x.png */,
@@ -851,6 +857,7 @@
 				BF53F1581D7FE1A8002700AD /* 组-14@3x.png in Resources */,
 				BF53F1BE1D8020E7002700AD /* 显性@3x.png in Resources */,
 				BF8AF7261D716A72009731FB /* lsq_icon_flash_off.png in Resources */,
+				84E1DDDD1DB463420079D0B6 /* defalutFlow@2x.png in Resources */,
 				BF53F1C41D8020E7002700AD /* 形状-11@3x.png in Resources */,
 				84E1DD041DAE071F0079D0B6 /* 开始播放@3x.png in Resources */,
 				BF53F1571D7FE1A8002700AD /* 组-14@2x.png in Resources */,
@@ -858,6 +865,7 @@
 				BF53F1C61D8020E7002700AD /* 形状-13@3x.png in Resources */,
 				BF53F1611D8003B9002700AD /* ConfigurationViewController.xib in Resources */,
 				84E1DDB81DAF567C0079D0B6 /* 组-4@3x.png in Resources */,
+				84E1DDDE1DB463420079D0B6 /* defalutFlow@3x.png in Resources */,
 				84E1DDBB1DAF567C0079D0B6 /* live@2x.png in Resources */,
 				BF53F1B91D8020E7002700AD /* 数据分析-禁用@2x.png in Resources */,
 				BF53F1A91D8020E7002700AD /* 镜头翻转@2x.png in Resources */,

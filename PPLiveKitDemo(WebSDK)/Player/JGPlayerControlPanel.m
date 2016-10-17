@@ -9,7 +9,7 @@
 #import "JGPlayerControlPanel.h"
 
 @interface JGPlayerControlPanelOwner : NSObject
-@property (weak, nonatomic) IBOutlet JGPlayerControlPanel *controlPanel;
+@property (strong, nonatomic) IBOutlet JGPlayerControlPanel *controlPanel;
 
 @end
 @implementation JGPlayerControlPanelOwner
@@ -35,13 +35,10 @@
     self.lblTime.text = @"00:00:00/00:00:00";
 }
 
-+(void)showInViewController:(UIViewController *)viewController aboveView:(UIView *)view{
-    
++(instancetype)playerControlPanel{
     JGPlayerControlPanelOwner *owner = [[JGPlayerControlPanelOwner alloc]init];
     [[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:owner options:nil];
-    [owner.controlPanel setFrame:CGRectMake(0, 0, view.frame.size.width, 45)];
-    owner.controlPanel.center = view.center;
-    [view addSubview:owner.controlPanel];
+    return owner.controlPanel;
 }
 
 - (IBAction)doStartOrPause:(id)sender {

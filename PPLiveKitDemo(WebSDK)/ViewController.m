@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "PushViewController.h"
-#import "PullViewController.h"
 #import "ConfigurationViewController.h"
 #import "HTTPManager.h"
 #import "NotifyView.h"
@@ -18,9 +17,7 @@
 
 @interface ViewController ()<PushViewControllerDelegate,ConfigurationViewControllerDelegate>
 @property (nonatomic, strong) PushViewController *pushVC;
-@property (nonatomic, strong) PullViewController *pullVC;
 @property (nonatomic, strong) ConfigurationViewController *pushConfigVC;
-@property (nonatomic, strong) ConfigurationViewController *pullConfigVC;
 
 @property (nonatomic, strong) HTTPManager *httpMgr;
 
@@ -37,9 +34,6 @@
     
     self.httpMgr = [HTTPManager shareInstance];
     [HTTPManager startMonitor];
-    
-  
-    self.pullVC = [[PullViewController alloc]init];
     
     [self initUI];
 }
@@ -64,21 +58,9 @@
     [self.pushVC dismissViewControllerAnimated:NO completion:nil];
     self.pushVC = nil;
 }
--(void)needPlayBack:(NSString *)url{
-    [self.pushVC dismissViewControllerAnimated:NO completion:nil];
-    self.pushVC = nil;
-    
-    self.pullVC.playAddress = url;
-    self.pullVC.sourceType = 1;
-    [self presentViewController:self.pullVC animated:NO completion:nil];
-}
 
 
 - (IBAction)doPull:(id)sender {
-//    self.pullConfigVC = [[ConfigurationViewController alloc]init];
-//    self.pullConfigVC.delegate = self;
-//    self.pullConfigVC.type = 1;
-//    [self presentViewController:self.pullConfigVC animated:NO completion:nil];
     PlayListController *playListVC = [[PlayListController alloc]initWithNibName:@"PlayListController" bundle:nil];
     [self presentViewController:playListVC animated:NO completion:nil];
 }
@@ -88,10 +70,6 @@
     if(controller == self.pushConfigVC){
         [self.pushConfigVC dismissViewControllerAnimated:NO completion:nil];
         self.pushConfigVC = nil;
-    }
-    if(controller == self.pullConfigVC){
-        [self.pullConfigVC dismissViewControllerAnimated:NO completion:nil];
-        self.pullConfigVC = nil;
     }
 }
 -(void)viewController:(ConfigurationViewController *)controller didFetchPushRTMPAddress:(NSString *)rtmpAddr{
@@ -109,17 +87,6 @@
         [self presentViewController:self.pushVC animated:YES completion:nil];
     }
 }
--(void)viewController:(ConfigurationViewController *)controller didFetchPullRTMPAddress:(NSString *)rtmpAddr{
-    if(controller == self.pullConfigVC){
-        
-        self.pullVC.playAddress = rtmpAddr;
-        NSLog(@"Pull address = %@",rtmpAddr);
-        [self.pullConfigVC dismissViewControllerAnimated:NO completion:nil];
-        self.pushConfigVC = nil;
-        [self presentViewController:self.pullVC animated:YES completion:nil];
-    }
-}
-
 
 -(void)showAlertWithMessage:(NSString *)message{
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:message  message:nil preferredStyle:UIAlertControllerStyleAlert];

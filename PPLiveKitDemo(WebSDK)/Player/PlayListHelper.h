@@ -15,6 +15,12 @@
 #define kDuration @"duration"
 #define kChannelWebID @"channel_web_id"
 
+#define kFLVURL @"hdlUrl"
+#define kM3u8URL @"m3u8Url"
+#define kRTMPURL @"rtmpUrl"
+#define kRTMPSURL @"rtmpsUrl"
+
+
 typedef NS_ENUM(int, PlayerListErrorType){
     PraseError,
     AFNetworking_Error,
@@ -39,10 +45,12 @@ typedef NS_ENUM(int, PlayerType){
 @property (weak, nonatomic) id<PlayerListHelperDelegate> delegate;
 -(void )fetchLiveListWithPageNum:(int)num;
 -(void)fetchVODListWithPageNum:(int)num;
+
 -(void)downLoadWebImage:(NSString *)url onQueueAsync:(dispatch_queue_t)queue completionHandler:(void(^)(NSData *data))handle;
 
--(void)startPlayWithType:(PlayerType)playerType withNeededInfo:(NSDictionary *)dic;
-
--(NSString *)fetchVodURLWithChannelWebID:(NSString *)webID;
+-(NSString *)fetchVodURLWithChannelWebID:(NSString *)webID; //VOD
+-(void)fetchLivingURLsWithRoomID:(NSString *)roomID
+                    SuccessBlock:(void(^)(NSDictionary *dic))success
+                   FailuredBlock:(void (^)(int errCode, NSString *errInfo))failured; //living
 @end
 

@@ -25,6 +25,5 @@
 @property (assign, nonatomic, readonly) int width;
 @property (assign, nonatomic, readonly) int height;
 
-@property (assign, nonatomic) int type; //0,configure push, 1, configure pull;
 
 @end

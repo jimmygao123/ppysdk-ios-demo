@@ -22,11 +22,11 @@
         NSString *totalNum = (NSString *)[dic objectForKey:@"totalnum"];
         
         if([errCode isEqualToString:@"0"]){
-            if(([dic objectForKey:@"totalnum"] != [NSNull null]) && [dic objectForKey:@"data"] != [NSNull null]){
+            if((totalNum != nil) && VODList != nil){
                 if(VODList.count > 0 && totalNum.integerValue > 0){
                     for(NSDictionary *VOD in VODList){
-                        if([VOD objectForKey:kRoomName] == [NSNull null]) continue;
-                        if([VOD objectForKey:kDuration] == [NSNull null]) continue;
+                        if([VOD objectForKey:kRoomName] == nil) continue;
+                        if([VOD objectForKey:kDuration] == nil) continue;
                         NSString *duration = [VOD objectForKey:kDuration];
                         if(duration.integerValue < 10) continue;
                         
@@ -64,9 +64,9 @@
         if([errCode isEqualToString:@"0"]){
             
             if((liveList != nil) && (totalNum != nil)){
-                if([dic objectForKey:@"totalnum"] != [NSNull null] &&  [dic objectForKey:@"data"] != [NSNull null]){
+                if(totalNum != nil &&  liveList != nil){
                     for(NSDictionary *live in liveList){
-                        if([live objectForKey:@"room_name"] == [NSNull null]){
+                        if([live objectForKey:@"room_name"] == nil){
                             continue;
                         }
                         
@@ -100,13 +100,31 @@
     });
 }
 
-
--(void)startPlayWithType:(PlayerType)playerType withNeededInfo:(NSDictionary *)dic{
-    
-}
-
 -(NSString *)fetchVodURLWithChannelWebID:(NSString *)webID{
     return [NSString stringWithFormat:@"http://player.pptvyun.com/svc/m3u8player/pl/%@.m3u8",webID];
+}
+
+-(void)fetchLivingURLsWithRoomID:(NSString *)roomID
+                              SuccessBlock:(void(^)(NSDictionary *dic))success
+                             FailuredBlock:(void (^)(int errCode, NSString *errInfo))failured{
+
+    [HTTPManager shareInstance].roomID = roomID;
+    [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
+        NSString *errCode = [dic objectForKey:@"err"];
+        NSString *msg = [dic objectForKey:@"msg"];
+        NSDictionary *data = [dic objectForKey:@"data"];
+        if([errCode isEqualToString:@"0"]){
+            if((data != nil) && (data.count > 0)){
+                success(data);
+            }else{
+                failured(errCode.integerValue,@"Null Data");
+            }
+        }else{
+            failured(errCode.integerValue,msg);
+        }
+    } Failured:^(NSError *err) {
+        failured(err.code,err.debugDescription);
+    }];
 }
 @end
 

@@ -61,13 +61,7 @@
     self.textField.delegate = self;
     self.textField.backgroundColor = [UIColor clearColor];
     self.textField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"请输入房间号" attributes:@{NSForegroundColorAttributeName:[UIColor colorWithWhite:1 alpha:0.3]}];
-    
-    if(self.type == 1){
-        self.btnGroup480P.hidden = YES;
-        self.btnGroup540P.hidden = YES;
-        self.btnGroup720P.hidden = YES;
-    }
-    
+
     [self updateUI];
 }
 
@@ -162,31 +156,26 @@
     }else{
         self.processHUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 
-        
-        if(self.type == 0){
-            NSString *pushRTMP = [self getPushURLFromLocal];
-            NSLog(@"pushRTMP = %@",pushRTMP);
-            if(pushRTMP == nil){
-                [self getPushURLWithRoomID];
-            }else{
-                [self detectWetherCreateRoomNeeded];
+        NSString *pushRTMP = [self getPushURLFromLocal];
+        NSLog(@"pushRTMP = %@",pushRTMP);
+        if(pushRTMP == nil){
+            [self getPushURLWithRoomID];
+        }else{
+            [self detectWetherCreateRoomNeeded];
 
-                __weak typeof(self) weakSelf = self;
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
-                    if(weakSelf.isNeedFetchPushURLFromServer){
-                        [weakSelf getPushURLWithRoomID];
-                        NSLog(@"fetch push rtmp address from server");
-                    }else{
-                        NSLog(@"fetch push rtmp address from local");
-                        [weakSelf.delegate viewController:weakSelf didFetchPushRTMPAddress:pushRTMP];
-                    }
-                });
-                
-            }
-        }else if(self.type == 1){
-            [self getPullURLWithRoomID];
+            __weak typeof(self) weakSelf = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+                if(weakSelf.isNeedFetchPushURLFromServer){
+                    [weakSelf getPushURLWithRoomID];
+                    NSLog(@"fetch push rtmp address from server");
+                }else{
+                    NSLog(@"fetch push rtmp address from local");
+                    [weakSelf.delegate viewController:weakSelf didFetchPushRTMPAddress:pushRTMP];
+                }
+            });
         }
+
     }
 }
 
@@ -235,7 +224,6 @@
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
                 NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
                 NSString *url = (NSString *)[data objectForKey:@"rtmpUrl"];
-                NSString *flvURL = [data objectForKey:@"hdlUrl"];
                 if(url){
                     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
                         if(dic != nil){

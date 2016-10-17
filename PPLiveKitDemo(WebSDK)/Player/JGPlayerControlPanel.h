@@ -22,11 +22,10 @@ typedef NS_ENUM(int,JGPlayerControlState){
 
 @interface JGPlayerControlPanel : UIView
 
-+(void)showInViewController:(UIViewController *)viewController aboveView:(UIView *)view;
 @property (weak, nonatomic) id<JGPlayControlPanelDelegate> delegate;
-
 @property (assign, nonatomic) JGPlayerControlState state;
 @property (assign, nonatomic) NSTimeInterval progress;  //s
 @property (assign, nonatomic) NSTimeInterval duration;  //s
 
++(instancetype)playerControlPanel;
 @end
