@@ -116,20 +116,27 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     }];
 }
 
+
+static BOOL isMonitoringNetwork = NO;
 +(void)startMonitor{
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotification_NetworkStateChanged object:[NSNumber numberWithInteger:status]];
     }];
     
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    isMonitoringNetwork = YES;
 }
 
 +(void)stopMonitor{
     [[AFNetworkReachabilityManager sharedManager] stopMonitoring];
+    isMonitoringNetwork = NO;
 }
 
 #pragma mark --Getter,Setter--
 -(AFNetworkReachabilityStatus)currentNetworkStatus{
+    if(!isMonitoringNetwork){
+        [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    }
     return [AFNetworkReachabilityManager sharedManager].networkReachabilityStatus;
 }
 

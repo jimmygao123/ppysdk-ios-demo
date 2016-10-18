@@ -406,6 +406,15 @@
 			name = SVPullToRefresh;
 			sourceTree = "<group>";
 		};
+		84E1DE0B1DB60FC70079D0B6 /* 自定义界面 */ = {
+			isa = PBXGroup;
+			children = (
+				BFF6133C1D70394C0064FB81 /* NotifyView.h */,
+				BFF6133D1D70394C0064FB81 /* NotifyView.m */,
+			);
+			name = "自定义界面";
+			sourceTree = "<group>";
+		};
 		BF0E85651D728A0F00681A44 /* Icons2 */ = {
 			isa = PBXGroup;
 			children = (
@@ -456,12 +465,10 @@
 				BFEA363D1DB34CC8007D5164 /* 播放控制页面 */,
 				84E1DD491DAF1BB00079D0B6 /* 播放列表 */,
 				BFF80D081DA4EECA00588F3F /* WebSDK */,
+				84E1DE0B1DB60FC70079D0B6 /* 自定义界面 */,
 				BFF80D071DA4EEB500588F3F /* 拉流 */,
 				BFF80D061DA4EEA500588F3F /* 推流 */,
-				BFF6133C1D70394C0064FB81 /* NotifyView.h */,
-				BFF6133D1D70394C0064FB81 /* NotifyView.m */,
 				BFFADA8E1D925BA8007ADF56 /* MessageHandle */,
-				BF375CD11D6F12B7009C0E57 /* Main.storyboard */,
 				BF53F1481D7FE111002700AD /* Icons3 */,
 				BF0E85651D728A0F00681A44 /* Icons2 */,
 				BF8AF71B1D716A1D009731FB /* Icons */,
@@ -474,6 +481,7 @@
 		BF375CC81D6F12B7009C0E57 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BF375CD11D6F12B7009C0E57 /* Main.storyboard */,
 				BF375CD41D6F12B7009C0E57 /* Assets.xcassets */,
 				BF375CD61D6F12B7009C0E57 /* LaunchScreen.storyboard */,
 				BF375CD91D6F12B7009C0E57 /* Info.plist */,

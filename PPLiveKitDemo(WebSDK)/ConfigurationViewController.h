@@ -8,22 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class ConfigurationViewController;
-
-@protocol ConfigurationViewControllerDelegate <NSObject>
--(void)viewController:(ConfigurationViewController *)controller didFetchPushRTMPAddress:(NSString *)rtmpAddr;
--(void)viewController:(ConfigurationViewController *)controller didFetchPullRTMPAddress:(NSString *)rtmpAddr;
--(void)viewControllerDoExit:(ConfigurationViewController *)controller;
-@end
-
-
 @interface ConfigurationViewController : UIViewController
-
-@property (weak, nonatomic) id<ConfigurationViewControllerDelegate> delegate;
 
 @property (copy, nonatomic,readonly) NSString *roomID;
 @property (assign, nonatomic, readonly) int width;
 @property (assign, nonatomic, readonly) int height;
-
 
 @end

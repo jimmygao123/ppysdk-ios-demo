@@ -8,6 +8,7 @@
 #import "HTTPManager.h"
 #import "ConfigurationViewController.h"
 #import "MBProgressHUD.h"
+#import "PushViewController.h"
 
 @interface ConfigurationViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *btnOK;
@@ -42,6 +43,7 @@
                                              selector:@selector(keyboardWillHidden)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
+    [HTTPManager startMonitor];
     [self initData];
     [self initUI];
     // Do any additional setup after loading the view from its nib.
@@ -141,7 +143,7 @@
 }
 
 - (IBAction)doExit:(id)sender {
-    [self.delegate viewControllerDoExit:self];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 - (IBAction)doOK:(id)sender {
     
@@ -171,7 +173,7 @@
                     NSLog(@"fetch push rtmp address from server");
                 }else{
                     NSLog(@"fetch push rtmp address from local");
-                    [weakSelf.delegate viewController:weakSelf didFetchPushRTMPAddress:pushRTMP];
+                    [weakSelf loadPushViewControllerWithRTMPAddress:pushRTMP width:self.width height:self.height];
                 }
             });
         }
@@ -182,6 +184,15 @@
 
 
 #pragma mark --Custom Method--
+
+-(void)loadPushViewControllerWithRTMPAddress:(NSString *)pushRTMP width:(int)width height:(int)height{
+    PushViewController *pushVC = [[PushViewController alloc]initWithNibName:@"PushViewController" bundle:nil];
+    pushVC.rtmpAddress = pushRTMP;
+    pushVC.width = width;
+    pushVC.height = height;
+    [self.navigationController pushViewController:pushVC animated:YES];
+}
+
 -(void)throwError:(int)errorCode info:(NSString *)errorInfo{
     __weak typeof(self)weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -213,80 +224,6 @@
         
         [hud hideAnimated:YES afterDelay:2.f];
     });
-}
-
--(void)getPullURLWithRoomID{
-    __weak typeof (self) weakSelf = self;
-    [HTTPManager shareInstance].roomID = self.room;
-    [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
-        if(dic != nil){
-            NSLog(@"jimmy_dic = %@",dic);
-            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-                NSString *url = (NSString *)[data objectForKey:@"rtmpUrl"];
-                if(url){
-                    [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
-                        if(dic != nil){
-                            NSLog(@"%s,dic = %@",__FUNCTION__,dic);
-                            if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-                                NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
-                                NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
-                                if(streamState == nil){
-                                    [weakSelf throwError:11 info:@"资源不存在"];
-                                }else if([streamState isEqualToString:@"ok"] && [liveState isEqualToString:@"stopped"]){
-                                    [weakSelf throwError:12 info:@"主播已离开房间"];
-                                }else if([streamState isEqualToString:@"ok"] && [liveState isEqualToString:@"living"]){
-                                    [weakSelf.delegate viewController:weakSelf didFetchPullRTMPAddress:url];
-                                }else{
-                                    NSString *status = [NSString stringWithFormat:@"live status:%@,streaStatus:%@",liveState,streamState];
-                                    [weakSelf throwError:13 info:status];
-                                }
-                            }else{
-                                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                                if([errCode isEqualToString:@"1001"]){
-                                    [self throwError:15 info:@"主播还未开播"];
-                                }else{
-                                    [self throwError:14 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
-                                }
-                                
-                            }
-                        }
-                    } failured:^(NSError *err) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [weakSelf.processHUD hideAnimated:YES];
-                        });
-                        if(err){
-                            [weakSelf throwError:2 info:@"网络连接断开，不可用"];
-                        }
-                    }];
-                }else{
-                    [weakSelf throwError:4 info:@"无效的url或者token"];
-                }
-            }else{
-                
-                NSString *errorInfo = (NSString *)[dic objectForKey:@"msg"];
-                NSString *errCode = (NSString *)[dic objectForKey:@"err"];
-                if([errCode isEqualToString:@"300005"]){
-                    [self throwError:16 info:@"房间不存在"];
-                }else{
-                    [self throwError:17 info:[NSString stringWithFormat:@"%@:%@",errCode,errorInfo]];
-                }
-            }
-        }else{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.processHUD hideAnimated:YES];
-            });
-        }
-    } Failured:^(NSError *err) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.processHUD hideAnimated:YES];
-        });
-        if(err){
-            [weakSelf throwError:2 info:@"网络连接断开，不可用"];
-        }
-    }];
 }
 -(NSString *)getPushURLFromLocal{
     NSDictionary *dic = [[NSUserDefaults standardUserDefaults] objectForKey:@"KRoomID-RTMPAddr"];
@@ -326,7 +263,7 @@
                 NSString *rtmpAddress = [[url stringByAppendingString:@"/"] stringByAppendingString:token];
                 NSLog(@"rtmpAddress = %@",rtmpAddress);
                 [weakSelf savePushURLToLocal:rtmpAddress];
-                [weakSelf.delegate viewController:weakSelf didFetchPushRTMPAddress:rtmpAddress];
+                [weakSelf loadPushViewControllerWithRTMPAddress:rtmpAddress width:self.width height:self.height];
                 
             }else{
                 [weakSelf throwError:4 info:@"无效的url或者token"];

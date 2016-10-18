@@ -193,7 +193,7 @@ typedef enum{
             [self doLive];
         }];
         UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self.delegate didPushViewControllerDismiss];
+            [self.navigationController popViewControllerAnimated:YES];
         }];
         [alert addAction:btnOK];
         [alert addAction:btnCancel];
@@ -258,7 +258,7 @@ typedef enum{
     }];
     UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出直播" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [weakSelf.indicator stopAnimating];
-        [weakSelf.delegate didPushViewControllerDismiss];
+        [self.navigationController popViewControllerAnimated:YES];
     }];
     [alert addAction:btnOK];
     [alert addAction:btnCancel];
@@ -463,14 +463,18 @@ static int count_ReDoSyncStart3min = 0;
 -(void)stopSyncStateToService{
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
-        if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-            [weakSelf.delegate didPushViewControllerDismiss];
-        }else{
-            [weakSelf.delegate didPushViewControllerDismiss];
-        }
         
+        if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+            if(self.VODURL){
+                 [weakSelf.view addSubview:weakSelf.viewEndLiving];
+            }else{
+                [weakSelf.navigationController popViewControllerAnimated:NO];
+            }
+        }else{
+             [weakSelf.navigationController popViewControllerAnimated:NO];
+        }
     } failured:^(NSError *err) {
-        [weakSelf.delegate didPushViewControllerDismiss];
+        [weakSelf.navigationController popViewControllerAnimated:NO];
     }];
 }
 
@@ -574,11 +578,8 @@ static int count_ReDoSyncStart3min = 0;
 
             if(self.isDoExitByClick){
                 self.isDoExitByClick = NO;
-                if(self.VODURL){
-                   [weakSelf.view addSubview:weakSelf.viewEndLiving];
-                }else{
-                    [self stopSyncStateToService];
-                }
+                [self stopSyncStateToService];
+                
             }else{
                 if(self.isDoExitBySwitchNetWork){
                     self.isDoExitBySwitchNetWork = NO;
@@ -834,12 +835,14 @@ static int count_ReDoSyncStart3min = 0;
 
 #pragma mark --End living--
 - (IBAction)doExitWhenEndLiving:(id)sender {
-    [self.delegate didPushViewControllerDismiss];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)doPlayBack:(id)sender {
-    [self stopSyncStateToService];
-//    [self.delegate needPlayBack:self.VODURL];
+    PullViewController *pullViewController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
+    pullViewController.playAddress = self.VODURL;
+    pullViewController.sourceType = 1;
+    [self.navigationController pushViewController:pullViewController animated:YES];
 }
 
 @end

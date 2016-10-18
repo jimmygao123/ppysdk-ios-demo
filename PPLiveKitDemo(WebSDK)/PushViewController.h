@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <PPYLiveKit/PPYLiveKit.h>
 
 extern NSString * const kNetworkStateChanged;
 
+@class PushViewController;
 @protocol  PushViewControllerDelegate <NSObject>
--(void)didPushViewControllerDismiss;
 //-(void)needPlayBack:(NSString *)url;
 @end
 
