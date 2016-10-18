@@ -33,6 +33,7 @@
     [self.sliderProgress setValue:0 animated:NO];
     self.sliderProgress.continuous = NO;
     self.lblTime.text = @"00:00:00/00:00:00";
+    self.state = JGPlayerControlState_Start;
 }
 
 +(instancetype)playerControlPanel{
@@ -53,6 +54,7 @@
 }
 
 -(void)setState:(JGPlayerControlState)state{
+    _state = state;
     if(state == JGPlayerControlState_Start){
         [self.btnStartOrPause setBackgroundImage:[UIImage imageNamed:@"暂停播放.png"] forState:UIControlStateNormal];
     }else{
@@ -61,24 +63,32 @@
 }
 
 -(void)setProgress:(NSTimeInterval)progress{
-    float percent = progress/self.duration;
-    [self.sliderProgress setValue:percent animated:NO];
-    self.lblTime.text = [NSString stringWithFormat:@"%@/%@",[self convertSecondsToTimeFormat:progress],self.durationDescription];
+    _progress = progress;
+    if(self.duration > 0){
+        float percent = self.progress/self.duration;
+        [self.sliderProgress setValue:percent animated:NO];
+    }
+    NSString *text = [NSString stringWithFormat:@"%@/%@",[self convertSecondsToTimeFormat:progress],self.durationDescription];
+    self.lblTime.text = text;
 }
 
--(void)setDuration:(NSTimeInterval)duration{
-    self.durationDescription = [self convertSecondsToTimeFormat:duration];
-    self.lblTime.text = [NSString stringWithFormat:@"00:00:00/%@",self.durationDescription];
+-(NSString *)durationDescription{
+    if(self.duration <= 0){
+        return @"00:00:00";
+    }
+    return [self convertSecondsToTimeFormat:self.duration];
 }
-
 -(NSString *)convertSecondsToTimeFormat:(NSTimeInterval)value{
+    if(value <= 0){
+        return @"00:00:00";
+    }
     
     int hour = 0;
     int minutes = 0;
     int second = 0;
     
     int integerValue = ceil(value / 1000); //ms to s
-    if(value >= 60){
+    if(integerValue >= 60){
         second = integerValue % 60;
         integerValue /= 60;
         if(value >= 60){
@@ -92,6 +102,8 @@
         }else{
             minutes = integerValue;
         }
+    }else{
+        second = integerValue;
     }
     
     return [NSString stringWithFormat:@"%02d:%02d:%02d",hour,minutes,second];

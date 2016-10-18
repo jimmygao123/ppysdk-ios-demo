@@ -386,7 +386,7 @@
     <resources>
         <image name="focus3.png" width="128" height="128"/>
         <image name="关闭.png" width="40" height="40"/>
-        <image name="形状-1.png" width="21" height="21"/>
+        <image name="形状-1.png" width="20" height="20"/>
         <image name="形状-11-拷贝.png" width="19" height="19"/>
         <image name="形状-13.png" width="19" height="19"/>
         <image name="形状-14.png" width="19" height="19"/>

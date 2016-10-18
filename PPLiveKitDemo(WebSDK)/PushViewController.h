@@ -12,7 +12,7 @@ extern NSString * const kNetworkStateChanged;
 
 @protocol  PushViewControllerDelegate <NSObject>
 -(void)didPushViewControllerDismiss;
--(void)needPlayBack:(NSString *)url;
+//-(void)needPlayBack:(NSString *)url;
 @end
 
 @interface PushViewController : UIViewController

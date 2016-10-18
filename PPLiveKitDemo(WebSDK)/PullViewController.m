@@ -14,7 +14,7 @@
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
-@interface PullViewController ()<PPYPlayEngineDelegate>
+@interface PullViewController ()<PPYPlayEngineDelegate,JGPlayControlPanelDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *btnExit;
 //info
@@ -25,13 +25,7 @@
 //live
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
 
-//vod
-@property (weak, nonatomic) IBOutlet UIButton *btnPlayOrPause;
-@property (weak, nonatomic) IBOutlet UILabel *lblPlayTime;
-@property (weak, nonatomic) IBOutlet UISlider *pgsPlayProgress;
-
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitLiveCtrToBottom;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitVODCtrToBottom;
 
 @property (strong, nonatomic) UIView *fuzzyView;
 
@@ -78,11 +72,34 @@
     self.lblFPS.textColor = [UIColor whiteColor];
     self.lblRoomID.textColor = [UIColor whiteColor];
     self.lblRes.textColor = [UIColor whiteColor];
-    [self dismissVODControlPannel];
+   
+    if(self.sourceType == 1){
+        [self doShowData:nil];
+    };
     [self dismissLiveControlPannel];
     if(self.sourceType == 1){
         self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
+        CGRect screenSize = [UIScreen mainScreen].bounds;
+        
+        self.viewControlPanel.frame = CGRectMake(0, 0, screenSize.size.width,60);
+        self.viewControlPanel.center = CGPointMake(self.view.center.x, (screenSize.size.height - self.viewControlPanel.frame.size.height/2));
+        [self.view addSubview:self.viewControlPanel];
+        
+        self.viewControlPanel.delegate = self;
+        [self doRunloop];  //update progress
     }
+    
+    self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
+    self.lblRoomID.layer.cornerRadius = 10;
+    self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+    self.lblRoomID.layer.masksToBounds = YES;
+    [self.lblRoomID clipsToBounds];
+    if(self.sourceType == 0){
+        self.lblRoomID.hidden = NO;
+    }else{
+        self.lblRoomID.hidden = YES;
+    }
+    
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -90,27 +107,27 @@
 
     self.isInitLoading = YES;
     [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-    self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
-    self.lblRoomID.layer.cornerRadius = 10;
-    self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-    self.lblRoomID.layer.masksToBounds = YES;
-    [self.lblRoomID clipsToBounds];
-    
+
     if(self.sourceType == 0){
-        [self dismissVODControlPannel];
         [self presentLiveControlPannel];
         [self startPullStream];
-        
     }else if(self.sourceType == 1){
         [self dismissLiveControlPannel];
-        [self presentVODControlPannel];
-
-//        int height = [UIScreen mainScreen].bounds.size.height - self.viewControlPanel.frame.size.height/2;
-//        self.viewControlPanel.center = CGPointMake(self.viewControlPanel.center.x, height);
-//        [self.view addSubview:self.viewControlPanel];
         [self startPlayBack];
     }
-    
+}
+#pragma mark --PlayControlPanelDelegate--
+-(void)playControlPanelDidClickStartOrPauseButton:(JGPlayerControlPanel *)controlPanel{
+    if(controlPanel.state == JGPlayerControlState_Pause){
+        [[PPYPlayEngine shareInstance] resume];
+        controlPanel.state = JGPlayerControlState_Start;
+    }else if(controlPanel.state == JGPlayerControlState_Start){
+        [[PPYPlayEngine shareInstance] pause];
+         controlPanel.state = JGPlayerControlState_Pause;
+    }
+}
+-(void)playControlPanel:(JGPlayerControlPanel *)controlPanel didSliderValueChanged:(float)newValue{
+    [[PPYPlayEngine shareInstance] seekToPosition:newValue * [PPYPlayEngine shareInstance].duration];
 }
 
 #pragma mark ---PlayBack---
@@ -118,16 +135,6 @@
     [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
     
     self.isPlaying = YES;
-}
-
-- (IBAction)doPauseOrPlay:(id)sender {
-    if(self.isPlaying){
-        [[PPYPlayEngine shareInstance] pause];
-        self.isPlaying = NO;
-    }else{
-        [[PPYPlayEngine shareInstance] resume];
-        self.isPlaying = YES;
-    }
 }
 
 
@@ -147,10 +154,14 @@
     
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf doPullStream];
-        if(weakSelf.reconnectCount > 3){
-            weakSelf.reconnectCount = 0;
-            [weakSelf throwError:9];
+        if(weakSelf.sourceType == 0){
+            [weakSelf doPullStream];
+            if(weakSelf.reconnectCount > 3){
+                weakSelf.reconnectCount = 0;
+                [weakSelf throwError:9];
+            }
+        }else{
+            [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
         }
     });
 }
@@ -310,15 +321,6 @@
     [self.view updateConstraints];
 }
 
--(void)presentVODControlPannel{
-    self.constraitVODCtrToBottom.constant = 0;
-    [self.view updateConstraints];
-}
--(void)dismissVODControlPannel{
-    self.constraitVODCtrToBottom.constant = -1000;
-    [self.view updateConstraints];
-}
-
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
     
     UILabel *label = [[UILabel alloc]init];
@@ -449,7 +451,11 @@
         tip = @"主播回来了";
         [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
     }else if(errCode == 4){
-        tip = @"网络有些卡顿，正在拼命缓冲...";  //start caching
+        if(weakSelf.sourceType == 0){
+            tip = @"网络有些卡顿，正在拼命缓冲...";  //start caching
+        }else{
+            tip = @"正在缓冲...";
+        }
         [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
     }else if(errCode == 5){
         tip = @"网络卡顿恢复结束";             //end caching
@@ -487,5 +493,19 @@
         [[NotifyView getInstance] needShwoNotifyMessage:tip inView:weakSelf.view];
     }
     JPlayControllerLog(@"tip = %@",tip);
+}
+-(void)doRunloop{
+    __weak typeof(self) weakSelf = self;
+    NSTimeInterval  currentPlayTime = [PPYPlayEngine shareInstance].currentPlaybackTime;
+    NSTimeInterval duration = [PPYPlayEngine shareInstance].duration;
+    
+    NSLog(@"currentPlayTime = %f, duration = %f",currentPlayTime,duration);
+    if(currentPlayTime > 0 && duration > 0){
+        weakSelf.viewControlPanel.progress = [PPYPlayEngine shareInstance].currentPlaybackTime;
+        weakSelf.viewControlPanel.duration = [PPYPlayEngine shareInstance].duration;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [weakSelf doRunloop];
+    });
 }
 @end

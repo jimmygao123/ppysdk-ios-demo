@@ -839,7 +839,7 @@ static int count_ReDoSyncStart3min = 0;
 
 - (IBAction)doPlayBack:(id)sender {
     [self stopSyncStateToService];
-    [self.delegate needPlayBack:self.VODURL];
+//    [self.delegate needPlayBack:self.VODURL];
 }
 
 @end
