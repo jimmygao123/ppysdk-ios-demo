@@ -78,7 +78,7 @@ static NSString * reuseIdentifier = @"flowcell";
         self.playerType = PlayerType_Live;
         [self.flowView triggerPullToRefresh];
     }else if(self.playerType == PlayerType_Live){
-        [self dismissViewControllerAnimated:NO completion:nil];
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
@@ -215,7 +215,7 @@ static NSString * reuseIdentifier = @"flowcell";
             PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
             pullController.sourceType = PPYSourceType_Live;
             pullController.playAddress = RTMPURL;
-            [self presentViewController:pullController animated:YES completion:nil];
+            [self.navigationController pushViewController:pullController animated:NO];
         } FailuredBlock:^(int errCode, NSString *errInfo) {
             NSLog(@"流地址获取失败,errCode = %d,erroInfo = %@",errCode,errInfo);
         }];
@@ -227,7 +227,7 @@ static NSString * reuseIdentifier = @"flowcell";
         PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
         pullController.sourceType = PPYSourceType_VOD;
         pullController.playAddress = VODURL;
-        [self presentViewController:pullController animated:YES completion:nil];
+        [self.navigationController pushViewController:pullController animated:NO];
     }else{
     }
 }

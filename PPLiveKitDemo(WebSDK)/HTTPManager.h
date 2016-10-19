@@ -43,6 +43,9 @@ FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
                        Success:(void (^)(NSDictionary *))successBlock
                       Failured:(void (^)(NSError *))failuredBlock;
 
+-(void)fetchDetailInfoWithChannelWebID:(NSString *)channelID
+                               Success:(void (^)(NSDictionary *))successBlock
+                              Failured:(void (^)(NSError *))failuredBlock;
 
 -(NSData *)downloadWebImageWithURL:(NSString *)url;
 

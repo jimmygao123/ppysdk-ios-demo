@@ -17,6 +17,7 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 #define kURLSyncPushStateToServer @"http://115.231.44.26:8081/live/start"
 #define kURLSyncPushStopToServer @"http://115.231.44.26:8081/live/stop"
 #define kURLGetStreamStatus @"http://115.231.44.26:8081/live/status"
+#define kURLGetDetailInfo @"http://115.231.44.26:8081/live/detail"
 #define kURLGetLiveList @"http://115.231.44.26:8081/live/living/list"
 #define kURLGetVODList @"http://115.231.44.26:8081/live/vod/list"
 
@@ -102,6 +103,13 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
 }
 
+-(void)fetchDetailInfoWithChannelWebID:(NSString *)channelID
+                               Success:(void (^)(NSDictionary *))successBlock
+                              Failured:(void (^)(NSError *))failuredBlock{
+    NSString *requestURL = [NSString stringWithFormat:@"%@/%@",kURLGetDetailInfo,channelID];
+    NSLog(@"kURLGetDetailInfo = %@",requestURL);
+    [self requestURL:requestURL success:successBlock failured:failuredBlock];
+}
 #pragma mark --custom method--
 -(void)requestURL:(NSString *)url
           success:(void (^)(NSDictionary*))successBlock

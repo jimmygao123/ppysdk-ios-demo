@@ -104,10 +104,12 @@
             tip = @"当前使用Wi-Fi";
             break;
     }
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.mode = MBProgressHUDModeText;
-    hud.label.text = tip;
-    [hud hideAnimated:YES afterDelay:2.f];
+    if(value.integerValue != AFNetworkReachabilityStatusReachableViaWiFi){
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.mode = MBProgressHUDModeText;
+        hud.label.text = tip;
+        [hud hideAnimated:YES afterDelay:2.f];
+    }
 }
 
 #pragma mark --Action--

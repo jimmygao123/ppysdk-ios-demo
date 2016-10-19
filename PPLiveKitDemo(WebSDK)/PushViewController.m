@@ -74,6 +74,7 @@ typedef enum{
 @property (assign, nonatomic) BOOL isCheckingStreamStatus;
 @property (assign, nonatomic) BOOL isSyncStartSuccess;
 @property (copy, nonatomic) NSString *VODURL;
+@property (copy, nonatomic) NSString *channelID;
 
 #pragma mark --UIElement--
 @property (strong, nonatomic) UIView *fuzzyView;
@@ -392,9 +393,12 @@ static int count_doReconnectToServer3min = 0;
                 weakSelf.isSyncStartSuccess = YES;
                 [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
                     if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                        NSLog(@"____dic = %@",dic);
                         NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
                         NSString *m3u8Url = (NSString *)[data objectForKey:@"m3u8Url"];
+                        NSString *channelID = (NSString *)[data objectForKey:@"channelWebId"];
                         weakSelf.VODURL = m3u8Url;
+                        weakSelf.channelID = channelID;
                     }
                 } Failured:^(NSError *err) {
                 }];
@@ -463,18 +467,31 @@ static int count_ReDoSyncStart3min = 0;
 -(void)stopSyncStateToService{
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
-        
+
         if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-            if(self.VODURL){
-                 [weakSelf.view addSubview:weakSelf.viewEndLiving];
+            if(weakSelf.VODURL && weakSelf.channelID){
+                [[HTTPManager shareInstance] fetchDetailInfoWithChannelWebID:weakSelf.channelID Success:^(NSDictionary *dic) {
+                    if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                        NSNumber *duration = (NSNumber *)[[dic objectForKey:@"data"] objectForKey:@"duration"];
+                        if(duration.integerValue > 10){
+                            [weakSelf.view addSubview:weakSelf.viewEndLiving];
+                        }else{
+                            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                        }
+                    }else{
+                        [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                    }
+                } Failured:^(NSError *err) {
+                    [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+                }];
             }else{
-                [weakSelf.navigationController popViewControllerAnimated:NO];
+                [weakSelf.navigationController popToRootViewControllerAnimated:NO];
             }
         }else{
-             [weakSelf.navigationController popViewControllerAnimated:NO];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         }
     } failured:^(NSError *err) {
-        [weakSelf.navigationController popViewControllerAnimated:NO];
+        [weakSelf.navigationController popToRootViewControllerAnimated:NO];
     }];
 }
 

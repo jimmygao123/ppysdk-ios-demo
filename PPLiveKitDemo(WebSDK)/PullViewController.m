@@ -11,6 +11,7 @@
 #import "NotifyView.h"
 #import "MBProgressHUD.h"
 #import "JGPlayerControlPanel.h"
+#import "PushViewController.h"
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
@@ -45,8 +46,15 @@
 
 #pragma mark --Action--
 - (IBAction)doExit:(id)sender {
-    [self dismissViewControllerAnimated:NO completion:nil];
+    for(id vc in self.navigationController.viewControllers){
+        if([vc isKindOfClass:[PushViewController class]]){
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        }else{
+            [self.navigationController popViewControllerAnimated:NO];
+        }
+    }
 }
+
 - (IBAction)doShowData:(id)sender {
     self.lblBitrate.hidden = self.isDataShowed;
     self.lblFPS.hidden = self.isDataShowed;
@@ -379,7 +387,7 @@
             [self doPullStream];
         }];
         UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"退出" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         }];
         [alert addAction:btnOK];
         [alert addAction:btnCancel];

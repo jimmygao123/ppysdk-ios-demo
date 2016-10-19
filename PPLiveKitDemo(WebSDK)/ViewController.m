@@ -42,6 +42,6 @@
 
 - (IBAction)doPull:(id)sender {
     PlayListController *playListVC = [[PlayListController alloc]initWithNibName:@"PlayListController" bundle:nil];
-    [self presentViewController:playListVC animated:NO completion:nil];
+    [self.navigationController pushViewController:playListVC animated:YES];
 }
 @end
