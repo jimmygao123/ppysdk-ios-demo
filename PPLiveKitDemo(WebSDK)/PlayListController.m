@@ -126,6 +126,7 @@ static NSString * reuseIdentifier = @"flowcell";
         self.liveList = array;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.flowView.pullToRefreshView stopAnimating];
+            [self.flowView.infiniteScrollingView stopAnimating];
         });
         
     }else if(self.pageNum > 1){   //上拉加载需要累加
@@ -168,6 +169,7 @@ static NSString * reuseIdentifier = @"flowcell";
         self.VODList = array;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.flowView.pullToRefreshView stopAnimating];
+            [self.flowView.infiniteScrollingView stopAnimating];
         });
         
     }else if(self.pageNum > 1){   //上拉加载需要累加

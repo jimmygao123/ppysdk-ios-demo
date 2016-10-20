@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		84E1DD031DAE071F0079D0B6 /* 开始播放@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DCFF1DAE071F0079D0B6 /* 开始播放@2x.png */; };
-		84E1DD041DAE071F0079D0B6 /* 开始播放@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD001DAE071F0079D0B6 /* 开始播放@3x.png */; };
-		84E1DD051DAE071F0079D0B6 /* 暂停播放@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD011DAE071F0079D0B6 /* 暂停播放@2x.png */; };
-		84E1DD061DAE071F0079D0B6 /* 暂停播放3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD021DAE071F0079D0B6 /* 暂停播放3x.png */; };
+		84E1DD031DAE071F0079D0B6 /* startplay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DCFF1DAE071F0079D0B6 /* startplay@2x.png */; };
+		84E1DD041DAE071F0079D0B6 /* startplay@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD001DAE071F0079D0B6 /* startplay@3x.png */; };
+		84E1DD051DAE071F0079D0B6 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD011DAE071F0079D0B6 /* pause@2x.png */; };
+		84E1DD061DAE071F0079D0B6 /* pause@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD021DAE071F0079D0B6 /* pause@3x.png */; };
 		84E1DD521DAF1FEA0079D0B6 /* PlayListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DD501DAF1FEA0079D0B6 /* PlayListController.m */; };
 		84E1DD531DAF1FEA0079D0B6 /* PlayListController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DD511DAF1FEA0079D0B6 /* PlayListController.xib */; };
 		84E1DDB21DAF567C0079D0B6 /* 标注合集.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDA51DAF567C0079D0B6 /* 标注合集.jpg */; };
@@ -171,10 +171,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		84E1DCFF1DAE071F0079D0B6 /* 开始播放@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "开始播放@2x.png"; path = "icon/PullViewController/开始播放@2x.png"; sourceTree = "<group>"; };
-		84E1DD001DAE071F0079D0B6 /* 开始播放@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "开始播放@3x.png"; path = "icon/PullViewController/开始播放@3x.png"; sourceTree = "<group>"; };
-		84E1DD011DAE071F0079D0B6 /* 暂停播放@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "暂停播放@2x.png"; path = "icon/PullViewController/暂停播放@2x.png"; sourceTree = "<group>"; };
-		84E1DD021DAE071F0079D0B6 /* 暂停播放3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "暂停播放3x.png"; path = "icon/PullViewController/暂停播放3x.png"; sourceTree = "<group>"; };
+		84E1DCFF1DAE071F0079D0B6 /* startplay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "startplay@2x.png"; path = "icon/PullViewController/startplay@2x.png"; sourceTree = "<group>"; };
+		84E1DD001DAE071F0079D0B6 /* startplay@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "startplay@3x.png"; path = "icon/PullViewController/startplay@3x.png"; sourceTree = "<group>"; };
+		84E1DD011DAE071F0079D0B6 /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause@2x.png"; path = "icon/PullViewController/pause@2x.png"; sourceTree = "<group>"; };
+		84E1DD021DAE071F0079D0B6 /* pause@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pause@3x.png"; path = "icon/PullViewController/pause@3x.png"; sourceTree = "<group>"; };
 		84E1DD4F1DAF1FEA0079D0B6 /* PlayListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListController.h; sourceTree = "<group>"; };
 		84E1DD501DAF1FEA0079D0B6 /* PlayListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayListController.m; sourceTree = "<group>"; };
 		84E1DD511DAF1FEA0079D0B6 /* PlayListController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayListController.xib; sourceTree = "<group>"; };
@@ -570,10 +570,10 @@
 		BF53F14C1D7FE189002700AD /* PullViewController */ = {
 			isa = PBXGroup;
 			children = (
-				84E1DCFF1DAE071F0079D0B6 /* 开始播放@2x.png */,
-				84E1DD001DAE071F0079D0B6 /* 开始播放@3x.png */,
-				84E1DD011DAE071F0079D0B6 /* 暂停播放@2x.png */,
-				84E1DD021DAE071F0079D0B6 /* 暂停播放3x.png */,
+				84E1DCFF1DAE071F0079D0B6 /* startplay@2x.png */,
+				84E1DD001DAE071F0079D0B6 /* startplay@3x.png */,
+				84E1DD011DAE071F0079D0B6 /* pause@2x.png */,
+				84E1DD021DAE071F0079D0B6 /* pause@3x.png */,
 				BFFADA861D923270007ADF56 /* p数据分析-禁用@2x.png */,
 				BFFADA871D923270007ADF56 /* p数据分析-禁用@3x.png */,
 				BFFADA881D923270007ADF56 /* p数据分析-启用@2x.png */,
@@ -820,8 +820,8 @@
 				BF53F1AC1D8020E7002700AD /* 矩形-16@3x.png in Resources */,
 				BF0E85771D728A2500681A44 /* focus2.png in Resources */,
 				BF53F1781D800ADC002700AD /* 流畅-暗@3x.png in Resources */,
-				84E1DD061DAE071F0079D0B6 /* 暂停播放3x.png in Resources */,
-				84E1DD031DAE071F0079D0B6 /* 开始播放@2x.png in Resources */,
+				84E1DD061DAE071F0079D0B6 /* pause@3x.png in Resources */,
+				84E1DD031DAE071F0079D0B6 /* startplay@2x.png in Resources */,
 				BF53F1B81D8020E7002700AD /* 闪光灯-启用@3x.png in Resources */,
 				84E1DDB21DAF567C0079D0B6 /* 标注合集.jpg in Resources */,
 				BF53F1B41D8020E7002700AD /* 美颜-启用@3x.png in Resources */,
@@ -845,7 +845,7 @@
 				BF53F1BD1D8020E7002700AD /* 显性@2x.png in Resources */,
 				84E1DDBE1DAF567C0079D0B6 /* sss@3x.png in Resources */,
 				BF53F1B31D8020E7002700AD /* 美颜-启用@2x.png in Resources */,
-				84E1DD051DAE071F0079D0B6 /* 暂停播放@2x.png in Resources */,
+				84E1DD051DAE071F0079D0B6 /* pause@2x.png in Resources */,
 				BF53F15A1D7FE1A8002700AD /* 组-15@3x.png in Resources */,
 				BF53F1B51D8020E7002700AD /* 闪光灯-禁用@2x.png in Resources */,
 				84E1DDB91DAF567C0079D0B6 /* 组-6@2x.png in Resources */,
@@ -867,7 +867,7 @@
 				BF8AF7261D716A72009731FB /* lsq_icon_flash_off.png in Resources */,
 				84E1DDDD1DB463420079D0B6 /* defalutFlow@2x.png in Resources */,
 				BF53F1C41D8020E7002700AD /* 形状-11@3x.png in Resources */,
-				84E1DD041DAE071F0079D0B6 /* 开始播放@3x.png in Resources */,
+				84E1DD041DAE071F0079D0B6 /* startplay@3x.png in Resources */,
 				BF53F1571D7FE1A8002700AD /* 组-14@2x.png in Resources */,
 				BFFADA8C1D923270007ADF56 /* p数据分析-启用@2x.png in Resources */,
 				BF53F1C61D8020E7002700AD /* 形状-13@3x.png in Resources */,

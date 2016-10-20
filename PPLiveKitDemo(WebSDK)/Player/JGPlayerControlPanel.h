@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(int,JGPlayerControlState){
+    JGPlayerControlState_Init,
     JGPlayerControlState_Start,
     JGPlayerControlState_Pause,
 };

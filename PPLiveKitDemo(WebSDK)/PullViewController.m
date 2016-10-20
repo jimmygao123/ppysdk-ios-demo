@@ -70,6 +70,7 @@
     [self initUI];
     [PPYPlayEngine shareInstance].delegate = self;
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
+    [[PPYPlayEngine shareInstance] setPreviewRect:[UIScreen mainScreen].bounds];
 }
 -(void)initData{
     self.isDataShowed = YES;
@@ -126,14 +127,19 @@
 }
 #pragma mark --PlayControlPanelDelegate--
 -(void)playControlPanelDidClickStartOrPauseButton:(JGPlayerControlPanel *)controlPanel{
-    if(controlPanel.state == JGPlayerControlState_Pause){
-        [[PPYPlayEngine shareInstance] resume];
-        controlPanel.state = JGPlayerControlState_Start;
-    }else if(controlPanel.state == JGPlayerControlState_Start){
-        [[PPYPlayEngine shareInstance] pause];
-         controlPanel.state = JGPlayerControlState_Pause;
+    switch (controlPanel.state) {
+        case JGPlayerControlState_Init:
+            [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
+            break;
+        case JGPlayerControlState_Start:
+            [[PPYPlayEngine shareInstance] resume];
+            break;
+        case JGPlayerControlState_Pause:
+            [[PPYPlayEngine shareInstance] pause];
+            break;
     }
 }
+
 -(void)playControlPanel:(JGPlayerControlPanel *)controlPanel didSliderValueChanged:(float)newValue{
     [[PPYPlayEngine shareInstance] seekToPosition:newValue * [PPYPlayEngine shareInstance].duration];
 }
@@ -188,6 +194,9 @@
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+        if(weakSelf.sourceType == 1){
+            weakSelf.viewControlPanel.state = JGPlayerControlState_Init;
+        }
         [weakSelf doPullStream];
         weakSelf.reconnectCountOfCaching ++;
         if(weakSelf.reconnectCountOfCaching > 6){  //1min
@@ -243,7 +252,10 @@
         case PPYPlayEngineInfo_RealFPS:
             self.lblFPS.text = [NSString stringWithFormat:@" 帧率：%d帧/秒",value];
         case PPYPlayEngineInfo_BufferingUpdatePercent:
-            
+            break;
+        case PPYPlayEngineInfo_Duration:
+            self.viewControlPanel.duration = value;
+            self.viewControlPanel.state = JGPlayerControlState_Start;
             break;
     }
     JPlayControllerLog(@"type = %d,value = %d",type,value);
@@ -267,6 +279,9 @@
             [self throwError:5];
             break;
         case PPYPlayEngineStatus_FisrtKeyFrameComing:
+            if(self.sourceType == 1){
+                
+            }
             [self throwError:6];
             break;
         case PPYPlayEngineStatus_RenderingStart:
@@ -274,7 +289,7 @@
         case PPYPlayEngineStatus_ReceiveEOF:
             [self throwError:8];
             if(self.sourceType == 1){
-                
+                self.viewControlPanel.state = JGPlayerControlState_Init;
             }else{
                 [self startPullStream];
             }
@@ -299,18 +314,29 @@
             
         case AFNetworkReachabilityStatusNotReachable:
             [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+            if(self.sourceType == 1){
+                self.viewControlPanel.state = JGPlayerControlState_Init;
+            }
             [self throwError:11];
             break;
             
         case AFNetworkReachabilityStatusReachableViaWWAN:
             [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
-            [self startPullStream];
+            if(self.sourceType == 1){
+                self.viewControlPanel.state = JGPlayerControlState_Init;
+            }else{
+                [self startPullStream];
+            }
             break;
             
         case AFNetworkReachabilityStatusReachableViaWiFi:
             [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
             [self throwError:12];
-            [self doPullStream];
+            if(self.sourceType == 1){
+                self.viewControlPanel.state = JGPlayerControlState_Init;
+            }else{
+                [self startPullStream];
+            }
             break;
     }
 }
@@ -399,6 +425,9 @@
 }
 
 -(void)doPullStream{
+    if(self.sourceType == 1)
+        return;
+    
     __weak typeof(self)weakSelf = self;
     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
         if(dic != nil){
@@ -505,13 +534,11 @@
 -(void)doRunloop{
     __weak typeof(self) weakSelf = self;
     NSTimeInterval  currentPlayTime = [PPYPlayEngine shareInstance].currentPlaybackTime;
-    NSTimeInterval duration = [PPYPlayEngine shareInstance].duration;
     
-    NSLog(@"currentPlayTime = %f, duration = %f",currentPlayTime,duration);
-    if(currentPlayTime > 0 && duration > 0){
-        weakSelf.viewControlPanel.progress = [PPYPlayEngine shareInstance].currentPlaybackTime;
-        weakSelf.viewControlPanel.duration = [PPYPlayEngine shareInstance].duration;
-    }
+    NSLog(@"currentPlayTime = %f,",currentPlayTime);
+    
+    weakSelf.viewControlPanel.progress = [PPYPlayEngine shareInstance].currentPlaybackTime;
+    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [weakSelf doRunloop];
     });

@@ -20,10 +20,10 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nYD-fI-C5A">
-                    <rect key="frame" x="0.0" y="48" width="320" height="520"/>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nYD-fI-C5A">
+                    <rect key="frame" x="0.0" y="66" width="320" height="502"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bXt-Mw-aqV">
-                        <size key="itemSize" width="50" height="50"/>
+                        <size key="itemSize" width="200" height="200"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -60,7 +60,7 @@
                 <constraint firstAttribute="trailing" secondItem="nYD-fI-C5A" secondAttribute="trailing" id="4Gf-kj-vXO"/>
                 <constraint firstAttribute="bottom" secondItem="nYD-fI-C5A" secondAttribute="bottom" id="57K-7a-vHr"/>
                 <constraint firstItem="faD-EU-Apy" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="22" id="CeT-v4-Kho"/>
-                <constraint firstItem="nYD-fI-C5A" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="-195" id="EMj-Qj-84c"/>
+                <constraint firstItem="nYD-fI-C5A" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="-177" id="EMj-Qj-84c"/>
                 <constraint firstItem="qVq-g4-EBp" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="8" id="RSN-U4-S7N"/>
                 <constraint firstItem="qVq-g4-EBp" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="fQ9-ys-Tbm"/>
                 <constraint firstItem="faD-EU-Apy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="hos-vB-J5A"/>

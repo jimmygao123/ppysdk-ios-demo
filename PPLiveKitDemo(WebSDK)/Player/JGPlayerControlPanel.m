@@ -28,13 +28,9 @@
 
 - (void)awakeFromNib{
     [super awakeFromNib];
-    UIImage *startImage = [UIImage imageNamed:@"开始播放.png"];
-    [self.btnStartOrPause setBackgroundImage:startImage forState:UIControlStateNormal];
-    [self.sliderProgress setValue:0 animated:NO];
-    self.sliderProgress.continuous = NO;
-    self.lblTime.text = @"00:00:00/00:00:00";
-    self.state = JGPlayerControlState_Start;
+    
 }
+
 
 +(instancetype)playerControlPanel{
     JGPlayerControlPanelOwner *owner = [[JGPlayerControlPanelOwner alloc]init];
@@ -42,7 +38,50 @@
     return owner.controlPanel;
 }
 
+
+-(void)setState:(JGPlayerControlState)state{
+    if(_state == state){
+        return;
+    }
+    _state = state;
+    UIImage *startImage = [UIImage imageNamed:@"startplay.png"];
+    UIImage *pauseImage = [UIImage imageNamed:@"pause.png"];
+    switch (_state) {
+        case JGPlayerControlState_Init:
+        
+            [self.btnStartOrPause setBackgroundImage:startImage forState:UIControlStateNormal];
+            [self.sliderProgress setValue:0 animated:NO];
+            self.sliderProgress.continuous = NO;
+            self.lblTime.text = @"00:00:00/00:00:00";
+        
+            break;
+        case JGPlayerControlState_Start:
+            [self.btnStartOrPause setBackgroundImage:pauseImage forState:UIControlStateNormal];
+        
+            break;
+        case JGPlayerControlState_Pause:
+        
+            [self.btnStartOrPause setBackgroundImage:startImage forState:UIControlStateNormal];
+        
+            break;
+    }
+}
+
 - (IBAction)doStartOrPause:(id)sender {
+    switch (self.state) {
+        case JGPlayerControlState_Init:
+            break;
+            
+        case JGPlayerControlState_Pause:
+            self.state = JGPlayerControlState_Start;
+            break;
+        case JGPlayerControlState_Start:
+            self.state = JGPlayerControlState_Pause;
+            break;
+            
+        default:
+            break;
+    }
     [self.delegate playControlPanelDidClickStartOrPauseButton:self];
 }
 
@@ -53,22 +92,27 @@
     [self.delegate playControlPanel:self didSliderValueChanged:slider.value];
 }
 
--(void)setState:(JGPlayerControlState)state{
-    _state = state;
-    if(state == JGPlayerControlState_Start){
-        [self.btnStartOrPause setBackgroundImage:[UIImage imageNamed:@"暂停播放.png"] forState:UIControlStateNormal];
-    }else{
-        [self.btnStartOrPause setBackgroundImage:[UIImage imageNamed:@"开始播放.png"] forState:UIControlStateNormal];
-    }
-}
-
 -(void)setProgress:(NSTimeInterval)progress{
-    _progress = progress;
-    if(self.duration > 0){
-        float percent = self.progress/self.duration;
-        [self.sliderProgress setValue:percent animated:NO];
+    if(self.duration < 0 || progress < 0){
+        _progress = 0;
+        return;
     }
-    NSString *text = [NSString stringWithFormat:@"%@/%@",[self convertSecondsToTimeFormat:progress],self.durationDescription];
+    
+    if(_progress == progress)
+        return;
+    
+    _progress = progress;
+    
+    NSString *text = nil;
+    if(self.duration == 0){
+        self.lblTime.text = @"00:00:00/00:00:00";
+        return;
+    }
+    
+    float percent = _progress/self.duration;
+    [self.sliderProgress setValue:percent animated:NO];
+    
+    text = [NSString stringWithFormat:@"%@/%@",[self convertSecondsToTimeFormat:progress],self.durationDescription];
     self.lblTime.text = text;
 }
 
