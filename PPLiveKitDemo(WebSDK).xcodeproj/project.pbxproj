@@ -33,6 +33,9 @@
 		84E1DDD81DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */; };
 		84E1DDDD1DB463420079D0B6 /* defalutFlow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDDB1DB463420079D0B6 /* defalutFlow@2x.png */; };
 		84E1DDDE1DB463420079D0B6 /* defalutFlow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84E1DDDC1DB463420079D0B6 /* defalutFlow@3x.png */; };
+		84E1DE3D1DB9E30B0079D0B6 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DE391DB9E30B0079D0B6 /* NSObject+YYModel.m */; };
+		84E1DE3E1DB9E30B0079D0B6 /* YYClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DE3B1DB9E30B0079D0B6 /* YYClassInfo.m */; };
+		84E1DE421DB9ED700079D0B6 /* WatchModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E1DE411DB9ED700079D0B6 /* WatchModel.m */; };
 		BF0E85731D728A2500681A44 /* beauty_off.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85661D728A2500681A44 /* beauty_off.png */; };
 		BF0E85741D728A2500681A44 /* beauty_on.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85671D728A2500681A44 /* beauty_on.png */; };
 		BF0E85751D728A2500681A44 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = BF0E85681D728A2500681A44 /* close.png */; };
@@ -203,6 +206,13 @@
 		84E1DDD61DB06DEC0079D0B6 /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SVPullToRefresh.m"; path = "OpenSource/SVPullToRefresh/UIScrollView+SVPullToRefresh.m"; sourceTree = SOURCE_ROOT; };
 		84E1DDDB1DB463420079D0B6 /* defalutFlow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "defalutFlow@2x.png"; path = "Player/切图标注/defalutFlow@2x.png"; sourceTree = "<group>"; };
 		84E1DDDC1DB463420079D0B6 /* defalutFlow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "defalutFlow@3x.png"; path = "Player/切图标注/defalutFlow@3x.png"; sourceTree = "<group>"; };
+		84E1DE381DB9E30B0079D0B6 /* NSObject+YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+YYModel.h"; path = "OpenSource/YYModel/NSObject+YYModel.h"; sourceTree = SOURCE_ROOT; };
+		84E1DE391DB9E30B0079D0B6 /* NSObject+YYModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+YYModel.m"; path = "OpenSource/YYModel/NSObject+YYModel.m"; sourceTree = SOURCE_ROOT; };
+		84E1DE3A1DB9E30B0079D0B6 /* YYClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = YYClassInfo.h; path = OpenSource/YYModel/YYClassInfo.h; sourceTree = SOURCE_ROOT; };
+		84E1DE3B1DB9E30B0079D0B6 /* YYClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = YYClassInfo.m; path = OpenSource/YYModel/YYClassInfo.m; sourceTree = SOURCE_ROOT; };
+		84E1DE3C1DB9E30B0079D0B6 /* YYModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = YYModel.h; path = OpenSource/YYModel/YYModel.h; sourceTree = SOURCE_ROOT; };
+		84E1DE401DB9ED700079D0B6 /* WatchModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WatchModel.h; path = WebSDKModels/WatchModel.h; sourceTree = "<group>"; };
+		84E1DE411DB9ED700079D0B6 /* WatchModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WatchModel.m; path = WebSDKModels/WatchModel.m; sourceTree = "<group>"; };
 		BF0E85661D728A2500681A44 /* beauty_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_off.png; path = icons/beauty_off.png; sourceTree = SOURCE_ROOT; };
 		BF0E85671D728A2500681A44 /* beauty_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = beauty_on.png; path = icons/beauty_on.png; sourceTree = SOURCE_ROOT; };
 		BF0E85681D728A2500681A44 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = close.png; path = icons/close.png; sourceTree = SOURCE_ROOT; };
@@ -413,6 +423,27 @@
 				BFF6133D1D70394C0064FB81 /* NotifyView.m */,
 			);
 			name = "自定义界面";
+			sourceTree = "<group>";
+		};
+		84E1DE371DB9E2F50079D0B6 /* YYModel */ = {
+			isa = PBXGroup;
+			children = (
+				84E1DE381DB9E30B0079D0B6 /* NSObject+YYModel.h */,
+				84E1DE391DB9E30B0079D0B6 /* NSObject+YYModel.m */,
+				84E1DE3A1DB9E30B0079D0B6 /* YYClassInfo.h */,
+				84E1DE3B1DB9E30B0079D0B6 /* YYClassInfo.m */,
+				84E1DE3C1DB9E30B0079D0B6 /* YYModel.h */,
+			);
+			name = YYModel;
+			sourceTree = "<group>";
+		};
+		84E1DE3F1DB9ECEE0079D0B6 /* webSDKModels */ = {
+			isa = PBXGroup;
+			children = (
+				84E1DE401DB9ED700079D0B6 /* WatchModel.h */,
+				84E1DE411DB9ED700079D0B6 /* WatchModel.m */,
+			);
+			name = webSDKModels;
 			sourceTree = "<group>";
 		};
 		BF0E85651D728A0F00681A44 /* Icons2 */ = {
@@ -651,6 +682,7 @@
 		BFF80D081DA4EECA00588F3F /* WebSDK */ = {
 			isa = PBXGroup;
 			children = (
+				84E1DE3F1DB9ECEE0079D0B6 /* webSDKModels */,
 				BF375D001D6FDA03009C0E57 /* HTTPManager.h */,
 				BF375D011D6FDA03009C0E57 /* HTTPManager.m */,
 			);
@@ -672,6 +704,7 @@
 			isa = PBXGroup;
 			children = (
 				84E1DDD11DB06D740079D0B6 /* SVPullToRefresh */,
+				84E1DE371DB9E2F50079D0B6 /* YYModel */,
 				BFFADA611D912410007ADF56 /* AFNetworking */,
 				BFFADA601D9123E7007ADF56 /* MBProgressHUD */,
 			);
@@ -905,7 +938,9 @@
 				BF375CD01D6F12B7009C0E57 /* ViewController.m in Sources */,
 				84E1DDC21DAF59390079D0B6 /* FlowCell.m in Sources */,
 				BF375CCD1D6F12B7009C0E57 /* AppDelegate.m in Sources */,
+				84E1DE3D1DB9E30B0079D0B6 /* NSObject+YYModel.m in Sources */,
 				BFFADA701D91241F007ADF56 /* AFNetworkReachabilityManager.m in Sources */,
+				84E1DE421DB9ED700079D0B6 /* WatchModel.m in Sources */,
 				BFFADA741D91241F007ADF56 /* AFURLSessionManager.m in Sources */,
 				BFFADA721D91241F007ADF56 /* AFURLRequestSerialization.m in Sources */,
 				BF53F1601D8003B9002700AD /* ConfigurationViewController.m in Sources */,
@@ -919,6 +954,7 @@
 				BF375CEA1D6F183C009C0E57 /* PushViewController.m in Sources */,
 				84E1DDD71DB06DEC0079D0B6 /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				BF375D021D6FDA03009C0E57 /* HTTPManager.m in Sources */,
+				84E1DE3E1DB9E30B0079D0B6 /* YYClassInfo.m in Sources */,
 				BFF80D0B1DA4F4EF00588F3F /* PushVCHelper.m in Sources */,
 				BFFADA911D93840E007ADF56 /* MessageManager.m in Sources */,
 				BFF6133E1D70394C0064FB81 /* NotifyView.m in Sources */,

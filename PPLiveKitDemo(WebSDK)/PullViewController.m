@@ -12,6 +12,7 @@
 #import "MBProgressHUD.h"
 #import "JGPlayerControlPanel.h"
 #import "PushViewController.h"
+#import "WatchModel.h"
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
@@ -25,12 +26,14 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblRes;
 //live
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitLiveCtrToBottom;
+@property (weak, nonatomic) IBOutlet UIButton *btnRes;
+@property (weak, nonatomic) IBOutlet UIButton *btnPlayProtocol;
 
 @property (strong, nonatomic) UIView *fuzzyView;
 
 @property (strong, nonatomic) JGPlayerControlPanel *viewControlPanel;
+@property (strong, nonatomic) IBOutlet UIView *viewLivingPlayCtr;
+
 
 @property (assign, nonatomic) BOOL isPlaying;
 @property (assign, nonatomic) BOOL isReconnecting;
@@ -64,6 +67,36 @@
     [self.btnData setBackgroundImage:[UIImage imageNamed:(self.isDataShowed ? @"p数据分析-启用" : @"p数据分析-禁用")] forState:UIControlStateNormal];
 }
 
+- (IBAction)doClick:(id)sender {
+    NSLog(@"click button here");
+}
+
+- (IBAction)doSelectRes:(id)sender {
+    UIButton *btn = (UIButton *)sender;
+    
+    NSDictionary *dic = self.usefulInfo;
+    WatchModel *model = [WatchModel yy_modelWithDictionary:dic];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    for(RTMPModel *rtmpModel in model.rtmpsUrl){
+        UIAlertAction *action = [UIAlertAction actionWithTitle:rtmpModel.ftCn style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+            self.playAddress = rtmpModel.rtmpUrl;
+            [[PPYPlayEngine shareInstance] startPlayFromURL:rtmpModel.rtmpUrl WithType:PPYSourceType_Live];
+            [btn setTitle:rtmpModel.ftCn forState:UIControlStateNormal];
+        }];
+        [alert addAction:action];
+    }
+    [self presentViewController:alert animated:YES completion:nil];
+}
+- (IBAction)doSwitchPlayProtocol:(id)sender {
+    NSDictionary *dic = self.usefulInfo;
+    WatchModel *model = [WatchModel yy_modelWithDictionary:dic];
+    
+    
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initData];
@@ -85,7 +118,7 @@
     if(self.sourceType == 1){
         [self doShowData:nil];
     };
-    [self dismissLiveControlPannel];
+    
     if(self.sourceType == 1){
         self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
         CGRect screenSize = [UIScreen mainScreen].bounds;
@@ -96,6 +129,11 @@
         
         self.viewControlPanel.delegate = self;
         [self doRunloop];  //update progress
+    }else{
+        if(self.sourceType == 0){
+            self.viewLivingPlayCtr.center = self.view.center;
+            [self.view addSubview:self.viewLivingPlayCtr];
+        }
     }
     
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
@@ -118,10 +156,10 @@
     [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
 
     if(self.sourceType == 0){
-        [self presentLiveControlPannel];
+
         [self startPullStream];
     }else if(self.sourceType == 1){
-        [self dismissLiveControlPannel];
+
         [self startPlayBack];
     }
 }
@@ -344,16 +382,6 @@
 
 
 #pragma mark --UIElelment--
-
-
--(void)presentLiveControlPannel{
-    self.constraitLiveCtrToBottom.constant = 0;
-    [self.view updateConstraints];
-}
--(void)dismissLiveControlPannel{
-    self.constraitLiveCtrToBottom.constant = -1000;
-    [self.view updateConstraints];
-}
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
     

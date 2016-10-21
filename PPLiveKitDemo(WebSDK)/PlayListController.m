@@ -217,6 +217,7 @@ static NSString * reuseIdentifier = @"flowcell";
             PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
             pullController.sourceType = PPYSourceType_Live;
             pullController.playAddress = RTMPURL;
+            pullController.usefulInfo = dic;
             [self.navigationController pushViewController:pullController animated:NO];
         } FailuredBlock:^(int errCode, NSString *errInfo) {
             NSLog(@"流地址获取失败,errCode = %d,erroInfo = %@",errCode,errInfo);
