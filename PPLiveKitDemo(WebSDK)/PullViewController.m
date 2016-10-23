@@ -85,16 +85,41 @@
             [[PPYPlayEngine shareInstance] startPlayFromURL:rtmpModel.rtmpUrl WithType:PPYSourceType_Live];
             [btn setTitle:rtmpModel.ftCn forState:UIControlStateNormal];
         }];
+        
         [alert addAction:action];
     }
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:cancel];
+    
     [self presentViewController:alert animated:YES completion:nil];
 }
 - (IBAction)doSwitchPlayProtocol:(id)sender {
+    UIButton *btn = (UIButton *)sender;
+    
     NSDictionary *dic = self.usefulInfo;
     WatchModel *model = [WatchModel yy_modelWithDictionary:dic];
     
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
-    
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"RTMP" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+        self.playAddress = model.rtmpUrl;
+        [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
+        [btn setTitle:@"RTMP" forState:UIControlStateNormal];
+    }];
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"HTTP-FLV" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+        self.playAddress = model.hdlUrl;
+        [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
+        [btn setTitle:@"HTTP-FLV" forState:UIControlStateNormal];
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+
+    [alert addAction:action];
+    [alert addAction:action1];
+    [alert addAction:cancel];
+   
+    [self presentViewController:alert animated:NO completion:nil];
 }
 
 - (void)viewDidLoad {
