@@ -33,7 +33,7 @@
 
 @property (strong, nonatomic) JGPlayerControlPanel *viewControlPanel;
 @property (strong, nonatomic) IBOutlet UIView *viewLivingPlayCtr;
-
+@property (strong, nonatomic) NSTimer *timer;
 
 @property (assign, nonatomic) BOOL isPlaying;
 @property (assign, nonatomic) BOOL isReconnecting;
@@ -123,10 +123,27 @@
     [self presentViewController:alert animated:NO completion:nil];
 }
 
+#pragma mark - load
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initData];
-    //[self initUI];
+}
+
+- (void)requestPlayInfo
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
+    
+    self.isInitLoading = YES;
+    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
+    
+    self.btnExit.hidden = self.isWindowPlayer;
+    
+    if(self.sourceType == PPYSourceType_Live){
+        
+        [self startPullStream];
+    }else if(self.sourceType == PPYSourceType_VOD){
+        
+        [self startPlayBack];
+    }
 }
 
 - (void)preparePlayerView
@@ -134,11 +151,11 @@
     [PPYPlayEngine shareInstance].delegate = self;
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-}
-
--(void)initData{
-    self.isDataShowed = YES;
+    
+    [self performSelector:@selector(requestPlayInfo) withObject:nil afterDelay:0.5];
+    
     self.reconnectCount = 0;
+    [self initUI];
 }
 
 -(void)initUI{
@@ -147,11 +164,11 @@
     self.lblRoomID.textColor = [UIColor whiteColor];
     self.lblRes.textColor = [UIColor whiteColor];
    
-    if(self.sourceType == 1){
+    if(self.sourceType == PPYSourceType_VOD){
         [self doShowData:nil];
     };
     
-    if(self.sourceType == 1){
+    if(self.sourceType == PPYSourceType_VOD && !self.isWindowPlayer){
         self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
         CGRect screenSize = [UIScreen mainScreen].bounds;
         
@@ -160,42 +177,24 @@
         [self.view addSubview:self.viewControlPanel];
         
         self.viewControlPanel.delegate = self;
-        [self doRunloop];  //update progress
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
     }else{
-        if(self.sourceType == 0){
+        if(self.sourceType == PPYSourceType_Live){
             self.viewLivingPlayCtr.center = self.view.center;
             [self.view addSubview:self.viewLivingPlayCtr];
         }
     }
     
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
+    if (self.sourceType == PPYSourceType_VOD) {
+        self.lblRoomID.hidden = YES;
+    } else {
+        self.lblRoomID.hidden = NO;
+    }
     self.lblRoomID.layer.cornerRadius = 10;
     self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
     self.lblRoomID.layer.masksToBounds = YES;
     [self.lblRoomID clipsToBounds];
-    if(self.sourceType == 0){
-        self.lblRoomID.hidden = NO;
-    }else{
-        self.lblRoomID.hidden = YES;
-    }
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
-
-    self.isInitLoading = YES;
-    //[self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-    
-    self.btnExit.hidden = self.isWindowPlayer;
-    
-    if(self.sourceType == 0){
-
-        [self startPullStream];
-    }else if(self.sourceType == 1){
-
-        [self startPlayBack];
-    }
 }
 
 #pragma mark --PlayControlPanelDelegate--
@@ -235,13 +234,18 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
     
     [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:YES];
+    
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
 }
 
 -(void)reconnect{
     
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if(weakSelf.sourceType == 0){
+        if(weakSelf.sourceType == PPYSourceType_Live){
             [weakSelf doPullStream];
             if(weakSelf.reconnectCount > 3){
                 weakSelf.reconnectCount = 0;
@@ -268,7 +272,7 @@
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
-        if(weakSelf.sourceType == 1){
+        if(weakSelf.sourceType == PPYSourceType_VOD){
             weakSelf.viewControlPanel.state = JGPlayerControlState_Init;
         }
         [weakSelf doPullStream];
@@ -356,7 +360,7 @@
             [self throwError:5];
             break;
         case PPYPlayEngineStatus_FisrtKeyFrameComing:
-            if(self.sourceType == 1){
+            if(self.sourceType == PPYSourceType_VOD){
                 
             }
             [self throwError:6];
@@ -365,8 +369,12 @@
             break;
         case PPYPlayEngineStatus_ReceiveEOF:
             [self throwError:8];
-            if(self.sourceType == 1){
+            if(self.sourceType == PPYSourceType_VOD){
                 self.viewControlPanel.state = JGPlayerControlState_Init;
+                if (self.timer) {
+                    [self.timer invalidate];
+                    self.timer = nil;
+                }
             }else{
                 [self startPullStream];
             }
@@ -391,7 +399,7 @@
             
         case AFNetworkReachabilityStatusNotReachable:
             [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
-            if(self.sourceType == 1){
+            if(self.sourceType == PPYSourceType_VOD){
                 self.viewControlPanel.state = JGPlayerControlState_Init;
             }
             [self throwError:11];
@@ -399,7 +407,7 @@
             
         case AFNetworkReachabilityStatusReachableViaWWAN:
             [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
-            if(self.sourceType == 1){
+            if(self.sourceType == PPYSourceType_VOD){
                 self.viewControlPanel.state = JGPlayerControlState_Init;
             }else{
                 [self startPullStream];
@@ -409,7 +417,7 @@
         case AFNetworkReachabilityStatusReachableViaWiFi:
             [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
             [self throwError:12];
-            if(self.sourceType == 1){
+            if(self.sourceType == PPYSourceType_VOD){
                 self.viewControlPanel.state = JGPlayerControlState_Init;
             }else{
                 [self startPullStream];
@@ -424,28 +432,29 @@
     
     UILabel *label = [[UILabel alloc]init];
     label.text = info;
-    label.font = [UIFont systemFontOfSize:25];
+    label.font = [UIFont systemFontOfSize:12];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     [label sizeToFit];
-    
-    label.center = self.view.center;
+    label.frame = CGRectMake(0, self.view.frame.origin.y/2 + 20, self.view.frame.size.width, 30);
     [self.fuzzyView addSubview:label];
     
     if(needLoading){
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [indicator hidesWhenStopped];
-        indicator.center = CGPointMake(self.view.center.x, self.view.center.y + 30);
+        indicator.frame = CGRectMake(20, self.view.frame.origin.y/2 + 20, 30, 30);
         [indicator startAnimating];
 
         [self.fuzzyView addSubview:indicator];
     }
     
-    UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
-    [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
-    [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
-    [self.fuzzyView addSubview:exitBtn];
-
+    if (!self.isWindowPlayer){
+        UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
+        [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
+        [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
+        [self.fuzzyView addSubview:exitBtn];
+    }
+ 
     [view addSubview:self.fuzzyView];
 }
 
@@ -456,7 +465,7 @@
 
 -(UIView *)fuzzyView{
     if(_fuzzyView == nil){
-        _fuzzyView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
+        _fuzzyView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         _fuzzyView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     }
     return _fuzzyView;
@@ -491,7 +500,7 @@
 }
 
 -(void)doPullStream{
-    if(self.sourceType == 1)
+    if(self.sourceType == PPYSourceType_VOD)
         return;
     
     __weak typeof(self)weakSelf = self;
@@ -554,7 +563,7 @@
         tip = @"主播回来了";
         [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
     }else if(errCode == 4){
-        if(weakSelf.sourceType == 0){
+        if(weakSelf.sourceType == PPYSourceType_Live){
             tip = @"网络有些卡顿，正在拼命缓冲...";  //start caching
         }else{
             tip = @"正在缓冲...";
@@ -598,17 +607,11 @@
     JPlayControllerLog(@"tip = %@",tip);
 }
 
--(void)doRunloop{
-    __weak typeof(self) weakSelf = self;
+-(void)doRunloop
+{
     NSTimeInterval  currentPlayTime = [PPYPlayEngine shareInstance].currentPlaybackTime;
-    
     NSLog(@"currentPlayTime = %f,",currentPlayTime);
-    
-    weakSelf.viewControlPanel.progress = [PPYPlayEngine shareInstance].currentPlaybackTime;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [weakSelf doRunloop];
-    });
+    self.viewControlPanel.progress = [PPYPlayEngine shareInstance].currentPlaybackTime;
 }
 
 @end

@@ -212,10 +212,13 @@ static NSString * reuseIdentifier = @"flowcell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     NSLog(@"index = %@",indexPath);
     
+    [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+    
+    //悬浮窗口播放
     if (!self.pullController) {
         self.pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
     }
-    [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];
+    
     
     if(self.playerType == PlayerType_Live){
         NSDictionary *model = (NSDictionary *)self.liveList[indexPath.item];
@@ -225,7 +228,7 @@ static NSString * reuseIdentifier = @"flowcell";
             self.pullController.sourceType = PPYSourceType_Live;
             self.pullController.playAddress = RTMPURL;
             self.pullController.usefulInfo = dic;
-            [self.navigationController pushViewController:self.pullController animated:NO];
+            
         } FailuredBlock:^(int errCode, NSString *errInfo) {
             NSLog(@"流地址获取失败,errCode = %d,erroInfo = %@",errCode,errInfo);
         }];
@@ -233,31 +236,32 @@ static NSString * reuseIdentifier = @"flowcell";
     }else if(self.playerType == PlayerType_VOD){
         NSDictionary *model = (NSDictionary *)self.VODList[indexPath.item];
         NSString *VODURL = [self.helper fetchVodURLWithChannelWebID: [model objectForKey:kChannelWebID]];
-        
+        NSLog(@"vod playAddress=%@", VODURL);
         self.pullController.sourceType = PPYSourceType_VOD;
         self.pullController.playAddress = VODURL;
-        
-        [self addChildViewController:self.pullController];
-        [self.view addSubview:self.pullController.view];
-        self.pullController.isWindowPlayer = YES;
-        [self.pullController preparePlayerView];
-        [self addCancelButton];
-        //[self.navigationController pushViewController:pullController animated:NO];
-    }else{
     }
     
+    [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];//设置窗口的大小
+    [self addChildViewController:self.pullController];
+    [self.view addSubview:self.pullController.view];
+    self.pullController.isWindowPlayer = YES;
+    [self.pullController preparePlayerView];//重设view的大小
+    [self addCancelButton];
     [self addGesture:self.pullController.view];
 }
 
 
 #pragma mark - playerView
+//单独增加一个cancel按钮, 因为播放页面的退出按钮会执行pop操作
 - (void)addCancelButton
 {
-    self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.cancelButton setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
-    [self.cancelButton addTarget:self action:@selector(removePopView) forControlEvents:UIControlEventTouchUpInside];
-    [self.pullController.view addSubview:self.cancelButton];
-    self.cancelButton.frame = CGRectMake(0, 0, 40, 40);
+    if (!self.cancelButton.superview) {
+        self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [self.cancelButton setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
+        [self.cancelButton addTarget:self action:@selector(removePopView) forControlEvents:UIControlEventTouchUpInside];
+        [self.pullController.view addSubview:self.cancelButton];
+        self.cancelButton.frame = CGRectMake(0, 0, 40, 40);
+    }
 }
 
 - (void)removePopView
@@ -283,13 +287,15 @@ static NSString * reuseIdentifier = @"flowcell";
     [self.pullController.view removeGestureRecognizer:self.clickGesture];
     self.clickGesture.delegate = nil;
     [self.cancelButton removeFromSuperview];
+    self.cancelButton = nil;
+    
     self.pullController.isWindowPlayer = NO;
     self.pullController.view.frame = self.view.frame;
     [self.pullController preparePlayerView];
     [self.navigationController pushViewController: self.pullController animated:NO];
-    
 }
 
+//拖动事件
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = touches.anyObject;
