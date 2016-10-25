@@ -10,9 +10,14 @@
 #import <PPYLiveKit/PPYLiveKit.h>
 
 @interface PullViewController : UIViewController
+
 @property (copy, nonatomic) NSString *playAddress;
 @property (assign, nonatomic) int sourceType;  //live: 0, vod: 1
 @property (copy, nonatomic) NSDictionary *usefulInfo;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indictor;
+
+@property (assign, nonatomic) BOOL isWindowPlayer;
+
+- (void)preparePlayerView;
 
 @end

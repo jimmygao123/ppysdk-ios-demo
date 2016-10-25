@@ -93,6 +93,7 @@
     
     [self presentViewController:alert animated:YES completion:nil];
 }
+
 - (IBAction)doSwitchPlayProtocol:(id)sender {
     UIButton *btn = (UIButton *)sender;
     
@@ -125,15 +126,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initData];
-    [self initUI];
+    //[self initUI];
+}
+
+- (void)preparePlayerView
+{
     [PPYPlayEngine shareInstance].delegate = self;
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
-    [[PPYPlayEngine shareInstance] setPreviewRect:[UIScreen mainScreen].bounds];
+    [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
 }
+
 -(void)initData{
     self.isDataShowed = YES;
     self.reconnectCount = 0;
 }
+
 -(void)initUI{
     self.lblBitrate.textColor = [UIColor whiteColor];
     self.lblFPS.textColor = [UIColor whiteColor];
@@ -171,15 +178,17 @@
     }else{
         self.lblRoomID.hidden = YES;
     }
-    
 }
+
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
 
     self.isInitLoading = YES;
-    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-
+    //[self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
+    
+    self.btnExit.hidden = self.isWindowPlayer;
+    
     if(self.sourceType == 0){
 
         [self startPullStream];
@@ -188,6 +197,7 @@
         [self startPlayBack];
     }
 }
+
 #pragma mark --PlayControlPanelDelegate--
 -(void)playControlPanelDidClickStartOrPauseButton:(JGPlayerControlPanel *)controlPanel{
     switch (controlPanel.state) {
@@ -253,6 +263,7 @@
         }
     });
 }
+
 -(void)doStopWhenCachingMoreThanTenSeconds{
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -273,6 +284,7 @@
 -(void)dealloc{
     JPlayControllerLog(@"PlayerController delloc");
 }
+
 -(void)didPPYPlayEngineErrorOccured:(PPYPlayEngineErrorType)error{
     if(self.isInitLoading){
         [self dismissFuzzyView];
@@ -301,6 +313,7 @@
     }
     JPlayControllerLog(@"error = %d",error);
 }
+
 -(void)didPPYPlayEngineInfoThrowOut:(PPYPlayEngineInfoType)type andValue:(int)value{
     if(self.isInitLoading){
         [self dismissFuzzyView];
@@ -323,6 +336,7 @@
     }
     JPlayControllerLog(@"type = %d,value = %d",type,value);
 }
+
 -(void)didPPYPlayEngineStateChanged:(PPYPlayEngineStatus)state{
     __weak typeof(self) weakSelf = self;
     if(self.isInitLoading){
@@ -363,11 +377,11 @@
     }
     JPlayControllerLog(@"state = %lu",(unsigned long)state);
 }
+
 -(void)didPPYPlayEngineVideoResolutionCaptured:(int)width VideoHeight:(int)height{
     JPlayControllerLog(@"width = %d,height = %d",width,height);
     self.lblRes.text = [NSString stringWithFormat:@" 分辨率：%dx%d",width,height];
 }
-
 
 -(void)showNetworkState:(NSNotification *)info{
     NSNumber *value = (NSNumber *)info.object;
@@ -404,8 +418,6 @@
     }
 }
 
-
-
 #pragma mark --UIElelment--
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
@@ -441,6 +453,7 @@
     [self.fuzzyView removeFromSuperview];
     self.fuzzyView = nil;
 }
+
 -(UIView *)fuzzyView{
     if(_fuzzyView == nil){
         _fuzzyView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
@@ -448,6 +461,7 @@
     }
     return _fuzzyView;
 }
+
 - (BOOL)prefersStatusBarHidde{
     return YES;
 }
@@ -474,7 +488,6 @@
     }else{
         [self doPullStream];
     }
-
 }
 
 -(void)doPullStream{
@@ -584,6 +597,7 @@
     }
     JPlayControllerLog(@"tip = %@",tip);
 }
+
 -(void)doRunloop{
     __weak typeof(self) weakSelf = self;
     NSTimeInterval  currentPlayTime = [PPYPlayEngine shareInstance].currentPlaybackTime;
@@ -596,4 +610,5 @@
         [weakSelf doRunloop];
     });
 }
+
 @end

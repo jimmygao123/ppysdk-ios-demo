@@ -17,7 +17,7 @@
 
 static NSString * reuseIdentifier = @"flowcell";
 
-@interface PlayListController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,PlayerListHelperDelegate>
+@interface PlayListController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,PlayerListHelperDelegate,UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
 @property (weak, nonatomic) IBOutlet UINavigationItem *navItem;
 @property (weak, nonatomic) IBOutlet UICollectionView *flowView;
@@ -31,6 +31,12 @@ static NSString * reuseIdentifier = @"flowcell";
 
 @property (assign, nonatomic) int pageNum;
 @property (assign, nonatomic) PlayerType playerType;
+
+@property (strong, nonatomic) PullViewController *pullController;
+@property (strong, nonatomic) UITapGestureRecognizer *clickGesture;
+@property (strong, nonatomic) UIButton *cancelButton;
+@property  CGPoint beginPoint;;
+
 @end
 
 @implementation PlayListController
@@ -45,13 +51,8 @@ static NSString * reuseIdentifier = @"flowcell";
     self.helper = [[PlayListHelper alloc]init];
     self.helper.delegate = self;
     self.playerType = PlayerType_Live;
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [self.flowView triggerPullToRefresh];
-}
--(void)viewWillDisappear:(BOOL)animated{
-    self.playerType = PlayerType_Live;
+    
+    [self.flowView triggerPullToRefresh]; //启动页面时请求结果, ViewWillAppear不需要刷新
 }
 
 -(void)doPullRefresh{
@@ -210,15 +211,21 @@ static NSString * reuseIdentifier = @"flowcell";
 #pragma mark ---UICollectionViewDelegate---
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     NSLog(@"index = %@",indexPath);
+    
+    if (!self.pullController) {
+        self.pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
+    }
+    [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];
+    
     if(self.playerType == PlayerType_Live){
         NSDictionary *model = (NSDictionary *)self.liveList[indexPath.item];
         [self.helper fetchLivingURLsWithRoomID: [model objectForKey:kRoomName] SuccessBlock:^(NSDictionary *dic) {
             NSString *RTMPURL = (NSString *)[dic objectForKey:kRTMPURL];
-            PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
-            pullController.sourceType = PPYSourceType_Live;
-            pullController.playAddress = RTMPURL;
-            pullController.usefulInfo = dic;
-            [self.navigationController pushViewController:pullController animated:NO];
+            
+            self.pullController.sourceType = PPYSourceType_Live;
+            self.pullController.playAddress = RTMPURL;
+            self.pullController.usefulInfo = dic;
+            [self.navigationController pushViewController:self.pullController animated:NO];
         } FailuredBlock:^(int errCode, NSString *errInfo) {
             NSLog(@"流地址获取失败,errCode = %d,erroInfo = %@",errCode,errInfo);
         }];
@@ -227,12 +234,104 @@ static NSString * reuseIdentifier = @"flowcell";
         NSDictionary *model = (NSDictionary *)self.VODList[indexPath.item];
         NSString *VODURL = [self.helper fetchVodURLWithChannelWebID: [model objectForKey:kChannelWebID]];
         
-        PullViewController *pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
-        pullController.sourceType = PPYSourceType_VOD;
-        pullController.playAddress = VODURL;
-        [self.navigationController pushViewController:pullController animated:NO];
+        self.pullController.sourceType = PPYSourceType_VOD;
+        self.pullController.playAddress = VODURL;
+        
+        [self addChildViewController:self.pullController];
+        [self.view addSubview:self.pullController.view];
+        self.pullController.isWindowPlayer = YES;
+        [self.pullController preparePlayerView];
+        [self addCancelButton];
+        //[self.navigationController pushViewController:pullController animated:NO];
     }else{
     }
+    
+    [self addGesture:self.pullController.view];
+}
+
+
+#pragma mark - playerView
+- (void)addCancelButton
+{
+    self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.cancelButton setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self action:@selector(removePopView) forControlEvents:UIControlEventTouchUpInside];
+    [self.pullController.view addSubview:self.cancelButton];
+    self.cancelButton.frame = CGRectMake(0, 0, 40, 40);
+}
+
+- (void)removePopView
+{
+    if (self.pullController) {
+        [self.pullController.view removeFromSuperview];
+        [self.pullController removeFromParentViewController];
+        self.pullController = nil;
+    }
+}
+
+- (void)addGesture:(UIView *)view
+{
+    // 单击事件-隐藏显示控制器
+    self.clickGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleClickEvent:)];
+    self.clickGesture.numberOfTapsRequired = 1;
+    self.clickGesture.delegate = self;
+    [view addGestureRecognizer:self.clickGesture];
+}
+
+- (void)handleSingleClickEvent:(UITapGestureRecognizer *)gesture
+{
+    [self.pullController.view removeGestureRecognizer:self.clickGesture];
+    self.clickGesture.delegate = nil;
+    [self.cancelButton removeFromSuperview];
+    self.pullController.isWindowPlayer = NO;
+    self.pullController.view.frame = self.view.frame;
+    [self.pullController preparePlayerView];
+    [self.navigationController pushViewController: self.pullController animated:NO];
+    
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = touches.anyObject;
+    if (touch.view != self.pullController.view && touch.view.superview != self.pullController.view) {
+        return;
+    }
+    
+    self.beginPoint = [touch locationInView:self.pullController.view];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = touches.anyObject;
+    if (touch.view != self.pullController.view && touch.view.superview != self.pullController.view) {
+        return;
+    }
+    
+    CGPoint nowPoint = [touch locationInView:self.pullController.view];
+    
+    float offsetX = nowPoint.x - self.beginPoint.x;
+    float offsetY = nowPoint.y - self.beginPoint.y;
+    
+    CGFloat centerX = self.pullController.view.center.x + offsetX;
+    CGFloat centerY = self.pullController.view.center.y + offsetY;
+    
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+    
+    //限制拖动范围在屏幕内
+    if (centerX < self.pullController.view.frame.size.width/2) {
+        centerX = self.pullController.view.frame.size.width/2;
+    } else if (centerX > screenWidth - self.pullController.view.frame.size.width/2) {
+        centerX = screenWidth - self.pullController.view.frame.size.width/2;
+    }
+    
+    if (centerY < self.pullController.view.frame.size.height/2) {
+        centerY = self.pullController.view.frame.size.height/2;
+    } else if (centerY > screenHeight - self.pullController.view.frame.size.height/2) {
+        centerY = screenHeight - self.pullController.view.frame.size.height/2;
+    }
+    
+    self.pullController.view.center = CGPointMake(centerX, centerY);
 }
 
 #pragma mark ---UICollectionViewDataSource---
