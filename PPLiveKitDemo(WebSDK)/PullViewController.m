@@ -13,6 +13,7 @@
 #import "JGPlayerControlPanel.h"
 #import "PushViewController.h"
 #import "WatchModel.h"
+#import "PlayListController.h"
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
@@ -64,11 +65,7 @@
     self.lblRes.hidden = self.isDataShowed;
     
     self.isDataShowed = !self.isDataShowed;
-    [self.btnData setBackgroundImage:[UIImage imageNamed:(self.isDataShowed ? @"p数据分析-启用" : @"p数据分析-禁用")] forState:UIControlStateNormal];
-}
-
-- (IBAction)doClick:(id)sender {
-    NSLog(@"click button here");
+    [self.btnData setImage:[UIImage imageNamed:(self.isDataShowed ? @"p数据分析-启用" : @"p数据分析-禁用")] forState:UIControlStateNormal];
 }
 
 - (IBAction)doSelectRes:(id)sender {
@@ -123,27 +120,20 @@
     [self presentViewController:alert animated:NO completion:nil];
 }
 
+- (IBAction)switchToWindowPlayer:(id)sender
+{
+    self.view.frame = self.windowPlayerFrame;
+    [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
+    [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
+    [self.playListController addGesture:self.view];
+    [self.playListController addCancelButton];
+    self.btnExit.hidden = YES;
+}
+
 #pragma mark - load
 - (void)viewDidLoad {
     [super viewDidLoad];
-}
-
-- (void)requestPlayInfo
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
-    
-    self.isInitLoading = YES;
-    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-    
-    self.btnExit.hidden = self.isWindowPlayer;
-    
-    if(self.sourceType == PPYSourceType_Live){
-        
-        [self startPullStream];
-    }else if(self.sourceType == PPYSourceType_VOD){
-        
-        [self startPlayBack];
-    }
 }
 
 - (void)preparePlayerView
@@ -158,32 +148,64 @@
     [self initUI];
 }
 
+- (void)requestPlayInfo
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
+    
+    if (self.isWindowPlayer) {
+        [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
+    }
+    
+    self.btnExit.hidden = self.isWindowPlayer;
+    
+    if(self.sourceType == PPYSourceType_Live){
+        
+        [self startPullStream];
+    }else if(self.sourceType == PPYSourceType_VOD){
+        
+        [self startPlayBack];
+    }
+}
+
 -(void)initUI{
+    
+    self.isInitLoading = YES;
+    self.isDataShowed = YES;
+    
     self.lblBitrate.textColor = [UIColor whiteColor];
     self.lblFPS.textColor = [UIColor whiteColor];
     self.lblRoomID.textColor = [UIColor whiteColor];
     self.lblRes.textColor = [UIColor whiteColor];
    
-    if(self.sourceType == PPYSourceType_VOD){
+    if(self.isWindowPlayer){
         [self doShowData:nil];
     };
     
-    if(self.sourceType == PPYSourceType_VOD && !self.isWindowPlayer){
-        self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
-        CGRect screenSize = [UIScreen mainScreen].bounds;
-        
-        self.viewControlPanel.frame = CGRectMake(0, 0, screenSize.size.width,60);
-        self.viewControlPanel.center = CGPointMake(self.view.center.x, (screenSize.size.height - self.viewControlPanel.frame.size.height/2));
-        [self.view addSubview:self.viewControlPanel];
+    if(self.sourceType == PPYSourceType_VOD){
+        if (!self.viewControlPanel) {
+            self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
+        }
         
         self.viewControlPanel.delegate = self;
+        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
+        
+        if (!self.viewControlPanel.superview) {
+            [self.view addSubview:self.viewControlPanel];
+        }
+        
+        [self releaseTimer];
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
-    }else{
-        if(self.sourceType == PPYSourceType_Live){
-            self.viewLivingPlayCtr.center = self.view.center;
+    }
+    
+    if (!self.isWindowPlayer) {
+        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47 - 40, self.view.frame.size.width,47);
+        
+        self.viewLivingPlayCtr.frame = CGRectMake(0, self.view.frame.size.height - self.viewLivingPlayCtr.frame.size.height, self.view.frame.size.width, self.viewLivingPlayCtr.frame.size.height);
+        if (!self.viewLivingPlayCtr.superview) {
             [self.view addSubview:self.viewLivingPlayCtr];
         }
     }
+    
     
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
     if (self.sourceType == PPYSourceType_VOD) {
@@ -191,6 +213,7 @@
     } else {
         self.lblRoomID.hidden = NO;
     }
+    
     self.lblRoomID.layer.cornerRadius = 10;
     self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
     self.lblRoomID.layer.masksToBounds = YES;
@@ -223,22 +246,32 @@
     self.isPlaying = YES;
 }
 
-
--(void)viewDidDisappear:(BOOL)animated{
+- (void)releaseObject {
     if(self.fuzzyView){
         [self.fuzzyView removeFromSuperview];
         self.fuzzyView = nil;
     }
     [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
-    [super viewDidDisappear:animated];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
     
     [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:YES];
     
+    [self releaseTimer];
+}
+
+- (void)releaseTimer
+{
     if (self.timer) {
         [self.timer invalidate];
         self.timer = nil;
     }
+}
+
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    
+    [self releaseObject];
 }
 
 -(void)reconnect{
@@ -287,6 +320,7 @@
 #pragma mark --<PPYPlayEngineDelegate>
 -(void)dealloc{
     JPlayControllerLog(@"PlayerController delloc");
+    [self releaseTimer];
 }
 
 -(void)didPPYPlayEngineErrorOccured:(PPYPlayEngineErrorType)error{
@@ -371,10 +405,7 @@
             [self throwError:8];
             if(self.sourceType == PPYSourceType_VOD){
                 self.viewControlPanel.state = JGPlayerControlState_Init;
-                if (self.timer) {
-                    [self.timer invalidate];
-                    self.timer = nil;
-                }
+                [self releaseTimer];
             }else{
                 [self startPullStream];
             }

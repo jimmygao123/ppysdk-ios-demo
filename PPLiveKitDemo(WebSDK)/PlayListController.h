@@ -10,4 +10,8 @@
 
 @interface PlayListController : UIViewController
 
+- (void)addCancelButton;
+
+- (void)addGesture:(UIView *)view;
+
 @end

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <PPYLiveKit/PPYLiveKit.h>
 
+@class PlayListController;
 @interface PullViewController : UIViewController
 
 @property (copy, nonatomic) NSString *playAddress;
@@ -17,7 +18,11 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indictor;
 
 @property (assign, nonatomic) BOOL isWindowPlayer;
+@property (weak, nonatomic) PlayListController *playListController;
+@property CGRect windowPlayerFrame;
 
 - (void)preparePlayerView;
+- (void)releaseObject;
+
 
 @end

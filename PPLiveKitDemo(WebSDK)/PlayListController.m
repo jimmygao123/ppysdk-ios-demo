@@ -219,7 +219,6 @@ static NSString * reuseIdentifier = @"flowcell";
         self.pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
     }
     
-    
     if(self.playerType == PlayerType_Live){
         NSDictionary *model = (NSDictionary *)self.liveList[indexPath.item];
         [self.helper fetchLivingURLsWithRoomID: [model objectForKey:kRoomName] SuccessBlock:^(NSDictionary *dic) {
@@ -241,6 +240,7 @@ static NSString * reuseIdentifier = @"flowcell";
         self.pullController.playAddress = VODURL;
     }
     
+    self.pullController.playListController = self;
     [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];//设置窗口的大小
     [self addChildViewController:self.pullController];
     [self.view addSubview:self.pullController.view];
@@ -266,6 +266,8 @@ static NSString * reuseIdentifier = @"flowcell";
 
 - (void)removePopView
 {
+    [self.pullController releaseObject];
+    
     if (self.pullController) {
         [self.pullController.view removeFromSuperview];
         [self.pullController removeFromParentViewController];
@@ -290,9 +292,9 @@ static NSString * reuseIdentifier = @"flowcell";
     self.cancelButton = nil;
     
     self.pullController.isWindowPlayer = NO;
+    self.pullController.windowPlayerFrame = self.pullController.view.frame;//记录悬浮窗口的位置
     self.pullController.view.frame = self.view.frame;
     [self.pullController preparePlayerView];
-    [self.navigationController pushViewController: self.pullController animated:NO];
 }
 
 //拖动事件
