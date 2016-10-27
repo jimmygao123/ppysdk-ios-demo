@@ -50,13 +50,18 @@
 
 #pragma mark --Action--
 - (IBAction)doExit:(id)sender {
-    for(id vc in self.navigationController.viewControllers){
-        if([vc isKindOfClass:[PushViewController class]]){
-            [self.navigationController popToRootViewControllerAnimated:NO];
-        }else{
-            [self.navigationController popViewControllerAnimated:NO];
-        }
-    }
+    
+    //如果是pop会退到节目列表页面的前一个页面, 因为节目列表页面进入播放页面没有push, 而是直接用的addChildViewController
+    
+//    for(id vc in self.navigationController.viewControllers){
+//        if([vc isKindOfClass:[PushViewController class]]){
+//            [self.navigationController popToRootViewControllerAnimated:NO];
+//        }else{
+//            [self.navigationController popViewControllerAnimated:NO];
+//        }
+//    }
+    
+    [self.playListController removePlayerViewControler]; //直接remove掉播放页面
 }
 
 - (IBAction)doShowData:(id)sender {
@@ -122,7 +127,14 @@
 
 - (IBAction)switchToWindowPlayer:(id)sender
 {
-    self.view.frame = self.windowPlayerFrame;
+    if (self.windowPlayerFrame.size.width) {
+        self.view.frame = self.windowPlayerFrame;
+    } else {
+        self.view.frame = CGRectMake(10, 100, 200, 150);//默认小窗的frame
+    }
+    
+    self.isDataShowed = YES;
+    [self doShowData:nil];
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
@@ -142,44 +154,40 @@
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     
-    [self performSelector:@selector(requestPlayInfo) withObject:nil afterDelay:0.5];
-    
     self.reconnectCount = 0;
     [self initUI];
+}
+
+- (void)requestOtherVideo
+{
+    [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
+    
+    [self performSelector:@selector(requestPlayInfo) withObject:nil afterDelay:0.5];
 }
 
 - (void)requestPlayInfo
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
     
-    if (self.isWindowPlayer) {
-        [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-    }
-    
-    self.btnExit.hidden = self.isWindowPlayer;
-    
     if(self.sourceType == PPYSourceType_Live){
-        
         [self startPullStream];
     }else if(self.sourceType == PPYSourceType_VOD){
-        
         [self startPlayBack];
     }
 }
 
 -(void)initUI{
     
+    self.btnExit.hidden = self.isWindowPlayer;
     self.isInitLoading = YES;
-    self.isDataShowed = YES;
+    self.isDataShowed = self.isWindowPlayer;
     
     self.lblBitrate.textColor = [UIColor whiteColor];
     self.lblFPS.textColor = [UIColor whiteColor];
     self.lblRoomID.textColor = [UIColor whiteColor];
     self.lblRes.textColor = [UIColor whiteColor];
-   
-    if(self.isWindowPlayer){
-        [self doShowData:nil];
-    };
+
+    [self doShowData:nil];
     
     if(self.sourceType == PPYSourceType_VOD){
         if (!self.viewControlPanel) {
@@ -467,13 +475,13 @@
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     [label sizeToFit];
-    label.frame = CGRectMake(0, self.view.frame.origin.y/2 + 20, self.view.frame.size.width, 30);
+    label.frame = CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, 30);
     [self.fuzzyView addSubview:label];
     
     if(needLoading){
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [indicator hidesWhenStopped];
-        indicator.frame = CGRectMake(20, self.view.frame.origin.y/2 + 20, 30, 30);
+        indicator.frame = CGRectMake(20, self.view.frame.size.height/2, 30, 30);
         [indicator startAnimating];
 
         [self.fuzzyView addSubview:indicator];

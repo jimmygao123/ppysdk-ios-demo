@@ -22,6 +22,7 @@
 @property CGRect windowPlayerFrame;
 
 - (void)preparePlayerView;
+- (void)requestOtherVideo;
 - (void)releaseObject;
 
 

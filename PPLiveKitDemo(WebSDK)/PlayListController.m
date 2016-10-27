@@ -24,7 +24,6 @@ static NSString * reuseIdentifier = @"flowcell";
 @property (weak, nonatomic) IBOutlet UIImageView *imgBackground;
 @property (weak, nonatomic) IBOutlet UILabel *lblTip;
 
-
 @property (strong, nonatomic) PlayListHelper *helper;
 @property (strong, nonatomic) NSMutableArray *liveList;
 @property (strong, nonatomic) NSMutableArray *VODList;
@@ -36,6 +35,7 @@ static NSString * reuseIdentifier = @"flowcell";
 @property (strong, nonatomic) UITapGestureRecognizer *clickGesture;
 @property (strong, nonatomic) UIButton *cancelButton;
 @property  CGPoint beginPoint;;
+@property (assign, nonatomic) BOOL isDefaultWindowPlayer; //表示第一次是否默认窗口播放, 默认NO
 
 @end
 
@@ -241,32 +241,39 @@ static NSString * reuseIdentifier = @"flowcell";
     }
     
     self.pullController.playListController = self;
-    [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];//设置窗口的大小
+    if (self.isDefaultWindowPlayer) {
+        [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];//小窗
+    } else {
+        [self.pullController.view setFrame:[UIScreen mainScreen].bounds];//全屏
+    }
+    
     [self addChildViewController:self.pullController];
     [self.view addSubview:self.pullController.view];
-    self.pullController.isWindowPlayer = YES;
+    self.pullController.isWindowPlayer = self.isDefaultWindowPlayer;//默认第一次全屏播放
     [self.pullController preparePlayerView];//重设view的大小
+    [self.pullController requestOtherVideo];
+    
     [self addCancelButton];
     [self addGesture:self.pullController.view];
+    self.isDefaultWindowPlayer = YES;//后面切换视频是小窗播放
 }
-
 
 #pragma mark - playerView
 //单独增加一个cancel按钮, 因为播放页面的退出按钮会执行pop操作
 - (void)addCancelButton
 {
-    if (!self.cancelButton.superview) {
+    if (!self.cancelButton.superview && self.isDefaultWindowPlayer) {
         self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.cancelButton setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
-        [self.cancelButton addTarget:self action:@selector(removePopView) forControlEvents:UIControlEventTouchUpInside];
+        [self.cancelButton addTarget:self action:@selector(removePlayerViewControler) forControlEvents:UIControlEventTouchUpInside];
         [self.pullController.view addSubview:self.cancelButton];
         self.cancelButton.frame = CGRectMake(0, 0, 40, 40);
     }
 }
 
-- (void)removePopView
+- (void)removePlayerViewControler
 {
-    [self.pullController releaseObject];
+    self.isDefaultWindowPlayer = NO;
     
     if (self.pullController) {
         [self.pullController.view removeFromSuperview];
