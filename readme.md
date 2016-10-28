@@ -1,7 +1,34 @@
+# PP云直播推流SDK使用说明（IOS）
+## 一. 功能特点
+-  [硬件编码]
+-  [网络自适应]：可根据实际网络情况动态调整目标码率，保证流畅性
+-  音频编码：AAC
+-  视频编码：H.264
+-  推流协议：RTMP
+-  [视频分辨率]：支持360P, 480P, 540P和720P
+-  音视频目标码率：可设
+-  支持固定竖屏推流
+-  支持前、后置摄像头动态切换
+-  闪光灯：开/关
+-  [内置美颜功能]
+-  [支持手动指定自动对焦测光区域]
+## 二. 运行环境
+最低支持版本为IOS8.0
 
-## 推流端：
+支持的CPU架构：armv7,armv7s,arm64
+## 三. 快速集成
+- ####  配置工程文件：
+在工程文件->General->Embedded Binaries项中导入动态库：PPYLiveKit，MediaPlayerFramework,MediaStreamerFramework.
+
+- #### 引入头文件： 
 ```obj-c
-PPPushService *pushService = [[PPPushService alloc]init];
+#import <PPYLiveKit/PPYLiveKit.h>
+```
+
+- ####  接口说明：
+#### 初始化推流引擎：
+```obj-c
+PPYPushEngine *pushEngine = [[PPYPushEngine alloc]initWithAudioConfiguration:self.audioConfig andVideoConfiguration:self.videoConfig pushRTMPAddress:self.rtmpAddress];;
 ```
 #### 参数配置：
 
@@ -25,10 +52,6 @@ PPYVideoConfiguration *videoConfigure = [PPYVideoConfiguration defaultVideoCOnfi
 +(instancetype)audioConfigurationWithSamplerate:(PPYAudioSampleRate)samplerate andChannelCount:(int)channelCount andBirate:(PPYAudioBitRate)bitrate;
 
 +(instancetype)videoConfigurationWithPreset:(PPYCaptureSessionPreset)videoPreset andFPS:(PPYCaptureFPS)fps andBirate:(int)bitrate; //kbps
-```
-#### 推流引擎初始化：
-```obj-c
-PPYPushEngine *pushEngine = []PPYPushEngine alloc]initWithAudioConfiguration:audioConfigure andVideoConfiguration:videoConfigure pushRTMPAddress:rtmpAddress;
 ```
 #### 设置代理：
 ```obj-c
@@ -88,7 +111,7 @@ if(pushEngine.hasFocus){
 CGPoint location = [touch locationInView:self.view];
 [pushEngine doFocusOnPoint:location onView:self.view needDisplayLocation:YES];
  ```
-#### 美颜：
+#### 美颜三档参数可调，调节范围0～1.0：
 ```obj-c
 pushEngine.beautify = YES;
 pushEngine.beautyLevel = 0.5;
@@ -102,30 +125,52 @@ pushEngine.mute = YES;
 
 
 
-## 播放端：
 
-#### 初始化单列对象：
+# PP云播放SDK使用说明（IOS）
+## 一. 功能特点
+-  [支持硬解，软解]；
+-  [网络自适应]：可根据实际网络情况动态调整目标码率，保证流畅性
+-  支持播放流协议：RTMP，HTTP-FLV，HLS
+
+## 二. 运行环境
+最低支持版本为IOS8.0
+
+支持的CPU架构：armv7,armv7s,arm64
+## 三. 快速集成
+- ####  配置工程文件：
+在工程文件->General->Embedded Binaries项中导入动态库：PPYLiveKit，MediaPlayerFramework,MediaStreamerFramework.
+
+- #### 引入头文件： 
+```obj-c
+#import <PPYLiveKit/PPYLiveKit.h>
+```
+- #### 接口说明及使用方法
+##### 初始化单列对象：
 ```obj-c
 PPYPlayEngine *playEngine = [PPYPlayEngine shareInstance];
 ```
-#### 设置代理：
+##### 设置代理：
 ```obj-c
 playEngine.delegate = self;
 ```
-#### 设置播放预览：
+##### 播放预览：
 ```obj-c
-[playEngine setPreviewOnView:self.view];
+[playEngine presentPreviewOnView:self.view];
 ```
-#### 开始播放：
+##### 删除播放预览:
+```obj-c
+[playEngine disappearPreview];
+```
+##### 开始播放：
 ```obj-c
 NSString *url = @"...";
-[playEngine startPlayFromURL:url];
+[playEngine startPlayFromURL:url WithType:PPYSourceType_Live];//直播用PPYSourceType_Live，点播用PPYSourceType_VOD
 ```
-#### 停止播放:
+##### 停止播放:
 ```obj-c
-[playEngine stop:YES];
+[playEngine stopPlayerBlackDisplayNeeded：YES];//YES表示播放停止时留在一帧画面，NO表示停止时显示黑屏
 ```
-#### 代理获取播放状态,播放流信息，错误信息
+##### 代理获取播放状态,播放流信息，错误信息
 ```obj-c
 
 -(void)didPPYPlayEngineInfoThrowOut:(PPYPlayEngineInfoType)type andValue:(int)value;
@@ -137,3 +182,11 @@ NSString *url = @"...";
 -(void)didPPYPlayEngineErrorOccured:(PPYPlayEngineErrorType)error;
 ```
 
+##### 点播
+```obj-c
+[playEngine pause] ; //暂停
+[playEngine resume]; //恢复播放
+NSTimeInterval duration = playEngine.duration ;//获取总时长
+NSTimeInterval currentTime = playEngine.currentPlaybackTime;//当前播放时间点；
+[playEngine seekToPosition:time]; //到某个时间点继续播放;
+```

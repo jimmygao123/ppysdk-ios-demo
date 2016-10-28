@@ -243,7 +243,7 @@ static NSString * reuseIdentifier = @"flowcell";
     
     self.pullController.playListController = self;
     if (self.isDefaultWindowPlayer) {
-        [self.pullController.view setFrame:CGRectMake(10, 100, 150, 200)];//小窗
+        
     } else {
         [self.pullController.view setFrame:[UIScreen mainScreen].bounds];//全屏
     }
