@@ -68,13 +68,13 @@
 }
 
 -(void)updateUI{
-    UIImage *img1 = self.btn480PSelected ? [UIImage imageNamed:@"流畅-亮"] : [UIImage imageNamed:@"流畅-暗"];
+    UIImage *img1 = self.btn480PSelected ? [UIImage imageNamed:@"标清-亮"] : [UIImage imageNamed:@"标清-暗"];
     [self.btnGroup480P setBackgroundImage:img1 forState:UIControlStateNormal];
     
-    img1 = self.btn540PSelected ? [UIImage imageNamed:@"标清-亮"] : [UIImage imageNamed:@"标清-暗"];
+    img1 = self.btn540PSelected ? [UIImage imageNamed:@"高清-亮"] : [UIImage imageNamed:@"高清-暗"];
     [self.btnGroup540P setBackgroundImage:img1 forState:UIControlStateNormal];
     
-    img1 = self.btn720PSelected ? [UIImage imageNamed:@"高清-亮"] : [UIImage imageNamed:@"高清-暗"];
+    img1 = self.btn720PSelected ? [UIImage imageNamed:@"超清-亮"] : [UIImage imageNamed:@"超清-暗"];
     [self.btnGroup720P setBackgroundImage:img1 forState:UIControlStateNormal];
 
 }

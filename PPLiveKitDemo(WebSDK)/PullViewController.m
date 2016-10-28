@@ -31,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnData;
 @property (weak, nonatomic) IBOutlet UIButton *btnRes;
 @property (weak, nonatomic) IBOutlet UIButton *btnPlayProtocol;
+@property (weak, nonatomic) IBOutlet UIButton *btnWindowPlay;
 
 @property (strong, nonatomic) UIView *fuzzyView;
 
@@ -184,15 +185,12 @@
 }
 
 -(void)initUI{
+
+    [self setBasicStyle];
     
     self.btnExit.hidden = self.isWindowPlayer;
     self.isInitLoading = YES;
     self.isDataShowed = self.isWindowPlayer;
-    
-    self.lblBitrate.textColor = [UIColor whiteColor];
-    self.lblFPS.textColor = [UIColor whiteColor];
-    self.lblRoomID.textColor = [UIColor whiteColor];
-    self.lblRes.textColor = [UIColor whiteColor];
 
     [self doShowData:nil];
     
@@ -232,11 +230,6 @@
     } else {
         self.lblRoomID.hidden = NO;
     }
-    
-    self.lblRoomID.layer.cornerRadius = 10;
-    self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-    self.lblRoomID.layer.masksToBounds = YES;
-    [self.lblRoomID clipsToBounds];
 }
 
 -(UIButton *)btnLitteWindow{
@@ -490,6 +483,23 @@
 }
 
 #pragma mark --UIElelment--
+-(void)setBasicStyle{
+    self.lblRoomID.layer.cornerRadius = 10;
+    self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+    self.lblRoomID.layer.masksToBounds = YES;
+    [self.lblRoomID clipsToBounds];
+    
+    self.lblBitrate.textColor = [UIColor whiteColor];
+    self.lblFPS.textColor = [UIColor whiteColor];
+    self.lblRoomID.textColor = [UIColor whiteColor];
+    self.lblRes.textColor = [UIColor whiteColor];
+    
+    [self.btnRes setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.btnLitteWindow setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.btnPlayProtocol setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.btnWindowPlay setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.viewLivingPlayCtr setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.2]];
+}
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
     

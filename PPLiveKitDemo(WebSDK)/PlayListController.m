@@ -96,7 +96,7 @@ static NSString * reuseIdentifier = @"flowcell";
     [self.navBar setTranslucent:NO];
     [self setNeedsStatusBarAppearanceUpdate];
     
-    self.navItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"形状-1.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doBack)];
+    self.navItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"播放列表-back.png"] style:UIBarButtonItemStylePlain target:self action:@selector(doBack)];
     self.navItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"sss.png"] style:UIBarButtonItemStylePlain target:self action:@selector(promote)];
 }
 

@@ -14,6 +14,7 @@
                 <outlet property="btnExit" destination="HdJ-jL-wMX" id="o72-oZ-X2K"/>
                 <outlet property="btnPlayProtocol" destination="Ecr-To-s6p" id="Nzo-1U-DqY"/>
                 <outlet property="btnRes" destination="o2z-Tv-2gf" id="9Cd-NN-2Fq"/>
+                <outlet property="btnWindowPlay" destination="GZf-9K-Ne7" id="6iE-P6-bAq"/>
                 <outlet property="lblBitrate" destination="3f3-rF-p5o" id="tFL-Lt-HIk"/>
                 <outlet property="lblFPS" destination="jJ7-LJ-U8t" id="8xn-mD-NTh"/>
                 <outlet property="lblRes" destination="CGw-5e-7II" id="udD-Sf-qPg"/>
@@ -162,6 +163,61 @@
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-158" y="4"/>
+        </view>
+        <view contentMode="scaleToFill" id="Xye-Qk-W4z">
+            <rect key="frame" x="0.0" y="0.0" width="198" height="52"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2q2-aY-dmg">
+                    <frame key="frameInset" minX="24" minY="11" width="31" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="超清"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tz6-Bk-eaz">
+                    <frame key="frameInset" minX="69" minY="11" width="31" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="高清"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4YB-c1-Rdl">
+                    <frame key="frameInset" minX="108" minY="11" width="31" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="标清"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QmM-tx-n5a">
+                    <frame key="frameInset" minX="147" minY="11" width="31" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="原画"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-156" y="428"/>
+        </view>
+        <view contentMode="scaleToFill" id="303-qz-nrp">
+            <rect key="frame" x="0.0" y="0.0" width="286" height="49"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H0Q-KO-IsS">
+                    <frame key="frameInset" minX="107" minY="11" width="72" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="HTTP-FLV"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rAc-EF-2mE">
+                    <frame key="frameInset" minX="238" minY="11" width="30" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="HLS"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1R4-e5-g4r">
+                    <frame key="frameInset" minX="18" minY="11" width="42" height="30"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" title="RTMP"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-123" y="302"/>
         </view>
     </objects>
     <resources>
