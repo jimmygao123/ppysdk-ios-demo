@@ -145,6 +145,7 @@
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
+    self.viewControlPanel.hidden = YES;
     [self.playListController addGesture:self.view];
     [self.playListController addCancelButton];
     self.btnExit.hidden = YES;
@@ -153,8 +154,10 @@
 #pragma mark - load
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self preparePlayerView];
-    [self requestOtherVideo];
+    if(self.windowPlayerDisabled){
+        [self preparePlayerView];
+        [self requestOtherVideo];
+    }
 }
 
 - (void)preparePlayerView
@@ -208,20 +211,19 @@
             self.viewControlPanel.delegate = self;
         }
         
-        if(self.isWindowPlayer){
-            self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
-        }else{
+        if(!self.isWindowPlayer){
             if(self.windowPlayerDisabled){  //用于推流端直播回看，不需要小窗。
                 self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
             }else{
                 self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
                 [self.view addSubview:self.btnLitteWindow];
             }
+            
+            self.viewControlPanel.hidden = NO;
+            [self.view addSubview:self.viewControlPanel];
+            [self releaseTimer];
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
         }
-        
-        [self.view addSubview:self.viewControlPanel];
-        [self releaseTimer];
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
     }
     
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
@@ -503,6 +505,9 @@
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
     
+    self.fuzzyView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, view.frame.size.width, view.frame.size.height)];
+    self.fuzzyView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    
     UILabel *label = [[UILabel alloc]init];
     label.text = info;
     label.font = [UIFont systemFontOfSize:25];
@@ -531,16 +536,13 @@
 }
 
 -(void)dismissFuzzyView{
-    [self.fuzzyView removeFromSuperview];
-    self.fuzzyView = nil;
-}
-
--(UIView *)fuzzyView{
-    if(_fuzzyView == nil){
-        _fuzzyView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-        _fuzzyView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    
+    if(self.fuzzyView){
+        if(self.fuzzyView.superview){
+            [self.fuzzyView removeFromSuperview];
+        }
+        self.fuzzyView = nil;
     }
-    return _fuzzyView;
 }
 
 - (BOOL)prefersStatusBarHidde{

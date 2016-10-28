@@ -795,6 +795,7 @@
 					BF375CC41D6F12B6009C0E57 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 3BLAQEXJ3N;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1088,7 +1089,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: PPLive Corporation";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 3BLAQEXJ3N;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1102,6 +1103,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1109,7 +1111,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: PPLive Corporation";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 3BLAQEXJ3N;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1123,6 +1125,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};

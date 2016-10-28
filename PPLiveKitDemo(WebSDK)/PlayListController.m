@@ -243,7 +243,7 @@ static NSString * reuseIdentifier = @"flowcell";
     
     self.pullController.playListController = self;
     if (self.isDefaultWindowPlayer) {
-        [self.pullController.view setFrame:CGRectMake(10, 100, 200, 150)];//小窗
+        [self.pullController.view setFrame:CGRectMake(10, 100, 150, 200)];//小窗
     } else {
         [self.pullController.view setFrame:[UIScreen mainScreen].bounds];//全屏
     }
@@ -251,8 +251,8 @@ static NSString * reuseIdentifier = @"flowcell";
     [self addChildViewController:self.pullController];
     [self.view addSubview:self.pullController.view];
     self.pullController.isWindowPlayer = self.isDefaultWindowPlayer;//默认第一次全屏播放
-//    [self.pullController preparePlayerView];//重设view的大小
-//    [self.pullController requestOtherVideo];
+    [self.pullController preparePlayerView];//重设view的大小
+    [self.pullController requestOtherVideo];
     
     [self addCancelButton];
     [self addGesture:self.pullController.view];
