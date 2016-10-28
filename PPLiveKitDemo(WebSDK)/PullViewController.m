@@ -20,7 +20,9 @@
 @interface PullViewController ()<PPYPlayEngineDelegate,JGPlayControlPanelDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *btnExit;
+@property (strong, nonatomic) UIButton *btnLitteWindow;
 //info
+@property (strong, nonatomic) IBOutlet UIView *viewInfo;
 @property (weak, nonatomic) IBOutlet UILabel *lblRoomID;
 @property (weak, nonatomic) IBOutlet UILabel *lblBitrate;
 @property (weak, nonatomic) IBOutlet UILabel *lblFPS;
@@ -44,24 +46,23 @@
 @property (assign, nonatomic) int reconnectCountOfCaching;
 @property (assign, nonatomic) BOOL isInitLoading;
 @property (strong, nonatomic) MBProgressHUD *hud;
+
+@property (assign, nonatomic) int width;
+@property (assign, nonatomic) int height;
 @end
 
 @implementation PullViewController
 
 #pragma mark --Action--
 - (IBAction)doExit:(id)sender {
-    
-    //如果是pop会退到节目列表页面的前一个页面, 因为节目列表页面进入播放页面没有push, 而是直接用的addChildViewController
-    
-//    for(id vc in self.navigationController.viewControllers){
-//        if([vc isKindOfClass:[PushViewController class]]){
-//            [self.navigationController popToRootViewControllerAnimated:NO];
-//        }else{
-//            [self.navigationController popViewControllerAnimated:NO];
-//        }
-//    }
-    
-    [self.playListController removePlayerViewControler]; //直接remove掉播放页面
+    for(id vc in self.navigationController.viewControllers){    //推流端以push方式进入，需要pop出来。
+        if([vc isKindOfClass:[PushViewController class]]){
+            [self.navigationController popToRootViewControllerAnimated:NO];
+            return;
+        }
+    }
+    //播放端以childController进入，直接从父控制器删除。
+    [self.playListController removePlayerViewControler];
 }
 
 - (IBAction)doShowData:(id)sender {
@@ -130,7 +131,12 @@
     if (self.windowPlayerFrame.size.width) {
         self.view.frame = self.windowPlayerFrame;
     } else {
-        self.view.frame = CGRectMake(10, 100, 200, 150);//默认小窗的frame
+        
+        if(self.width > self.height){
+            self.view.frame = CGRectMake(10, 100, 200 , 150);
+        }else{
+            self.view.frame = CGRectMake(10, 100, 150 , 200);
+        }
     }
     
     self.isDataShowed = YES;
@@ -146,6 +152,8 @@
 #pragma mark - load
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self preparePlayerView];
+    [self requestOtherVideo];
 }
 
 - (void)preparePlayerView
@@ -161,7 +169,6 @@
 - (void)requestOtherVideo
 {
     [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-    
     [self performSelector:@selector(requestPlayInfo) withObject:nil afterDelay:0.5];
 }
 
@@ -189,31 +196,35 @@
 
     [self doShowData:nil];
     
-    if(self.sourceType == PPYSourceType_VOD){
-        if (!self.viewControlPanel) {
-            self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
-        }
-        
-        self.viewControlPanel.delegate = self;
-        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
-        
-        if (!self.viewControlPanel.superview) {
-            [self.view addSubview:self.viewControlPanel];
-        }
-        
-        [self releaseTimer];
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
-    }
-    
-    if (!self.isWindowPlayer) {
-        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47 - 40, self.view.frame.size.width,47);
-        
+    if(self.sourceType == PPYSourceType_Live){
+        [self.viewInfo setFrame:CGRectMake(5, 5, 250, 92)];
+        [self.view addSubview:self.viewInfo];
         self.viewLivingPlayCtr.frame = CGRectMake(0, self.view.frame.size.height - self.viewLivingPlayCtr.frame.size.height, self.view.frame.size.width, self.viewLivingPlayCtr.frame.size.height);
         if (!self.viewLivingPlayCtr.superview) {
             [self.view addSubview:self.viewLivingPlayCtr];
         }
+    }else if(self.sourceType == PPYSourceType_VOD){
+        
+        if (!self.viewControlPanel) {
+            self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
+            self.viewControlPanel.delegate = self;
+        }
+        
+        if(self.isWindowPlayer){
+            self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
+        }else{
+            if(self.windowPlayerDisabled){  //用于推流端直播回看，不需要小窗。
+                self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
+            }else{
+                self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
+                [self.view addSubview:self.btnLitteWindow];
+            }
+        }
+        
+        [self.view addSubview:self.viewControlPanel];
+        [self releaseTimer];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
     }
-    
     
     self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
     if (self.sourceType == PPYSourceType_VOD) {
@@ -226,6 +237,17 @@
     self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
     self.lblRoomID.layer.masksToBounds = YES;
     [self.lblRoomID clipsToBounds];
+}
+
+-(UIButton *)btnLitteWindow{
+    if(_btnLitteWindow == nil){
+        _btnLitteWindow = [UIButton buttonWithType:UIButtonTypeCustom];
+        _btnLitteWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+        [_btnLitteWindow setTitle:@"小窗" forState:UIControlStateNormal];
+        [_btnLitteWindow setFrame:CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47)];
+        [_btnLitteWindow addTarget:self action:@selector(switchToWindowPlayer:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _btnLitteWindow;
 }
 
 #pragma mark --PlayControlPanelDelegate--
@@ -427,6 +449,8 @@
 
 -(void)didPPYPlayEngineVideoResolutionCaptured:(int)width VideoHeight:(int)height{
     JPlayControllerLog(@"width = %d,height = %d",width,height);
+    self.width = width;
+    self.height = height;
     self.lblRes.text = [NSString stringWithFormat:@" 分辨率：%dx%d",width,height];
 }
 
@@ -471,29 +495,28 @@
     
     UILabel *label = [[UILabel alloc]init];
     label.text = info;
-    label.font = [UIFont systemFontOfSize:12];
+    label.font = [UIFont systemFontOfSize:25];
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     [label sizeToFit];
-    label.frame = CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, 30);
+    label.center = view.center;
+    
     [self.fuzzyView addSubview:label];
     
     if(needLoading){
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [indicator hidesWhenStopped];
-        indicator.frame = CGRectMake(20, self.view.frame.size.height/2, 30, 30);
+        indicator.center = CGPointMake(view.center.x, view.center.y + 30);
         [indicator startAnimating];
 
         [self.fuzzyView addSubview:indicator];
     }
     
-    if (!self.isWindowPlayer){
-        UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
-        [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
-        [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
-        [self.fuzzyView addSubview:exitBtn];
-    }
- 
+    UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
+    [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
+    [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
+    [self.fuzzyView addSubview:exitBtn];
+
     [view addSubview:self.fuzzyView];
 }
 
@@ -591,6 +614,9 @@
         NSLog(@"AFNetworking return object error");
     }else if(errCode == 2){
         tip = @"直播已经结束";
+        if(self.fuzzyView){
+            [self dismissFuzzyView];
+        }
         [weakSelf presentFuzzyViewOnView:weakSelf.view WithMessage:tip loadingNeeded:NO];
     }else if(errCode == 3){
         if(weakSelf.reconnectCountWhenStreamError > 0){

@@ -17,6 +17,7 @@
 @property (copy, nonatomic) NSDictionary *usefulInfo;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indictor;
 
+@property (assign, nonatomic) BOOL windowPlayerDisabled;  //是否需要小窗,仅在播放VOD时有用。
 @property (assign, nonatomic) BOOL isWindowPlayer;
 @property (weak, nonatomic) PlayListController *playListController;
 @property CGRect windowPlayerFrame;

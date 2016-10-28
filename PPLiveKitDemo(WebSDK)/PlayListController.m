@@ -238,6 +238,7 @@ static NSString * reuseIdentifier = @"flowcell";
         NSLog(@"vod playAddress=%@", VODURL);
         self.pullController.sourceType = PPYSourceType_VOD;
         self.pullController.playAddress = VODURL;
+        self.pullController.windowPlayerDisabled = NO;
     }
     
     self.pullController.playListController = self;
@@ -250,8 +251,8 @@ static NSString * reuseIdentifier = @"flowcell";
     [self addChildViewController:self.pullController];
     [self.view addSubview:self.pullController.view];
     self.pullController.isWindowPlayer = self.isDefaultWindowPlayer;//默认第一次全屏播放
-    [self.pullController preparePlayerView];//重设view的大小
-    [self.pullController requestOtherVideo];
+//    [self.pullController preparePlayerView];//重设view的大小
+//    [self.pullController requestOtherVideo];
     
     [self addCancelButton];
     [self addGesture:self.pullController.view];

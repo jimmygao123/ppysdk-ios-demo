@@ -858,7 +858,8 @@ static int count_ReDoSyncStart3min = 0;
 - (IBAction)doPlayBack:(id)sender {
     PullViewController *pullViewController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
     pullViewController.playAddress = self.VODURL;
-    pullViewController.sourceType = 1;
+    pullViewController.sourceType = PPYSourceType_VOD;
+    pullViewController.windowPlayerDisabled = YES;
     [self.navigationController pushViewController:pullViewController animated:YES];
 }
 
