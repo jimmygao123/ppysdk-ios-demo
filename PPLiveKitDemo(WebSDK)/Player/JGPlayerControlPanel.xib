@@ -35,7 +35,7 @@
                         <constraint firstAttribute="height" constant="25" id="Awj-2D-6fi"/>
                         <constraint firstAttribute="width" constant="25" id="Gt7-pG-rWr"/>
                     </constraints>
-                    <state key="normal" backgroundImage="开始播放.png"/>
+                    <state key="normal" backgroundImage="startplay.png"/>
                     <connections>
                         <action selector="doStartOrPause:" destination="iN0-l3-epB" eventType="touchUpInside" id="hGb-bO-e4y"/>
                     </connections>
@@ -62,7 +62,7 @@
         </view>
     </objects>
     <resources>
-        <image name="开始播放.png" width="30" height="30"/>
+        <image name="startplay.png" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

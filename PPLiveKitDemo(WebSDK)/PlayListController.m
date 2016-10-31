@@ -35,7 +35,6 @@ static NSString * reuseIdentifier = @"flowcell";
 @property (strong, nonatomic) UITapGestureRecognizer *clickGesture;
 @property (strong, nonatomic) UIButton *cancelButton;
 @property  CGPoint beginPoint;;
-@property (assign, nonatomic) BOOL isDefaultWindowPlayer; //表示第一次是否默认窗口播放, 默认NO
 
 @end
 
@@ -210,11 +209,9 @@ static NSString * reuseIdentifier = @"flowcell";
 }
 #pragma mark ---UICollectionViewDelegate---
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"index = %@",indexPath);
-    
-    [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
-    
-    //悬浮窗口播放
+
+    [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:YES];
+
     if (!self.pullController) {
         self.pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
     }
@@ -242,39 +239,19 @@ static NSString * reuseIdentifier = @"flowcell";
     }
     
     self.pullController.playListController = self;
-    if (self.isDefaultWindowPlayer) {
-        
-    } else {
-        [self.pullController.view setFrame:[UIScreen mainScreen].bounds];//全屏
-    }
-    
     [self addChildViewController:self.pullController];
     [self.view addSubview:self.pullController.view];
-    self.pullController.isWindowPlayer = self.isDefaultWindowPlayer;//默认第一次全屏播放
     [self.pullController preparePlayerView];//重设view的大小
     [self.pullController requestOtherVideo];
-    
-    [self addCancelButton];
+
     [self addGesture:self.pullController.view];
-    self.isDefaultWindowPlayer = YES;//后面切换视频是小窗播放
 }
 
 #pragma mark - playerView
-//单独增加一个cancel按钮, 因为播放页面的退出按钮会执行pop操作
-- (void)addCancelButton
-{
-    if (!self.cancelButton.superview && self.isDefaultWindowPlayer) {
-        self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [self.cancelButton setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
-        [self.cancelButton addTarget:self action:@selector(removePlayerViewControler) forControlEvents:UIControlEventTouchUpInside];
-        [self.pullController.view addSubview:self.cancelButton];
-        self.cancelButton.frame = CGRectMake(0, 0, 40, 40);
-    }
-}
 
 - (void)removePlayerViewControler
 {
-    self.isDefaultWindowPlayer = NO;
+    self.pullController.isWindowPlayer = NO;
     
     if (self.pullController) {
         [self.pullController.view removeFromSuperview];
@@ -348,6 +325,7 @@ static NSString * reuseIdentifier = @"flowcell";
     }
     
     self.pullController.view.center = CGPointMake(centerX, centerY);
+    self.pullController.windowPlayerFrame = self.pullController.view.frame;
 }
 
 #pragma mark ---UICollectionViewDataSource---

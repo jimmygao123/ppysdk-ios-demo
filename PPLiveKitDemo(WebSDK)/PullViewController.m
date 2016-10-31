@@ -129,50 +129,64 @@
 
 - (IBAction)switchToWindowPlayer:(id)sender
 {
-    if (self.windowPlayerFrame.size.width) {
-        self.view.frame = self.windowPlayerFrame;
-    } else {
-        
-        if(self.width > self.height){
-            self.view.frame = CGRectMake(10, 100, 200 , 150);
-        }else{
-            self.view.frame = CGRectMake(10, 100, 150 , 200);
-        }
-    }
+    self.isWindowPlayer = YES;
     
-    self.isDataShowed = YES;
-    [self doShowData:nil];
-    [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
-    [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
-    self.viewControlPanel.hidden = YES;
+    [self preparePlayerView];
     [self.playListController addGesture:self.view];
-    [self.playListController addCancelButton];
-    self.btnExit.hidden = YES;
 }
 
 #pragma mark - load
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initData];
+    [self initUI];
+    
     if(self.windowPlayerDisabled){
         [self preparePlayerView];
         [self requestOtherVideo];
     }
 }
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [self releaseObject];
+}
 
 - (void)preparePlayerView
 {
-    [PPYPlayEngine shareInstance].delegate = self;
+    self.lblRoomID.text = [NSString stringWithFormat:@"房间号: %@", [HTTPManager shareInstance].roomID];
+    self.reconnectCount = 0;
+    
+    //控制面板显示逻辑
+    if(self.isWindowPlayer){
+        [self dismissAllPanel];
+    }else{
+        if(self.sourceType == PPYSourceType_Live){
+            [self presentLiveControlPanel];
+        }else if(self.sourceType == PPYSourceType_VOD){
+            [self presentVODControlPanel];
+            [self observePlayBackProgress];
+        }
+    }
+    
+    //设置播放窗口大小
+    if(self.isWindowPlayer){
+        if(self.windowPlayerFrame.size.width == 0){
+            self.view.frame = CGRectMake(10, 100, 150 , 200);
+        }else{
+            self.view.frame = self.windowPlayerFrame;
+        }
+    }else{
+        self.view.frame = [UIScreen mainScreen].bounds;
+    }
+    
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    
-    self.reconnectCount = 0;
-    [self initUI];
 }
 
 - (void)requestOtherVideo
 {
     [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
+    self.isInitLoading = YES;
     [self performSelector:@selector(requestPlayInfo) withObject:nil afterDelay:0.5];
 }
 
@@ -187,62 +201,9 @@
     }
 }
 
--(void)initUI{
-
-    [self setBasicStyle];
-    
-    self.btnExit.hidden = self.isWindowPlayer;
-    self.isInitLoading = YES;
-    self.isDataShowed = self.isWindowPlayer;
-
-    [self doShowData:nil];
-    
-    if(self.sourceType == PPYSourceType_Live){
-        [self.viewInfo setFrame:CGRectMake(5, 5, 250, 92)];
-        [self.view addSubview:self.viewInfo];
-        self.viewLivingPlayCtr.frame = CGRectMake(0, self.view.frame.size.height - self.viewLivingPlayCtr.frame.size.height, self.view.frame.size.width, self.viewLivingPlayCtr.frame.size.height);
-        if (!self.viewLivingPlayCtr.superview) {
-            [self.view addSubview:self.viewLivingPlayCtr];
-        }
-    }else if(self.sourceType == PPYSourceType_VOD){
-        
-        if (!self.viewControlPanel) {
-            self.viewControlPanel = [JGPlayerControlPanel playerControlPanel];
-            self.viewControlPanel.delegate = self;
-        }
-        
-        if(!self.isWindowPlayer){
-            if(self.windowPlayerDisabled){  //用于推流端直播回看，不需要小窗。
-                self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width,47);
-            }else{
-                self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
-                [self.view addSubview:self.btnLitteWindow];
-            }
-            
-            self.viewControlPanel.hidden = NO;
-            [self.view addSubview:self.viewControlPanel];
-            [self releaseTimer];
-            self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
-        }
-    }
-    
-    self.lblRoomID.text = [NSString stringWithFormat:@" 房间号: %@   ", [HTTPManager shareInstance].roomID];
-    if (self.sourceType == PPYSourceType_VOD) {
-        self.lblRoomID.hidden = YES;
-    } else {
-        self.lblRoomID.hidden = NO;
-    }
-}
-
--(UIButton *)btnLitteWindow{
-    if(_btnLitteWindow == nil){
-        _btnLitteWindow = [UIButton buttonWithType:UIButtonTypeCustom];
-        _btnLitteWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-        [_btnLitteWindow setTitle:@"小窗" forState:UIControlStateNormal];
-        [_btnLitteWindow setFrame:CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47)];
-        [_btnLitteWindow addTarget:self action:@selector(switchToWindowPlayer:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _btnLitteWindow;
+-(void)observePlayBackProgress{
+    [self releaseTimer];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
 }
 
 #pragma mark --PlayControlPanelDelegate--
@@ -293,11 +254,7 @@
     }
 }
 
--(void)viewDidDisappear:(BOOL)animated{
-    [super viewDidDisappear:animated];
-    
-    [self releaseObject];
-}
+
 
 -(void)reconnect{
     
@@ -485,7 +442,83 @@
 }
 
 #pragma mark --UIElelment--
--(void)setBasicStyle{
+
+//VOD控制界面展示逻辑
+-(UIButton *)btnLitteWindow{
+    if(_btnLitteWindow == nil){
+        _btnLitteWindow = [UIButton buttonWithType:UIButtonTypeCustom];
+        _btnLitteWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
+        [_btnLitteWindow setTitle:@"小窗" forState:UIControlStateNormal];
+        [_btnLitteWindow setFrame:CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47)];
+        [_btnLitteWindow addTarget:self action:@selector(switchToWindowPlayer:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _btnLitteWindow;
+}
+-(JGPlayerControlPanel *)viewControlPanel{
+    if(_viewControlPanel == nil){
+        _viewControlPanel = [JGPlayerControlPanel playerControlPanel];
+        _viewControlPanel.delegate = self;
+    }
+    return _viewControlPanel;
+}
+
+-(void)presentVODControlPanel{
+    [self dismissAllPanel];
+    
+    self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
+    [self.view addSubview:self.viewControlPanel];
+    
+    self.btnLitteWindow.frame = CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47);
+    [self.view addSubview:self.btnLitteWindow];
+}
+
+-(void)dismissVODControlPanel{
+    if(self.viewControlPanel){
+        if(self.viewControlPanel.superview){
+            [self.viewControlPanel removeFromSuperview];
+        }
+    }
+    
+    if(self.btnLitteWindow){
+        if(self.btnLitteWindow.superview){
+            [self.btnLitteWindow removeFromSuperview];
+        }
+    }
+}
+//Live控制界面展示逻辑
+-(void)presentLiveControlPanel{
+    [self dismissAllPanel];
+    
+    self.viewLivingPlayCtr.frame = CGRectMake(0, self.view.frame.size.height - self.viewLivingPlayCtr.frame.size.height, self.view.frame.size.width, self.viewLivingPlayCtr.frame.size.height);
+    if (!self.viewLivingPlayCtr.superview) {
+        [self.view addSubview:self.viewLivingPlayCtr];
+    }
+    
+    [self.viewInfo setFrame:CGRectMake(5, 5, 250, 92)];
+    [self.view addSubview:self.viewInfo];
+}
+
+-(void)dismissLiveControlPanel{
+    
+    if(self.viewLivingPlayCtr.superview){
+        [self.viewLivingPlayCtr removeFromSuperview];
+    }
+    
+    if(self.viewInfo.superview){
+        [self.viewInfo removeFromSuperview];
+    }
+}
+-(void)dismissAllPanel{
+    [self dismissVODControlPanel];
+    [self dismissLiveControlPanel];
+}
+
+-(void)initData{
+    self.isWindowPlayer = NO;
+    [PPYPlayEngine shareInstance].delegate = self;
+}
+
+-(void)initUI{
     self.lblRoomID.layer.cornerRadius = 10;
     self.lblRoomID.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
     self.lblRoomID.layer.masksToBounds = YES;
@@ -504,10 +537,7 @@
 }
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
-    
-    self.fuzzyView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, view.frame.size.width, view.frame.size.height)];
-    self.fuzzyView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    
+
     UILabel *label = [[UILabel alloc]init];
     label.text = info;
     label.font = [UIFont systemFontOfSize:25];
@@ -515,9 +545,11 @@
     label.textAlignment = NSTextAlignmentCenter;
     [label sizeToFit];
     label.center = view.center;
-    
+
     [self.fuzzyView addSubview:label];
     
+    
+
     if(needLoading){
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [indicator hidesWhenStopped];
@@ -526,7 +558,7 @@
 
         [self.fuzzyView addSubview:indicator];
     }
-    
+   
     UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
     [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
     [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
@@ -535,8 +567,15 @@
     [view addSubview:self.fuzzyView];
 }
 
+-(UIView *)fuzzyView{
+    if(_fuzzyView == nil){
+        _fuzzyView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        _fuzzyView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    }
+    return _fuzzyView;
+}
+
 -(void)dismissFuzzyView{
-    
     if(self.fuzzyView){
         if(self.fuzzyView.superview){
             [self.fuzzyView removeFromSuperview];
@@ -580,6 +619,9 @@
     __weak typeof(self)weakSelf = self;
     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
         if(dic != nil){
+            if(weakSelf == nil){
+                return;
+            }
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
                 NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
                 NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
