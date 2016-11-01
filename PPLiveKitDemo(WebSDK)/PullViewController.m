@@ -156,6 +156,17 @@
     self.lblRoomID.text = [NSString stringWithFormat:@"房间号: %@", [HTTPManager shareInstance].roomID];
     self.reconnectCount = 0;
     
+    //设置播放窗口大小
+    if(self.isWindowPlayer){
+        if(self.windowPlayerFrame.size.width == 0){
+            self.view.frame = CGRectMake(10, 100, 150 , 200);
+        }else{
+            self.view.frame = self.windowPlayerFrame;
+        }
+    }else{
+        self.view.frame = [UIScreen mainScreen].bounds;
+    }
+    
     //控制面板显示逻辑
     if(self.isWindowPlayer){
         [self dismissAllPanel];
@@ -168,16 +179,7 @@
         }
     }
     
-    //设置播放窗口大小
-    if(self.isWindowPlayer){
-        if(self.windowPlayerFrame.size.width == 0){
-            self.view.frame = CGRectMake(10, 100, 150 , 200);
-        }else{
-            self.view.frame = self.windowPlayerFrame;
-        }
-    }else{
-        self.view.frame = [UIScreen mainScreen].bounds;
-    }
+    
     
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
@@ -204,6 +206,7 @@
 -(void)observePlayBackProgress{
     [self releaseTimer];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(doRunloop) userInfo:nil repeats:YES];
+    [self.timer fire];
 }
 
 #pragma mark --PlayControlPanelDelegate--
@@ -211,6 +214,7 @@
     switch (controlPanel.state) {
         case JGPlayerControlState_Init:
             [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
+            [self observePlayBackProgress];
             break;
         case JGPlayerControlState_Start:
             [[PPYPlayEngine shareInstance] resume];
@@ -446,10 +450,11 @@
 //VOD控制界面展示逻辑
 -(UIButton *)btnLitteWindow{
     if(_btnLitteWindow == nil){
+        
         _btnLitteWindow = [UIButton buttonWithType:UIButtonTypeCustom];
         _btnLitteWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
         [_btnLitteWindow setTitle:@"小窗" forState:UIControlStateNormal];
-        [_btnLitteWindow setFrame:CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47)];
+        [_btnLitteWindow setFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 47, [UIScreen mainScreen].bounds.size.height - 47, 47, 47)];
         [_btnLitteWindow addTarget:self action:@selector(switchToWindowPlayer:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _btnLitteWindow;
@@ -538,33 +543,44 @@
 
 -(void)presentFuzzyViewOnView:(UIView *)view WithMessage:(NSString *)info loadingNeeded:(BOOL)needLoading{
 
-    UILabel *label = [[UILabel alloc]init];
-    label.text = info;
-    label.font = [UIFont systemFontOfSize:25];
-    label.textColor = [UIColor whiteColor];
-    label.textAlignment = NSTextAlignmentCenter;
-    [label sizeToFit];
-    label.center = view.center;
-
-    [self.fuzzyView addSubview:label];
-    
-    
-
-    if(needLoading){
+    if(self.isWindowPlayer){
+        CGPoint fuzzyViewCenter = self.fuzzyView.center;
+        
         UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         [indicator hidesWhenStopped];
-        indicator.center = CGPointMake(view.center.x, view.center.y + 30);
-        [indicator startAnimating];
-
+        indicator.center = fuzzyViewCenter;
         [self.fuzzyView addSubview:indicator];
-    }
-   
-    UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
-    [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
-    [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
-    [self.fuzzyView addSubview:exitBtn];
+        [view addSubview:self.fuzzyView];
+        [indicator startAnimating];
+        
+    }else{
+    
+        UILabel *label = [[UILabel alloc]init];
+        label.text = info;
+        label.font = [UIFont systemFontOfSize:25];
+        label.textColor = [UIColor whiteColor];
+        label.textAlignment = NSTextAlignmentCenter;
+        [label sizeToFit];
+        label.center = view.center;
 
-    [view addSubview:self.fuzzyView];
+        [self.fuzzyView addSubview:label];
+
+        if(needLoading){
+            UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+            [indicator hidesWhenStopped];
+            indicator.center = CGPointMake(view.center.x, view.center.y + 30);
+            [indicator startAnimating];
+
+            [self.fuzzyView addSubview:indicator];
+        }
+
+        UIButton *exitBtn = [[UIButton alloc]initWithFrame:self.btnExit.frame];
+        [exitBtn setImage:[UIImage imageNamed:@"关闭.png"] forState:UIControlStateNormal];
+        [exitBtn addTarget:self action:@selector(doExit:) forControlEvents:UIControlEventTouchUpInside];
+        [self.fuzzyView addSubview:exitBtn];
+
+        [view addSubview:self.fuzzyView];
+    }
 }
 
 -(UIView *)fuzzyView{

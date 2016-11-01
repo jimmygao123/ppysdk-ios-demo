@@ -160,12 +160,15 @@ typedef enum{
     self.lblResolution.textColor = [UIColor whiteColor];
     self.lblResolution.text = [NSString stringWithFormat:@"分辨率：%dx%d",self.width,self.height];
     
-    self.contraitBtnCameraTraingToBtnMute.constant = (self.btnMute.center.x -self.btnTorch.center.x)/2 - self.btnMute.frame.size.width;
-    [self.btnCamera layoutIfNeeded];
-    self.contraitBtnMirrorLeadingToBtnMute.constant = (self.btnData.center.x - self.btnMute.center.x)/2 - self.btnMute.frame.size.width;
-    [self.btnMirror layoutIfNeeded];
-    
     [self.viewEndLiving setFrame:[UIScreen mainScreen].bounds];
+}
+
+-(void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    self.contraitBtnCameraTraingToBtnMute.constant = (self.btnMute.center.x -self.btnTorch.center.x)/2 - 40;
+    [self.btnCamera layoutIfNeeded];
+    self.contraitBtnMirrorLeadingToBtnMute.constant = (self.btnData.center.x - self.btnMute.center.x)/2 - 40;
+    [self.btnMirror layoutIfNeeded];
 }
 
 -(void)updateUI{
@@ -857,6 +860,7 @@ static int count_ReDoSyncStart3min = 0;
 
 - (IBAction)doPlayBack:(id)sender {
     PullViewController *pullViewController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
+//    [pullViewController.view setFrame:[UIScreen mainScreen].bounds];
     pullViewController.playAddress = self.VODURL;
     pullViewController.sourceType = PPYSourceType_VOD;
     pullViewController.windowPlayerDisabled = YES;

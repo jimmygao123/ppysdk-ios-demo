@@ -214,6 +214,7 @@ static NSString * reuseIdentifier = @"flowcell";
 
     if (!self.pullController) {
         self.pullController = [[PullViewController alloc]initWithNibName:@"PullViewController" bundle:nil];
+        [self.pullController.view setFrame: [UIScreen mainScreen].bounds];
     }
     
     if(self.playerType == PlayerType_Live){
@@ -276,10 +277,12 @@ static NSString * reuseIdentifier = @"flowcell";
     [self.cancelButton removeFromSuperview];
     self.cancelButton = nil;
     
-    self.pullController.isWindowPlayer = NO;
-    self.pullController.windowPlayerFrame = self.pullController.view.frame;//记录悬浮窗口的位置
-    self.pullController.view.frame = self.view.frame;
-    [self.pullController preparePlayerView];
+    if(self.pullController.isWindowPlayer){
+        self.pullController.isWindowPlayer = NO;
+        self.pullController.windowPlayerFrame = self.pullController.view.frame;//记录悬浮窗口的位置
+        self.pullController.view.frame = self.view.frame;
+        [self.pullController preparePlayerView];
+    }
 }
 
 //拖动事件
