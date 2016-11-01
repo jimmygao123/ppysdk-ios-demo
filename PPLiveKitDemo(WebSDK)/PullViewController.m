@@ -118,10 +118,17 @@
         [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
         [btn setTitle:@"HTTP-FLV" forState:UIControlStateNormal];
     }];
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"HLS" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+        self.playAddress = model.m3u8Url;
+        [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
+        [btn setTitle:@"HLS" forState:UIControlStateNormal];
+    }];
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
 
     [alert addAction:action];
     [alert addAction:action1];
+    [alert addAction:action2];
     [alert addAction:cancel];
    
     [self presentViewController:alert animated:NO completion:nil];
@@ -470,11 +477,16 @@
 -(void)presentVODControlPanel{
     [self dismissAllPanel];
     
-    self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
-    [self.view addSubview:self.viewControlPanel];
-    
-    self.btnLitteWindow.frame = CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47);
-    [self.view addSubview:self.btnLitteWindow];
+    if(self.windowPlayerDisabled){  //直播回看时，小窗禁用
+        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width ,47);
+        [self.view addSubview:self.viewControlPanel];
+    }else{
+        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
+        [self.view addSubview:self.viewControlPanel];
+        
+        self.btnLitteWindow.frame = CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47);
+        [self.view addSubview:self.btnLitteWindow];
+    }
 }
 
 -(void)dismissVODControlPanel{
