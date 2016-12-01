@@ -645,7 +645,7 @@ static int count_ReDoSyncStart3min = 0;
     
 }
 -(void)didStreamInfoThrowOut:(PPYPushEngineStreamInfoType)type infoValue:(int)value{
-    NSLog(@"current thread = %@",[NSThread currentThread]);
+    //NSLog(@"current thread = %@",[NSThread currentThread]);
     switch (type) {
             
         case PPYPushEngineInfo_BufferingBytes:
@@ -662,6 +662,9 @@ static int count_ReDoSyncStart3min = 0;
             break;
         case PPYPUshEngineInfo_UpgradeBitrate:
 
+            break;
+        case PPYPushEngineInfo_PublishTime:
+            
             break;
     }
     NSLog(@"didStreamInfoThrowOut %d__%d",type,value);

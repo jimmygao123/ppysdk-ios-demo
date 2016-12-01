@@ -26,5 +26,6 @@
 
 + (BOOL)getCoverImageFileWithInputFile:(NSString*)inputFile Position:(NSTimeInterval)position OutputWidth:(int)width OutputHeight:(int)height OutputJPEGFile:(NSString*)outputFile;
 
++ (BOOL)getCoverImageFileWithInputFile:(NSString*)inputFile OutputWidth:(int)width OutputHeight:(int)height OutputFile:(NSString*)outputFile;
 
 @end

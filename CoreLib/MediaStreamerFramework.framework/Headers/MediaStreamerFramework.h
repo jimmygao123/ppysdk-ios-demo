@@ -30,4 +30,5 @@ FOUNDATION_EXPORT const unsigned char MediaStreamerFrameworkVersionString[];
 #import <MediaStreamerFramework/SLKMediaProduct.h>
 
 #import <MediaStreamerFramework/SLKMediaMerger.h>
+#import <MediaStreamerFramework/SLKMediaProcesserUtils.h>
 

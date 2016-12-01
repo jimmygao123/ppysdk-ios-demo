@@ -55,6 +55,11 @@
 @implementation PullViewController
 
 #pragma mark --Action--
+- (IBAction)crashTest:(id)sender
+{
+    [[PPYPlayEngine shareInstance] crashTest];
+}
+
 - (IBAction)doExit:(id)sender {
     for(id vc in self.navigationController.viewControllers){    //推流端以push方式进入，需要pop出来。
         if([vc isKindOfClass:[PushViewController class]]){
@@ -109,18 +114,21 @@
     UIAlertAction *action = [UIAlertAction actionWithTitle:@"RTMP" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
         self.playAddress = model.rtmpUrl;
+        [PPYPlayEngine shareInstance].protocol = 1;
         [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
         [btn setTitle:@"RTMP" forState:UIControlStateNormal];
     }];
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"HTTP-FLV" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
         self.playAddress = model.hdlUrl;
+        [PPYPlayEngine shareInstance].protocol = 2;
         [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
         [btn setTitle:@"HTTP-FLV" forState:UIControlStateNormal];
     }];
     UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"HLS" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
         self.playAddress = model.m3u8Url;
+        [PPYPlayEngine shareInstance].protocol = 2;
         [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_Live];
         [btn setTitle:@"HLS" forState:UIControlStateNormal];
     }];
@@ -186,8 +194,6 @@
         }
     }
     
-    
-    
     [[PPYPlayEngine shareInstance] presentPreviewOnView:self.view];
     [[PPYPlayEngine shareInstance] setPreviewRect:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
 }
@@ -202,6 +208,11 @@
 - (void)requestPlayInfo
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
+    
+    [PPYPlayEngine shareInstance].vid = @"123456";
+    [PPYPlayEngine shareInstance].dt = @"1";
+    [PPYPlayEngine shareInstance].protocol = (_sourceType == PPYSourceType_VOD) ? 2 : 1;
+    [PPYPlayEngine shareInstance].clent = @"testClient";
     
     if(self.sourceType == PPYSourceType_Live){
         [self startPullStream];
@@ -265,8 +276,6 @@
         self.timer = nil;
     }
 }
-
-
 
 -(void)reconnect{
     
@@ -399,11 +408,11 @@
         case PPYPlayEngineStatus_RenderingStart:
             break;
         case PPYPlayEngineStatus_ReceiveEOF:
-            [self throwError:8];
             if(self.sourceType == PPYSourceType_VOD){
                 self.viewControlPanel.state = JGPlayerControlState_Init;
                 [self releaseTimer];
             }else{
+                [self throwError:8];
                 [self startPullStream];
             }
             
