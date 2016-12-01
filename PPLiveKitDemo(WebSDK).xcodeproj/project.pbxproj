@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4BE28D981DEBE0F300EF0F90 /* MediaPlayerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7521DE814B50064802B /* MediaPlayerFramework.framework */; };
+		4BE28D991DEBE0F300EF0F90 /* MediaPlayerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7521DE814B50064802B /* MediaPlayerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4BE28D9A1DEBE0F300EF0F90 /* MediaStreamerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */; };
+		4BE28D9B1DEBE0F300EF0F90 /* MediaStreamerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4BE28D9D1DEBE0F300EF0F90 /* PPYLiveKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7541DE814B50064802B /* PPYLiveKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4BF8E7571DE814B50064802B /* PPYLiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7541DE814B50064802B /* PPYLiveKit.framework */; };
 		8468C9361DC326C800C6A102 /* 超清-暗@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8468C9321DC326C800C6A102 /* 超清-暗@2x.png */; };
 		8468C9371DC326C800C6A102 /* 超清-暗@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8468C9331DC326C800C6A102 /* 超清-暗@3x.png */; };
 		8468C9381DC326C800C6A102 /* 超清-亮@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8468C9341DC326C800C6A102 /* 超清-亮@2x.png */; };
@@ -148,17 +154,10 @@
 		BFFADA731D91241F007ADF56 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFADA6C1D91241F007ADF56 /* AFURLResponseSerialization.m */; };
 		BFFADA741D91241F007ADF56 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFADA6E1D91241F007ADF56 /* AFURLSessionManager.m */; };
 		BFFADA771D912429007ADF56 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFADA761D912429007ADF56 /* MBProgressHUD.m */; };
-		BFFADA781D912E35007ADF56 /* MediaPlayerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFADA591D912330007ADF56 /* MediaPlayerFramework.framework */; };
-		BFFADA791D912E35007ADF56 /* MediaPlayerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFFADA591D912330007ADF56 /* MediaPlayerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BFFADA7A1D912E35007ADF56 /* MediaStreamerFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFADA5A1D912330007ADF56 /* MediaStreamerFramework.framework */; };
-		BFFADA7B1D912E35007ADF56 /* MediaStreamerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFFADA5A1D912330007ADF56 /* MediaStreamerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BFFADA7C1D912E35007ADF56 /* PPYLiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFFADA5B1D912330007ADF56 /* PPYLiveKit.framework */; };
-		BFFADA7D1D912E35007ADF56 /* PPYLiveKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BFFADA5B1D912330007ADF56 /* PPYLiveKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BFFADA8A1D923270007ADF56 /* p数据分析-禁用@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA861D923270007ADF56 /* p数据分析-禁用@2x.png */; };
 		BFFADA8B1D923270007ADF56 /* p数据分析-禁用@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA871D923270007ADF56 /* p数据分析-禁用@3x.png */; };
 		BFFADA8C1D923270007ADF56 /* p数据分析-启用@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA881D923270007ADF56 /* p数据分析-启用@2x.png */; };
 		BFFADA8D1D923270007ADF56 /* p数据分析-启用@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BFFADA891D923270007ADF56 /* p数据分析-启用@3x.png */; };
-		BFFADA911D93840E007ADF56 /* MessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BFFADA901D93840E007ADF56 /* MessageManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -168,9 +167,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BFFADA7B1D912E35007ADF56 /* MediaStreamerFramework.framework in Embed Frameworks */,
-				BFFADA791D912E35007ADF56 /* MediaPlayerFramework.framework in Embed Frameworks */,
-				BFFADA7D1D912E35007ADF56 /* PPYLiveKit.framework in Embed Frameworks */,
+				4BE28D9B1DEBE0F300EF0F90 /* MediaStreamerFramework.framework in Embed Frameworks */,
+				4BE28D991DEBE0F300EF0F90 /* MediaPlayerFramework.framework in Embed Frameworks */,
+				4BE28D9D1DEBE0F300EF0F90 /* PPYLiveKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -178,6 +177,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4BF8E7521DE814B50064802B /* MediaPlayerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MediaPlayerFramework.framework; sourceTree = "<group>"; };
+		4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MediaStreamerFramework.framework; sourceTree = "<group>"; };
+		4BF8E7541DE814B50064802B /* PPYLiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PPYLiveKit.framework; sourceTree = "<group>"; };
 		8468C9321DC326C800C6A102 /* 超清-暗@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "超清-暗@2x.png"; path = "icon/ConfigurationViewController/超清-暗@2x.png"; sourceTree = "<group>"; };
 		8468C9331DC326C800C6A102 /* 超清-暗@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "超清-暗@3x.png"; path = "icon/ConfigurationViewController/超清-暗@3x.png"; sourceTree = "<group>"; };
 		8468C9341DC326C800C6A102 /* 超清-亮@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "超清-亮@2x.png"; path = "icon/ConfigurationViewController/超清-亮@2x.png"; sourceTree = "<group>"; };
@@ -334,9 +336,6 @@
 		BFF80D091DA4F4EF00588F3F /* PushVCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushVCHelper.h; sourceTree = "<group>"; };
 		BFF80D0A1DA4F4EF00588F3F /* PushVCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushVCHelper.m; sourceTree = "<group>"; };
 		BFF80D0C1DA4F6A700588F3F /* UserTips.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserTips.h; sourceTree = "<group>"; };
-		BFFADA591D912330007ADF56 /* MediaPlayerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayerFramework.framework; path = CoreLib/MediaPlayerFramework.framework; sourceTree = SOURCE_ROOT; };
-		BFFADA5A1D912330007ADF56 /* MediaStreamerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaStreamerFramework.framework; path = CoreLib/MediaStreamerFramework.framework; sourceTree = SOURCE_ROOT; };
-		BFFADA5B1D912330007ADF56 /* PPYLiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PPYLiveKit.framework; path = CoreLib/PPYLiveKit.framework; sourceTree = SOURCE_ROOT; };
 		BFFADA621D91241F007ADF56 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFHTTPSessionManager.h; path = OpenSource/AFNetworking/AFHTTPSessionManager.h; sourceTree = SOURCE_ROOT; };
 		BFFADA631D91241F007ADF56 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFHTTPSessionManager.m; path = OpenSource/AFNetworking/AFHTTPSessionManager.m; sourceTree = SOURCE_ROOT; };
 		BFFADA641D91241F007ADF56 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFNetworking.h; path = OpenSource/AFNetworking/AFNetworking.h; sourceTree = SOURCE_ROOT; };
@@ -356,8 +355,6 @@
 		BFFADA871D923270007ADF56 /* p数据分析-禁用@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "p数据分析-禁用@3x.png"; path = "icon/PullViewController/p数据分析-禁用@3x.png"; sourceTree = "<group>"; };
 		BFFADA881D923270007ADF56 /* p数据分析-启用@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "p数据分析-启用@2x.png"; path = "icon/PullViewController/p数据分析-启用@2x.png"; sourceTree = "<group>"; };
 		BFFADA891D923270007ADF56 /* p数据分析-启用@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "p数据分析-启用@3x.png"; path = "icon/PullViewController/p数据分析-启用@3x.png"; sourceTree = "<group>"; };
-		BFFADA8F1D93840E007ADF56 /* MessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageManager.h; sourceTree = "<group>"; };
-		BFFADA901D93840E007ADF56 /* MessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -365,15 +362,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFFADA7A1D912E35007ADF56 /* MediaStreamerFramework.framework in Frameworks */,
-				BFFADA781D912E35007ADF56 /* MediaPlayerFramework.framework in Frameworks */,
-				BFFADA7C1D912E35007ADF56 /* PPYLiveKit.framework in Frameworks */,
+				4BE28D9A1DEBE0F300EF0F90 /* MediaStreamerFramework.framework in Frameworks */,
+				4BE28D981DEBE0F300EF0F90 /* MediaPlayerFramework.framework in Frameworks */,
+				4BF8E7571DE814B50064802B /* PPYLiveKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4BF8E7511DE814B50064802B /* CoreLib */ = {
+			isa = PBXGroup;
+			children = (
+				4BF8E7521DE814B50064802B /* MediaPlayerFramework.framework */,
+				4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */,
+				4BF8E7541DE814B50064802B /* PPYLiveKit.framework */,
+			);
+			path = CoreLib;
+			sourceTree = "<group>";
+		};
 		84E1DD491DAF1BB00079D0B6 /* 播放列表 */ = {
 			isa = PBXGroup;
 			children = (
@@ -478,8 +485,8 @@
 		BF375CBC1D6F12B6009C0E57 = {
 			isa = PBXGroup;
 			children = (
+				4BF8E7511DE814B50064802B /* CoreLib */,
 				BFFADA5F1D9123CF007ADF56 /* OpenSource */,
-				BFFADA581D91231D007ADF56 /* Core */,
 				BF375CC71D6F12B7009C0E57 /* PPLiveKitDemo(WebSDK) */,
 				BF375CC61D6F12B6009C0E57 /* Products */,
 			);
@@ -507,7 +514,6 @@
 				84E1DE0B1DB60FC70079D0B6 /* 自定义界面 */,
 				BFF80D071DA4EEB500588F3F /* 拉流 */,
 				BFF80D061DA4EEA500588F3F /* 推流 */,
-				BFFADA8E1D925BA8007ADF56 /* MessageHandle */,
 				BF53F1481D7FE111002700AD /* Icons3 */,
 				BF0E85651D728A0F00681A44 /* Icons2 */,
 				BF8AF71B1D716A1D009731FB /* Icons */,
@@ -701,17 +707,6 @@
 			name = WebSDK;
 			sourceTree = "<group>";
 		};
-		BFFADA581D91231D007ADF56 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				BFFADA591D912330007ADF56 /* MediaPlayerFramework.framework */,
-				BFFADA5A1D912330007ADF56 /* MediaStreamerFramework.framework */,
-				BFFADA5B1D912330007ADF56 /* PPYLiveKit.framework */,
-			);
-			name = Core;
-			path = "PPLiveKitDemo(WebSDK)";
-			sourceTree = "<group>";
-		};
 		BFFADA5F1D9123CF007ADF56 /* OpenSource */ = {
 			isa = PBXGroup;
 			children = (
@@ -753,15 +748,6 @@
 			name = AFNetworking;
 			sourceTree = "<group>";
 		};
-		BFFADA8E1D925BA8007ADF56 /* MessageHandle */ = {
-			isa = PBXGroup;
-			children = (
-				BFFADA8F1D93840E007ADF56 /* MessageManager.h */,
-				BFFADA901D93840E007ADF56 /* MessageManager.m */,
-			);
-			name = MessageHandle;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -794,7 +780,7 @@
 				TargetAttributes = {
 					BF375CC41D6F12B6009C0E57 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 3BLAQEXJ3N;
+						DevelopmentTeam = 3U62SP5YP3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -973,7 +959,6 @@
 				BF375D021D6FDA03009C0E57 /* HTTPManager.m in Sources */,
 				84E1DE3E1DB9E30B0079D0B6 /* YYClassInfo.m in Sources */,
 				BFF80D0B1DA4F4EF00588F3F /* PushVCHelper.m in Sources */,
-				BFFADA911D93840E007ADF56 /* MessageManager.m in Sources */,
 				BFF6133E1D70394C0064FB81 /* NotifyView.m in Sources */,
 				BF375CCA1D6F12B7009C0E57 /* main.m in Sources */,
 				BFFADA711D91241F007ADF56 /* AFSecurityPolicy.m in Sources */,
@@ -1091,7 +1076,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: PPLive Corporation";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3BLAQEXJ3N;
+				DEVELOPMENT_TEAM = 3U62SP5YP3;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1100,10 +1086,11 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pptv.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				VALID_ARCHS = "arm64 armv7";
 			};
 			name = Debug;
 		};
@@ -1113,7 +1100,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: PPLive Corporation";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3BLAQEXJ3N;
+				DEVELOPMENT_TEAM = 3U62SP5YP3;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1122,10 +1110,11 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pptv.livekitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				VALID_ARCHS = "arm64 armv7";
 			};
 			name = Release;
 		};

@@ -211,6 +211,10 @@ typedef enum{
     if(self.rtmpAddress == nil) return;
     NSLog(@"self.rtmpAddress = %@",self.rtmpAddress);
     
+    self.pushEngine.vid = @"123456";
+    self.pushEngine.dt = @"1";
+    self.pushEngine.protocol = 1;
+    self.pushEngine.clent = @"testClient";
     [self.pushEngine start];
 }
 
@@ -645,7 +649,7 @@ static int count_ReDoSyncStart3min = 0;
     
 }
 -(void)didStreamInfoThrowOut:(PPYPushEngineStreamInfoType)type infoValue:(int)value{
-    NSLog(@"current thread = %@",[NSThread currentThread]);
+    //NSLog(@"current thread = %@",[NSThread currentThread]);
     switch (type) {
             
         case PPYPushEngineInfo_BufferingBytes:
@@ -662,6 +666,9 @@ static int count_ReDoSyncStart3min = 0;
             break;
         case PPYPUshEngineInfo_UpgradeBitrate:
 
+            break;
+        case PPYPushEngineInfo_PublishTime:
+            
             break;
     }
     NSLog(@"didStreamInfoThrowOut %d__%d",type,value);

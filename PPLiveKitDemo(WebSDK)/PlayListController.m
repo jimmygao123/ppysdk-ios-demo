@@ -217,11 +217,11 @@ static NSString * reuseIdentifier = @"flowcell";
         [self.pullController.view setFrame: [UIScreen mainScreen].bounds];
     }
     
-    if(self.playerType == PlayerType_Live){
+    if (self.playerType == PlayerType_Live){
         NSDictionary *model = (NSDictionary *)self.liveList[indexPath.item];
         [self.helper fetchLivingURLsWithRoomID: [model objectForKey:kRoomName] SuccessBlock:^(NSDictionary *dic) {
             NSString *RTMPURL = (NSString *)[dic objectForKey:kRTMPURL];
-            
+            NSLog(@"live RTMPURL=%@",RTMPURL);
             self.pullController.sourceType = PPYSourceType_Live;
             self.pullController.playAddress = RTMPURL;
             self.pullController.usefulInfo = dic;
@@ -230,7 +230,7 @@ static NSString * reuseIdentifier = @"flowcell";
             NSLog(@"流地址获取失败,errCode = %d,erroInfo = %@",errCode,errInfo);
         }];
         
-    }else if(self.playerType == PlayerType_VOD){
+    } else if (self.playerType == PlayerType_VOD){
         NSDictionary *model = (NSDictionary *)self.VODList[indexPath.item];
         NSString *VODURL = [self.helper fetchVodURLWithChannelWebID: [model objectForKey:kChannelWebID]];
         NSLog(@"vod playAddress=%@", VODURL);

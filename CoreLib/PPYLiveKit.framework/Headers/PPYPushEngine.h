@@ -23,6 +23,7 @@ typedef NS_ENUM (int,PPYPushEngineErrorType)  {
     PPYPushEngineError_ConnectFailed,
     PPYPushEngineError_TransferFailed,
     PPYPushEngineError_FatalError,
+    PPYPushEngineError_PoorNetwork,
 };
 
 typedef NS_ENUM(int,PPYPushEngineStreamInfoType){
@@ -31,6 +32,7 @@ typedef NS_ENUM(int,PPYPushEngineStreamInfoType){
     PPYPushEngineInfo_RealFPS,
     PPYPushEngineInfo_DowngradeBitrate,
     PPYPUshEngineInfo_UpgradeBitrate,
+    PPYPushEngineInfo_PublishTime, //Record
 };
 
 @protocol  PPYPushEngineDelegate <NSObject>
@@ -42,6 +44,12 @@ typedef NS_ENUM(int,PPYPushEngineStreamInfoType){
 @interface PPYPushEngine : NSObject
 
 @property (nonatomic, weak) id<PPYPushEngineDelegate> delegate;
+
+//test
+@property (nonatomic, strong) NSString *vid;
+@property (nonatomic, assign) NSInteger protocol;
+@property (nonatomic, strong) NSString *dt;
+@property (nonatomic, strong) NSString *clent;
 
 #pragma --Capture Interface--
 @property (nonatomic, assign, getter=isRunning) BOOL running;

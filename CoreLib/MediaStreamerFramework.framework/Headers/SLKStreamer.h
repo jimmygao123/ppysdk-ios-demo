@@ -19,6 +19,7 @@ enum slk_media_streamer_error_type {
     SLK_MEDIA_STREAMER_ERROR_AUDIO_CAPTURE_START_FAIL = 4,
     SLK_MEDIA_STREAMER_ERROR_AUDIO_ENCODE_FAIL = 5,
     SLK_MEDIA_STREAMER_ERROR_AUDIO_CAPTURE_STOP_FAIL = 6,
+    SLK_MEDIA_STREAMER_ERROR_POOR_NETWORK = 7,
 };
 
 enum slk_media_streamer_info_type {
@@ -29,6 +30,7 @@ enum slk_media_streamer_info_type {
     SLK_MEDIA_STREAMER_INFO_PUBLISH_REAL_FPS = 5,
     SLK_MEDIA_STREAMER_INFO_PUBLISH_DOWN_BITRATE = 6,
     SLK_MEDIA_STREAMER_INFO_PUBLISH_UP_BITRATE = 7,
+    SLK_MEDIA_STREAMER_INFO_PUBLISH_TIME = 8,
 };
 
 @protocol SLKStreamerDelegate <NSObject>
@@ -48,7 +50,7 @@ enum slk_media_streamer_info_type {
 - (instancetype) initWithVideoSize:(CGSize)videoSize
                         FrameRate:(int)fps
                         Bitrate:(int)bps
-                        PublishUrl:(NSString*)rtmpUrl;
+                        PublishUrl:(NSString*)url;
 
 - (void)pushPixelBuffer:(CVPixelBufferRef)pixelBuffer
                         Rotation:(int)rotation;
