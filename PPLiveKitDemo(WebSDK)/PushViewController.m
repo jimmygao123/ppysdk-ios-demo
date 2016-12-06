@@ -685,6 +685,10 @@ static int count_ReDoSyncStart3min = 0;
         if(self.isPushing){
             [self.pushEngine stop];
         }
+        
+        if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusNotReachable){
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        }
     }];
     
     UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
