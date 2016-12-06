@@ -45,7 +45,6 @@
 @property (assign, nonatomic) int reconnectCount;
 @property (assign, nonatomic) int reconnectCountWhenStreamError;
 @property (assign, nonatomic) int reconnectCountOfCaching;
-@property (assign, nonatomic) BOOL isInitLoading;
 @property (strong, nonatomic) MBProgressHUD *hud;
 
 @property (assign, nonatomic) int width;
@@ -201,7 +200,6 @@
 - (void)requestOtherVideo
 {
     [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
-    self.isInitLoading = YES;
     [self performSelector:@selector(requestPlayInfo) withObject:nil afterDelay:0.5];
 }
 
@@ -327,11 +325,6 @@
 }
 
 -(void)didPPYPlayEngineErrorOccured:(PPYPlayEngineErrorType)error{
-    if(self.isInitLoading){
-        [self dismissFuzzyView];
-        self.isInitLoading = NO;
-    }
-    
     switch (error) {
         case PPYPlayEngineError_InvalidSourceURL:
 //            [self needShowToastMessage:@"无效资源"];
@@ -356,10 +349,6 @@
 }
 
 -(void)didPPYPlayEngineInfoThrowOut:(PPYPlayEngineInfoType)type andValue:(int)value{
-    if(self.isInitLoading){
-        [self dismissFuzzyView];
-        self.isInitLoading = NO;
-    }
     switch (type) {
         case PPYPlayEngineInfo_BufferingDuration:
             break;
@@ -374,6 +363,7 @@
             [[PPYPlayEngine shareInstance] resume];
             self.viewControlPanel.duration = value;
             self.viewControlPanel.state = JGPlayerControlState_Start;
+            [self dismissFuzzyView];
             break;
         case PPYPlayEngineInfo_CurrentPlayBackTime:
             break;
@@ -383,10 +373,6 @@
 
 -(void)didPPYPlayEngineStateChanged:(PPYPlayEngineStatus)state{
     __weak typeof(self) weakSelf = self;
-    if(self.isInitLoading){
-        [self dismissFuzzyView];
-        self.isInitLoading = NO;
-    }
 
     switch (state) {
         case PPYPlayEngineStatus_StartCaching:

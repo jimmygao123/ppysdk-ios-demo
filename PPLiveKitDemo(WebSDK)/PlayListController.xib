@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayListController">
@@ -17,11 +21,17 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faD-EU-Apy">
+                    <rect key="frame" x="0.0" y="22" width="375" height="44"/>
+                    <items>
+                        <navigationItem title="聚力云Demo" id="yje-r0-iQR"/>
+                    </items>
+                </navigationBar>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nYD-fI-C5A">
-                    <rect key="frame" x="0.0" y="66" width="320" height="502"/>
+                    <rect key="frame" x="0.0" y="115.5" width="375" height="551.5"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bXt-Mw-aqV">
                         <size key="itemSize" width="200" height="200"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -30,30 +40,24 @@
                     </collectionViewFlowLayout>
                 </collectionView>
                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="形状-3.png" translatesAutoresizingMaskIntoConstraints="NO" id="s9D-3C-wJb">
-                    <rect key="frame" x="110" y="163" width="100" height="80"/>
+                    <rect key="frame" x="137.5" y="212.5" width="100" height="80"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="80" id="LmF-Ah-hW4"/>
                         <constraint firstAttribute="width" constant="100" id="nXr-Me-cEF"/>
                     </constraints>
                 </imageView>
-                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faD-EU-Apy">
-                    <rect key="frame" x="0.0" y="22" width="320" height="44"/>
-                    <items>
-                        <navigationItem title="聚力云Demo" id="yje-r0-iQR"/>
-                    </items>
-                </navigationBar>
                 <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qVq-g4-EBp">
-                    <rect key="frame" x="43" y="251" width="234" height="36"/>
+                    <rect key="frame" x="70.5" y="300.5" width="234" height="36"/>
                     <constraints>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="234" id="2Nl-fZ-1en"/>
                         <constraint firstAttribute="height" constant="36" id="ajv-Ta-4lA"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" red="0.96854597330093384" green="0.96868151426315308" blue="0.96850329637527466" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.96045541763305664" green="0.96060246229171753" blue="0.96038520336151123" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="s9D-3C-wJb" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="0Nl-hq-Mzy"/>
                 <constraint firstItem="nYD-fI-C5A" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="1dq-BV-jt0"/>
@@ -73,4 +77,9 @@
     <resources>
         <image name="形状-3.png" width="76" height="66"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
+    </simulatedMetricsContainer>
 </document>

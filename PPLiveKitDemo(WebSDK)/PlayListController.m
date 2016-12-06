@@ -77,6 +77,7 @@ static NSString * reuseIdentifier = @"flowcell";
     if(self.playerType == PlayerType_VOD){
         self.playerType = PlayerType_Live;
         [self.flowView triggerPullToRefresh];
+        self.navItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"sss.png"] style:UIBarButtonItemStylePlain target:self action:@selector(promote)];
     }else if(self.playerType == PlayerType_Live){
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -87,6 +88,7 @@ static NSString * reuseIdentifier = @"flowcell";
         self.playerType = PlayerType_VOD;
         [self.flowView triggerPullToRefresh];
     }
+    self.navItem.rightBarButtonItem = nil;
 }
 
 -(void)updateNavBarAndStatusBar{
