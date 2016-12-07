@@ -103,6 +103,7 @@ typedef enum{
     [super viewDidLoad];
     [self initData];
     [self InitUI];
+    [self addNSNotification];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -470,7 +471,7 @@ static int count_ReDoSyncStart3min = 0;
 -(void)stopSyncStateToService{
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
-
+        NSLog(@"Stop dic=%@",dic);
         if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
             if(weakSelf.VODURL && weakSelf.channelID){
                 [[HTTPManager shareInstance] fetchDetailInfoWithChannelWebID:weakSelf.channelID Success:^(NSDictionary *dic) {
@@ -598,8 +599,8 @@ static int count_ReDoSyncStart3min = 0;
 
             if(self.isDoExitByClick){
                 self.isDoExitByClick = NO;
-                [self stopSyncStateToService];
-                
+                //直接退出
+                [self.navigationController popToRootViewControllerAnimated:NO];
             }else{
                 if(self.isDoExitBySwitchNetWork){
                     self.isDoExitBySwitchNetWork = NO;
@@ -681,10 +682,7 @@ static int count_ReDoSyncStart3min = 0;
         if(self.isPushing){
             [self.pushEngine stop];
         }
-        
-        if([HTTPManager shareInstance].currentNetworkStatus == AFNetworkReachabilityStatusNotReachable){
-            [self.navigationController popToRootViewControllerAnimated:NO];
-        }
+        [self removeNSNotification];
     }];
     
     UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
@@ -872,6 +870,35 @@ static int count_ReDoSyncStart3min = 0;
     pullViewController.sourceType = PPYSourceType_VOD;
     pullViewController.windowPlayerDisabled = YES;
     [self.navigationController pushViewController:pullViewController animated:YES];
+}
+
+
+#pragma mark - NSNotificationCenter
+- (void)addNSNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+}
+
+- (void)removeNSNotification
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+#pragma mark -- notification methods
+
+- (void)appBecomeActive:(NSNotification *)note
+{
+    NSString *tip = @"正在为您重连...";
+    [[NotifyView getInstance] dismissNotifyMessageInView:self.view];
+    [[NotifyView getInstance] needShowNotifyMessage:tip inView:self.view forSeconds:3];
+    [self doReconnectToServer];
+}
+
+- (void)appResignActive:(NSNotification *)note
+{
+    [self.pushEngine stop];
 }
 
 @end
