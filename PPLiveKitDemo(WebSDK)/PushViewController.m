@@ -134,7 +134,6 @@ typedef enum{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotification_NetworkStateChanged object:nil];
 }
 
-
 #pragma mark --custom method--
 
 -(void)initData{
@@ -232,7 +231,6 @@ typedef enum{
     }
 }
 
-
 -(void)showNetworkState:(NSNotification *)info{
     self.isDoExitBySwitchNetWork = YES;
     [self.pushEngine stop];
@@ -255,10 +253,11 @@ typedef enum{
             break;
     }
 }
+
 -(void)processWhenUseWWanNetwork{
     __weak typeof(self) weakSelf = self;
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用移动流量，是否继续直播？" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"当前使用流量，是否继续直播？" message:nil preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"继续直播" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         weakSelf.needReconnect = YES;
         [[NotifyView getInstance] dismissNotifyMessageInView:weakSelf.view];
@@ -279,14 +278,15 @@ static int count_RestartPushEngine = 0;
     __weak typeof (self) weakSelf = self;
     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
         if(dic != nil){
-            NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-            NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
-            NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
-            
+            NSLog(@"fetchStreamStatus dic=%@",dic);
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+                NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
+                NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
                 if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
                     [weakSelf sendMessage:kReconnectSuccess];
                     count_RestartPushEngine = 0;
+                    self.isPushing = YES;
                 }
             }
         }else{
@@ -317,13 +317,14 @@ static int count_RestartPushEngine = 0;
     __weak typeof (self) weakSelf = self;
     [[HTTPManager shareInstance] fetchStreamStatusSuccess:^(NSDictionary *dic) {
         if(dic != nil){
-            NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
-            NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
-            NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
-            
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
+                NSString *liveState = (NSString *)[data objectForKey:@"liveStatus"];
+                NSString *streamState = (NSString *)[data objectForKey:@"streamStatus"];
+                NSLog(@"fetchStreamStatus dic=%@",dic);
                 if([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"ok"]){
                     [weakSelf sendMessage:kReconnectSuccess];
+                    self.isPushing = YES;
                 }else if(([liveState isEqualToString:@"living"] && [streamState isEqualToString:@"error"])
                          ||[liveState isEqualToString:@"broken"]){
                     JPushControllerLog(@"监测到流状态错误，重启推流引擎");
@@ -344,10 +345,10 @@ static int count_RestartPushEngine = 0;
                 }else{
                     [weakSelf sendMessage:kStreamCannotRecovery];
                 }
+                JPushControllerLog(@"当前流状态:livestate = %@, streamState = %@",liveState,streamState);
             }else{
                [weakSelf sendMessage:kStreamCannotRecovery];
             }
-            JPushControllerLog(@"当前流状态:livestate = %@, streamState = %@",liveState,streamState);
         }else{
             [weakSelf doReconnectToServer30s];
         }
@@ -387,8 +388,6 @@ static int count_doReconnectToServer3min = 0;
     });
 }
 
-
-
 #pragma mark ----Sync Logic----
 //过程中抛出的状态 kAFNetworkAFNetworkingRequestFaile,kSyncStartFailed
 //最终抛出的状态 kSyncStartSuccess，kStreamCannotRecovery
@@ -396,12 +395,13 @@ static int count_doReconnectToServer3min = 0;
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStartStateToServerSuccess:^(NSDictionary *dic) {
         if(dic != nil){
+            NSLog(@"PushStartState dic=%@",dic);
             if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
                 [weakSelf sendMessage:kSyncStartSuccess];
                 weakSelf.isSyncStartSuccess = YES;
                 [[HTTPManager shareInstance] fetchPlayURL:^(NSDictionary *dic) {
                     if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
-                        NSLog(@"____dic = %@",dic);
+                        NSLog(@"fetchPlayURL dic = %@",dic);
                         NSDictionary *data = (NSDictionary *)[dic objectForKey:@"data"];
                         NSString *m3u8Url = (NSString *)[data objectForKey:@"m3u8Url"];
                         NSString *channelID = (NSString *)[data objectForKey:@"channelWebId"];
@@ -473,6 +473,9 @@ static int count_ReDoSyncStart3min = 0;
 }
 
 -(void)stopSyncStateToService{
+    
+    [self.indicator startAnimating];
+    
     __weak typeof(self) weakSelf = self;
     [[HTTPManager shareInstance] syncPushStopStateToServerSuccess:^(NSDictionary *dic) {
         NSLog(@"Stop dic=%@",dic);
@@ -480,6 +483,7 @@ static int count_ReDoSyncStart3min = 0;
             if(weakSelf.VODURL && weakSelf.channelID){
                 [[HTTPManager shareInstance] fetchDetailInfoWithChannelWebID:weakSelf.channelID Success:^(NSDictionary *dic) {
                     if([[dic objectForKey:@"err"] isEqualToString:@"0"]){
+                        NSLog(@"fetchDetailInfo dic=%@",dic);
                         NSNumber *duration = (NSNumber *)[[dic objectForKey:@"data"] objectForKey:@"duration"];
                         if(duration.integerValue > 10){
                             [weakSelf.view addSubview:weakSelf.viewEndLiving];
@@ -576,7 +580,7 @@ static int count_ReDoSyncStart3min = 0;
         [self presentFuzzyViewOnView:self.view WithMessage:displayInfo loadingNeeded:NO];
     }
     JPushControllerLog(@"log = %@",log);
-//    JPushControllerLog(@"display = %@",displayInfo);
+    JPushControllerLog(@"display = %@",displayInfo);
 }
 
 
@@ -603,8 +607,7 @@ static int count_ReDoSyncStart3min = 0;
 
             if(self.isDoExitByClick){
                 self.isDoExitByClick = NO;
-                //直接退出
-                [self.navigationController popToRootViewControllerAnimated:NO];
+                [self stopSyncStateToService];
             }else{
                 if(self.isDoExitBySwitchNetWork){
                     self.isDoExitBySwitchNetWork = NO;
@@ -682,11 +685,15 @@ static int count_ReDoSyncStart3min = 0;
     UIAlertAction *btnOK = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSLog(@"stop thread = %@",[NSThread currentThread]);
         self.isDoExitByClick = YES;
-        [self.indicator stopAnimating];
+        [self.indicator startAnimating];
+        
+        [self removeNSNotification];
+        
         if(self.isPushing){
             [self.pushEngine stop];
+        } else {
+             [self.navigationController popToRootViewControllerAnimated:NO];
         }
-        [self removeNSNotification];
     }];
     
     UIAlertAction *btnCancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
@@ -886,8 +893,7 @@ static int count_ReDoSyncStart3min = 0;
 
 - (void)removeNSNotification
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark -- notification methods
