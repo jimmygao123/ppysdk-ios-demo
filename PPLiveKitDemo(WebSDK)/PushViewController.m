@@ -692,7 +692,8 @@ static int count_ReDoSyncStart3min = 0;
         if(self.isPushing){
             [self.pushEngine stop];
         } else {
-             [self.navigationController popToRootViewControllerAnimated:NO];
+            [self.pushEngine stop];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         }
     }];
     

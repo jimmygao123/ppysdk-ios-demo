@@ -54,10 +54,6 @@
 @implementation PullViewController
 
 #pragma mark --Action--
-- (IBAction)crashTest:(id)sender
-{
-    [[PPYPlayEngine shareInstance] crashTest];
-}
 
 - (IBAction)doExit:(id)sender {
     for(id vc in self.navigationController.viewControllers){    //推流端以push方式进入，需要pop出来。
