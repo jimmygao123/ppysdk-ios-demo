@@ -43,14 +43,6 @@
                         <action selector="doExit:" destination="-1" eventType="touchUpInside" id="XLS-lB-nrd"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hn0-RG-Q9G">
-                    <rect key="frame" x="16" y="204" width="104" height="38"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" title="crash Button"/>
-                    <connections>
-                        <action selector="crashTest:" destination="-1" eventType="touchUpInside" id="awe-rn-QCZ"/>
-                    </connections>
-                </button>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <constraints>
