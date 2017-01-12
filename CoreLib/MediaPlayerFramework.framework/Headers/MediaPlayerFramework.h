@@ -17,3 +17,6 @@ FOUNDATION_EXPORT const unsigned char MediaPlayerFrameworkVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <MediaPlayerFramework/PublicHeader.h>
 
 #import <MediaPlayerFramework/VideoView.h>
+#import <MediaPlayerFramework/MediaSource.h>
+#import <MediaPlayerFramework/MediaSourceGroup.h>
+
