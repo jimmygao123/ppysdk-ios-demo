@@ -21,23 +21,23 @@ typedef NS_ENUM(NSUInteger, PPYCaptureFPS){
 };
 
 typedef NS_ENUM(NSUInteger, PPYVideoQuality){
-    /// 分辨率： 360 *640 帧数：15 码率：500Kps
+    /// 分辨率： 360 *640 帧数：15 码率：800Kps
     PPYVideoQuality_Low1 = 0,
     /// 分辨率： 360 *640 帧数：24 码率：800Kps
     PPYVideoQuality_Low2 = 1,
     /// 分辨率： 360 *640 帧数：30 码率：800Kps
     PPYVideoQuality_Low3 = 2,
-    /// 分辨率： 540 *960 帧数：15 码率：800Kps
+    /// 分辨率： 540 *960 帧数：15 码率：1024Kps
     PPYVideoQuality_Medium1 = 3,
-    /// 分辨率： 540 *960 帧数：24 码率：800Kps
+    /// 分辨率： 540 *960 帧数：24 码率：1024Kps
     PPYVideoQuality_Medium2 = 4,
-    /// 分辨率： 540 *960 帧数：30 码率：800Kps
+    /// 分辨率： 540 *960 帧数：30 码率：1024Kps
     PPYVideoQuality_Medium3 = 5,
-    /// 分辨率： 720 *1280 帧数：15 码率：1000Kps
+    /// 分辨率： 720 *1280 帧数：15 码率：1.4Mps
     PPYVideoQuality_High1 = 6,
-    /// 分辨率： 720 *1280 帧数：24 码率：1200Kps
+    /// 分辨率： 720 *1280 帧数：24 码率：1.4Mps
     PPYVideoQuality_High2 = 7,
-    /// 分辨率： 720 *1280 帧数：30 码率：1200Kps
+    /// 分辨率： 720 *1280 帧数：30 码率：1.4Mps
     PPYVideoQuality_High3 = 8,
     /// 默认配置
     PPYVideoQuality_Default = PPYVideoQuality_Low2

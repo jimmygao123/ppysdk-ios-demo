@@ -10,8 +10,8 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(int,PPYSourceType){
-    PPYSourceType_Live,   //rtmp, flv-http,
-    PPYSourceType_VOD,    //m3u8
+    PPYSourceType_VOD = 1,    //m3u8
+    PPYSourceType_Live = 2,   //rtmp, flv-http,
 };
 
 typedef NS_ENUM (int,PPYPlayEngineErrorType)  {
@@ -27,6 +27,7 @@ typedef NS_ENUM (int,PPYPlayEngineInfoType)  {
     PPYPlayEngineInfo_RealFPS,
     PPYPlayEngineInfo_BufferingUpdatePercent, //VOD only
     PPYPlayEngineInfo_Duration,               //VOD only
+    PPYPlayEngineInfo_CurrentPlayBackTime,    //VOD only
 };
 
 typedef NS_ENUM(NSUInteger, PPYPlayEngineStatus){
@@ -46,6 +47,12 @@ typedef NS_ENUM(NSUInteger, PPYPlayEngineStatus){
 @end
 
 @interface PPYPlayEngine : NSObject
+
+//test
+@property (nonatomic, strong) NSString *vid;
+@property (nonatomic, assign) NSInteger protocol;
+@property (nonatomic, strong) NSString *dt;
+@property (nonatomic, strong) NSString *clent;
 
 @property (copy, readonly, nonatomic) NSString *playURL;
 @property (assign, nonatomic ,readonly) PPYSourceType sourceType;

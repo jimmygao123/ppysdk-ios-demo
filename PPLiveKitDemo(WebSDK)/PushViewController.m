@@ -114,7 +114,7 @@ typedef enum{
     self.audioConfig = [PPYAudioConfiguration audioConfigurationWithAudioQuality:PPYAudioQuality_Default];
     PPYCaptureSessionPreset preset = [self configurationWithWidth:self.width andHeight:self.height];
     self.videoConfig = [PPYVideoConfiguration videoConfigurationWithPreset:preset andFPS:25 andBirate:800];
-    self.pushEngine = [[PPYPushEngine alloc]initWithAudioConfiguration:self.audioConfig andVideoConfiguration:self.videoConfig pushRTMPAddress:self.rtmpAddress];
+    self.pushEngine = [[PPYPushEngine alloc]initWithAudioConfiguration:self.audioConfig andVideoConfiguration:self.videoConfig];
     self.pushEngine.preview = self.view;
     self.pushEngine.running = YES;
     self.pushEngine.delegate = self;
@@ -211,7 +211,7 @@ typedef enum{
     if(self.rtmpAddress == nil) return;
     NSLog(@"self.rtmpAddress = %@",self.rtmpAddress);
     
-    [self.pushEngine start];
+    [self.pushEngine startWithAddress:self.rtmpAddress];
 }
 
 -(PPYCaptureSessionPreset)configurationWithWidth:(int)width andHeight:(int)height{

@@ -361,8 +361,11 @@
         case PPYPlayEngineInfo_BufferingUpdatePercent:
             break;
         case PPYPlayEngineInfo_Duration:
+            [[PPYPlayEngine shareInstance] resume];
             self.viewControlPanel.duration = value;
             self.viewControlPanel.state = JGPlayerControlState_Start;
+            break;
+        case PPYPlayEngineInfo_CurrentPlayBackTime:
             break;
     }
     JPlayControllerLog(@"type = %d,value = %d",type,value);
