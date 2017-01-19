@@ -220,6 +220,7 @@
 -(void)playControlPanelDidClickStartOrPauseButton:(JGPlayerControlPanel *)controlPanel{
     switch (controlPanel.state) {
         case JGPlayerControlState_Init:
+            [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
             [[PPYPlayEngine shareInstance] startPlayFromURL:self.playAddress WithType:PPYSourceType_VOD];
             [self observePlayBackProgress];
             break;
