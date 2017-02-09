@@ -9,6 +9,7 @@
 #import "HTTPManager.h"
 #import "AFNetworking.h"
 #import "NotifyView.h"
+#import "PPYPlayModel.h"
 
 NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 
@@ -20,6 +21,7 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 #define kURLGetDetailInfo @"http://115.231.44.26:8081/live/detail"
 #define kURLGetLiveList @"http://115.231.44.26:8081/live/living/list"
 #define kURLGetVODList @"http://115.231.44.26:8081/live/vod/list"
+#define kURLGetPlayURL @"http://115.231.44.26:8081/live/playstr/"
 
 @interface HTTPManager ()
 @property (strong, nonatomic) AFHTTPSessionManager *httpManager;
@@ -109,6 +111,18 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     NSString *requestURL = [NSString stringWithFormat:@"%@/%@",kURLGetDetailInfo,channelID];
     NSLog(@"kURLGetDetailInfo = %@",requestURL);
     [self requestURL:requestURL success:successBlock failured:failuredBlock];
+}
+
+- (void)fetchPlayURLWithChannelWebID:(NSString *)channelID
+                             Success:(void (^)(PPYPlayModel *))successBlock
+                            Failured:(void (^)(NSError *))failuredBlock {
+    NSString *requestURL = [NSString stringWithFormat:@"%@/%@",kURLGetPlayURL,channelID];
+    NSLog(@"kURLGetPlayURL = %@",requestURL);
+    [self requestURL:requestURL success:^(NSDictionary *responseObject) {
+        NSDictionary *data = responseObject[@"data"];
+        PPYPlayModel *model = [PPYPlayModel yy_modelWithJSON:data];
+        successBlock(model);
+    } failured:failuredBlock];
 }
 #pragma mark --custom method--
 -(void)requestURL:(NSString *)url

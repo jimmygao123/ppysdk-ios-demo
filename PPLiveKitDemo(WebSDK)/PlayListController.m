@@ -13,6 +13,7 @@
 #import "NotifyView.h"
 #import <PPYLiveKit/PPYLiveKit.h>
 #import "PullViewController.h"
+#import "YYWebImage.h"
 
 
 static NSString * reuseIdentifier = @"flowcell";
@@ -236,6 +237,7 @@ static NSString * reuseIdentifier = @"flowcell";
         NSDictionary *model = (NSDictionary *)self.VODList[indexPath.item];
         NSString *VODURL = [self.helper fetchVodURLWithChannelWebID: [model objectForKey:kChannelWebID]];
         NSLog(@"vod playAddress=%@", VODURL);
+        self.pullController.channelWebID = [model objectForKey:kChannelWebID];
         self.pullController.sourceType = PPYSourceType_VOD;
         self.pullController.playAddress = VODURL;
         self.pullController.windowPlayerDisabled = NO;
@@ -366,14 +368,8 @@ static NSString * reuseIdentifier = @"flowcell";
         cell.imgLiveState.image = (UIImage *)[UIImage imageNamed:@"组-6.png"];
     }
     NSString *imgURL = (NSString *)[model objectForKey:kScreenShot];
-
-    [self.helper downLoadWebImage:imgURL onQueueAsync:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) completionHandler:^(NSData *data) {
-        if(data){
-            cell.imgBackground.image = [UIImage imageWithData:data];
-        }else{
-            cell.imgBackground.image = [UIImage imageNamed:@"defalutFlow.png"];
-        }
-    }];
+    [cell.imgBackground yy_setImageWithURL:[NSURL URLWithString:imgURL] placeholder:[UIImage imageNamed:@"defalutFlow.png"]];
+    
     return cell;
 }
 

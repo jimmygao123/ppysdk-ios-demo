@@ -11,13 +11,13 @@
 @implementation PPYPlayModel
 
 + (NSDictionary *)modelCustomPropertyMapper {
-    return @{@"channelWebID"  : @"channel_web_id",
-             @"channelType"  : @"channel_type",
-             @"rtmpURL"  : @"rtmp_url",
-             @"hdlURL": @"hdl_url",
-             @"m3u8URL" : @"m3u8_url",
-             @"rtmpsURLArray" : @"rtmps_url",
-             @"m3u8sURLArray" : @"m3u8s_url"};
+    return @{@"channelWebID"  : @"channelWebId",
+             @"channelType"  : @"channelType",
+             @"rtmpURL"  : @"rtmpUrl",
+             @"hdlURL": @"hdlUrl",
+             @"m3u8URL" : @"m3u8Url",
+             @"rtmpsURLArray" : @"rtmpsUrl",
+             @"m3u8sURLArray" : @"m3u8sUrl"};
 }
 
 + (NSDictionary *)modelContainerPropertyGenericClass {
@@ -70,14 +70,14 @@
 
 @implementation PPYPlayRTMPModel
 + (NSDictionary *)modelCustomPropertyMapper {
-    return @{@"rtmpURL"  : @"rtmp_url",
-             @"ftCN"  : @"ft_cn"};
+    return @{@"rtmpURL"  : @"rtmpUrl",
+             @"ftCN"  : @"ftCn"};
 }
 @end
 
 @implementation PPYPLayM3U8Model
 
 + (NSDictionary *)modelCustomPropertyMapper {
-    return @{@"m3u8URL"  : @"m3u8_url"};
+    return @{@"m3u8URL"  : @"m3u8Url"};
 }
 @end

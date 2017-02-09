@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnStartOrPause;
 @property (weak, nonatomic) IBOutlet UISlider *sliderProgress;
 @property (weak, nonatomic) IBOutlet UILabel *lblTime;
+@property (weak, nonatomic) IBOutlet UIButton *rateButton;
 
 @property (assign, nonatomic) NSString *durationDescription;
 @end
@@ -28,7 +29,10 @@
 
 - (void)awakeFromNib{
     [super awakeFromNib];
-
+    
+    [self.sliderProgress setThumbImage:[UIImage imageNamed:@"组-4"] forState:UIControlStateNormal];
+    [self.sliderProgress setThumbImage:[UIImage imageNamed:@"组-4"] forState:UIControlStateSelected];
+    [self.sliderProgress setThumbImage:[UIImage imageNamed:@"组-4"] forState:UIControlStateHighlighted];
 }
 
 
@@ -36,6 +40,12 @@
     JGPlayerControlPanelOwner *owner = [[JGPlayerControlPanelOwner alloc]init];
     [[NSBundle mainBundle] loadNibNamed:NSStringFromClass(self) owner:owner options:nil];
     return owner.controlPanel;
+}
+
++ (instancetype)vodPlayerControlPanel {
+    NSArray *nibs = [[NSBundle mainBundle] loadNibNamed:@"JGVodPlayerControlPanel" owner:self options:nil];
+    JGPlayerControlPanel *pannel = nibs.firstObject;
+    return pannel;
 }
 
 
@@ -115,6 +125,26 @@
     text = [NSString stringWithFormat:@"%@/%@",[self convertSecondsToTimeFormat:progress],self.durationDescription];
     self.lblTime.text = text;
 }
+
+#pragma mark vod player
+- (IBAction)didChangeVideoRateAction:(id)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(playControlPanelDidChangeVideoRate:)]) {
+        [self.delegate playControlPanelDidChangeVideoRate:self];
+    }
+}
+
+- (IBAction)didPlayerZoomAction:(id)sender {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(playControlPanelDidZoom:)]) {
+        [self.delegate playControlPanelDidZoom:self];
+    }
+}
+
+- (void)setRateTitle:(NSString *)rateTitle {
+    _rateTitle = rateTitle;
+    [self.rateButton setTitle:rateTitle forState:UIControlStateNormal];
+}
+
+#pragma mark 显示播放时间
 
 -(NSString *)durationDescription{
     if(self.duration <= 0){

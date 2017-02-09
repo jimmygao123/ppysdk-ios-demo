@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view alpha="0.20000000298023224" contentMode="scaleToFill" id="9H7-aE-uR7" customClass="JGPlayerControlPanel">
+            <rect key="frame" x="0.0" y="0.0" width="433" height="83"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="DGn-Kd-Xci">
+                    <rect key="frame" x="6" y="15" width="318" height="31"/>
+                    <connections>
+                        <action selector="playerProgressChanged:" destination="9H7-aE-uR7" eventType="valueChanged" id="W0R-gK-7yX"/>
+                    </connections>
+                </slider>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00/00:00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tUh-aA-LT4" userLabel="播放时间">
+                    <rect key="frame" x="330" y="19.5" width="95" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="Cb0-PN-ZgW"/>
+                        <constraint firstAttribute="width" constant="95" id="gWi-Uu-e2P"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Uy-Pe-NVq" userLabel="暂停播放">
+                    <rect key="frame" x="8" y="53" width="25" height="25"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="25" id="Vdd-31-6Jv"/>
+                        <constraint firstAttribute="width" constant="25" id="kfq-cQ-mgi"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="startplay.png"/>
+                    <connections>
+                        <action selector="doStartOrPause:" destination="9H7-aE-uR7" eventType="touchUpInside" id="dcC-z8-HNE"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JkY-l4-WyN" userLabel="码率">
+                    <rect key="frame" x="43" y="47.5" width="45" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="35" id="A0u-vS-hct"/>
+                        <constraint firstAttribute="width" constant="45" id="xt1-Il-p1I"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="原画">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="didChangeVideoRateAction:" destination="9H7-aE-uR7" eventType="touchUpInside" id="utg-ym-rkA"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kdc-qi-o3C" userLabel="窗口缩放">
+                    <rect key="frame" x="96" y="48" width="46" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="46" id="Uau-yb-zRY"/>
+                        <constraint firstAttribute="height" constant="35" id="fcJ-Sa-5Nb"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="小窗">
+                        <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="didPlayerZoomAction:" destination="9H7-aE-uR7" eventType="touchUpInside" id="RLA-PF-Vjm"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="4Uy-Pe-NVq" firstAttribute="leading" secondItem="9H7-aE-uR7" secondAttribute="leading" constant="8" id="4r7-cg-Oun"/>
+                <constraint firstAttribute="trailing" secondItem="tUh-aA-LT4" secondAttribute="trailing" constant="8" id="E1K-2J-maI"/>
+                <constraint firstItem="DGn-Kd-Xci" firstAttribute="top" secondItem="9H7-aE-uR7" secondAttribute="top" constant="15" id="FKM-ke-MNZ"/>
+                <constraint firstItem="Kdc-qi-o3C" firstAttribute="leading" secondItem="JkY-l4-WyN" secondAttribute="trailing" constant="8" id="IYx-N6-s1i"/>
+                <constraint firstItem="4Uy-Pe-NVq" firstAttribute="top" secondItem="DGn-Kd-Xci" secondAttribute="bottom" constant="8" id="aoO-vQ-298"/>
+                <constraint firstItem="Kdc-qi-o3C" firstAttribute="centerY" secondItem="4Uy-Pe-NVq" secondAttribute="centerY" id="bQE-5u-reK"/>
+                <constraint firstItem="JkY-l4-WyN" firstAttribute="leading" secondItem="4Uy-Pe-NVq" secondAttribute="trailing" constant="10" id="gtr-6I-SmY"/>
+                <constraint firstItem="tUh-aA-LT4" firstAttribute="centerY" secondItem="DGn-Kd-Xci" secondAttribute="centerY" id="jNf-ot-Hao"/>
+                <constraint firstItem="JkY-l4-WyN" firstAttribute="centerY" secondItem="4Uy-Pe-NVq" secondAttribute="centerY" id="rgL-Zb-t6x"/>
+                <constraint firstItem="DGn-Kd-Xci" firstAttribute="leading" secondItem="9H7-aE-uR7" secondAttribute="leading" constant="8" id="tsE-dX-p53"/>
+                <constraint firstItem="tUh-aA-LT4" firstAttribute="leading" secondItem="DGn-Kd-Xci" secondAttribute="trailing" constant="8" id="zqF-BR-6el"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="btnStartOrPause" destination="4Uy-Pe-NVq" id="9IR-KA-qB9"/>
+                <outlet property="lblTime" destination="tUh-aA-LT4" id="qk8-FU-ZAD"/>
+                <outlet property="rateButton" destination="JkY-l4-WyN" id="fZY-cG-pF3"/>
+                <outlet property="sliderProgress" destination="DGn-Kd-Xci" id="3xO-J7-ab4"/>
+            </connections>
+            <point key="canvasLocation" x="-82.5" y="-51.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="startplay.png" width="30" height="30"/>
+    </resources>
+</document>

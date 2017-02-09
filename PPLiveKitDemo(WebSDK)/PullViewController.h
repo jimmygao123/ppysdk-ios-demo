@@ -12,6 +12,7 @@
 @class PlayListController;
 @interface PullViewController : UIViewController
 
+@property (copy, nonatomic) NSString *channelWebID;
 @property (copy, nonatomic) NSString *playAddress;
 @property (assign, nonatomic) PPYSourceType sourceType;
 @property (copy, nonatomic) NSDictionary *usefulInfo;

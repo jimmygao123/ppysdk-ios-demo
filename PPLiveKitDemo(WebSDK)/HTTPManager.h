@@ -11,6 +11,7 @@
 
 FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
 
+@class PPYPlayModel;
 @interface HTTPManager : NSObject
 
 @property (copy, nonatomic) NSString *roomID;
@@ -45,6 +46,10 @@ FOUNDATION_EXPORT NSString * const kNotification_NetworkStateChanged;
 
 -(void)fetchDetailInfoWithChannelWebID:(NSString *)channelID
                                Success:(void (^)(NSDictionary *))successBlock
+                              Failured:(void (^)(NSError *))failuredBlock;
+
+- (void)fetchPlayURLWithChannelWebID:(NSString *)channelID
+                               Success:(void (^)(PPYPlayModel *))successBlock
                               Failured:(void (^)(NSError *))failuredBlock;
 
 -(NSData *)downloadWebImageWithURL:(NSString *)url;

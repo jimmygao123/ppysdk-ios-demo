@@ -13,6 +13,7 @@
 		4BE28D9B1DEBE0F300EF0F90 /* MediaStreamerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4BE28D9D1DEBE0F300EF0F90 /* PPYLiveKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7541DE814B50064802B /* PPYLiveKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4BF8E7571DE814B50064802B /* PPYLiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7541DE814B50064802B /* PPYLiveKit.framework */; };
+		766F47491E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 766F47481E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib */; };
 		766F474F1E4AC41A0067E4F1 /* PPYBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F474E1E4AC41A0067E4F1 /* PPYBaseModel.m */; };
 		766F47521E4AC45A0067E4F1 /* PPYPlayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F47511E4AC45A0067E4F1 /* PPYPlayModel.m */; };
 		766F477C1E4AFE000067E4F1 /* YYCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F47561E4AFE000067E4F1 /* YYCache.m */; };
@@ -203,6 +204,7 @@
 		4BF8E7521DE814B50064802B /* MediaPlayerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MediaPlayerFramework.framework; sourceTree = "<group>"; };
 		4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MediaStreamerFramework.framework; sourceTree = "<group>"; };
 		4BF8E7541DE814B50064802B /* PPYLiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PPYLiveKit.framework; sourceTree = "<group>"; };
+		766F47481E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JGVodPlayerControlPanel.xib; path = Player/JGVodPlayerControlPanel.xib; sourceTree = "<group>"; };
 		766F474D1E4AC41A0067E4F1 /* PPYBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPYBaseModel.h; sourceTree = "<group>"; };
 		766F474E1E4AC41A0067E4F1 /* PPYBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPYBaseModel.m; sourceTree = "<group>"; };
 		766F47501E4AC45A0067E4F1 /* PPYPlayModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPYPlayModel.h; sourceTree = "<group>"; };
@@ -824,6 +826,7 @@
 				BFEA36371DB34C64007D5164 /* JGPlayerControlPanel.h */,
 				BFEA36381DB34C64007D5164 /* JGPlayerControlPanel.m */,
 				BFEA36401DB3D2AA007D5164 /* JGPlayerControlPanel.xib */,
+				766F47481E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib */,
 			);
 			name = "播放控制页面";
 			sourceTree = "<group>";
@@ -990,6 +993,7 @@
 				BF53F1BB1D8020E7002700AD /* 数据分析-启用@2x.png in Resources */,
 				BF53F1C01D8020E7002700AD /* 形状-1@3x.png in Resources */,
 				BF53F1CC1D8020E7002700AD /* 组-9@3x.png in Resources */,
+				766F47491E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib in Resources */,
 				BFFADA8D1D923270007ADF56 /* p数据分析-启用@3x.png in Resources */,
 				BF53F1A61D8020E7002700AD /* 对焦框@3x.png in Resources */,
 				BF53F1C21D8020E7002700AD /* 形状-11-拷贝@3x.png in Resources */,

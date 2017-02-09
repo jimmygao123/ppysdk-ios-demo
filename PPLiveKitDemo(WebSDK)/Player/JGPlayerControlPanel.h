@@ -19,6 +19,11 @@ typedef NS_ENUM(int,JGPlayerControlState){
 @protocol JGPlayControlPanelDelegate <NSObject>
 -(void)playControlPanelDidClickStartOrPauseButton:(JGPlayerControlPanel *)controlPanel;
 -(void)playControlPanel:(JGPlayerControlPanel *)controlPanel didSliderValueChanged:(float)newValue;
+@optional
+//选择码率
+- (void)playControlPanelDidChangeVideoRate:(JGPlayerControlPanel *)controlPanel;
+//点击小窗
+- (void)playControlPanelDidZoom:(JGPlayerControlPanel *)controlPanel;
 @end
 
 @interface JGPlayerControlPanel : UIView
@@ -28,5 +33,9 @@ typedef NS_ENUM(int,JGPlayerControlState){
 @property (assign, nonatomic) NSTimeInterval progress;  //s
 @property (assign, nonatomic) NSTimeInterval duration;  //s
 
+@property (nonatomic, strong) NSString *rateTitle;
+
 +(instancetype)playerControlPanel;
+/** vod播放器样式 */
++ (instancetype)vodPlayerControlPanel;
 @end

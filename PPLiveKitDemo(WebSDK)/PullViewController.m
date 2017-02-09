@@ -14,13 +14,13 @@
 #import "PushViewController.h"
 #import "WatchModel.h"
 #import "PlayListController.h"
+#import "PPYPlayModel.h"
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
 @interface PullViewController ()<PPYPlayEngineDelegate,JGPlayControlPanelDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *btnExit;
-@property (strong, nonatomic) UIButton *btnLitteWindow;
 //info
 @property (strong, nonatomic) IBOutlet UIView *viewInfo;
 @property (weak, nonatomic) IBOutlet UILabel *lblRoomID;
@@ -46,6 +46,9 @@
 @property (assign, nonatomic) int reconnectCountWhenStreamError;
 @property (assign, nonatomic) int reconnectCountOfCaching;
 @property (strong, nonatomic) MBProgressHUD *hud;
+@property (strong, nonatomic) PPYPlayModel *currentPlayModel;
+@property (strong, nonatomic) PPYPLayM3U8Model *currentM3u8Model;/**<当前的播放码率*/
+@property (assign, nonatomic) NSTimeInterval playTimeSaved;
 
 @property (assign, nonatomic) int width;
 @property (assign, nonatomic) int height;
@@ -211,8 +214,45 @@
     if(self.sourceType == PPYSourceType_Live){
         [self startPullStream];
     }else if(self.sourceType == PPYSourceType_VOD){
-        [self startPlayBack];
+        [self requestPlayURLInfo];
     }
+}
+
+- (void)requestPlayURLInfo {
+    [[HTTPManager shareInstance] fetchPlayURLWithChannelWebID:self.channelWebID
+                                                      Success:^(PPYPlayModel *playModel) {
+
+                                                          self.currentPlayModel = playModel;
+                                                          PPYPLayM3U8Model *m3u8 = nil;
+                                                          
+                                                          if (playModel.m3u8sURLArray.count == 1) {
+                                                              m3u8 = playModel.m3u8sURLArray.firstObject;
+                                                          } else {
+                                                              NSArray *data = [playModel.m3u8sURLArray sortedArrayUsingComparator:^NSComparisonResult(PPYPLayM3U8Model  *_Nonnull obj1, PPYPLayM3U8Model  *_Nonnull obj2) {
+                                                                  if (obj1.ft < obj2.ft) {
+                                                                    return NSOrderedAscending;
+                                                                  }
+                                                                  return NSOrderedDescending;
+                                                              }];
+                                                              self.currentPlayModel.m3u8sURLArray = data;
+                                                              m3u8 = data.firstObject;
+                                                              if (m3u8.ft == 0 && data.count > 1) { //原画
+                                                                  m3u8 = data[1];
+                                                              }
+                                                          }
+                                                          if (m3u8) {
+                                                              self.playAddress = m3u8.m3u8URL;
+                                                              self.currentM3u8Model = m3u8;
+                                                              self.viewControlPanel.rateTitle = [PPYPlayModel getNameForFt:m3u8.ft];
+                                                          }
+                                                          [self startPlayBack];
+                                                      }
+                                                     Failured:^(NSError *error) {
+                                                         NSLog(@"获取多码流信息失败----");
+                                                         if (self.playAddress) {
+                                                             [self startPlayBack];
+                                                         }
+                                                     }];
 }
 
 -(void)observePlayBackProgress{
@@ -240,6 +280,58 @@
 
 -(void)playControlPanel:(JGPlayerControlPanel *)controlPanel didSliderValueChanged:(float)newValue{
     [[PPYPlayEngine shareInstance] seekToPosition:newValue * [PPYPlayEngine shareInstance].duration];
+}
+
+
+- (void)playControlPanelDidChangeVideoRate:(JGPlayerControlPanel *)controlPanel {
+    if (self.currentPlayModel.m3u8sURLArray.count == 0) {
+        return;
+    }
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"选择清晰度" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    NSInteger index = 0;
+    for (PPYPLayM3U8Model *info in self.currentPlayModel.m3u8sURLArray) {
+        UIAlertAction *action = [UIAlertAction actionWithTitle:[PPYPlayModel getNameForFt:info.ft]
+                                                         style:info.ft == self.currentM3u8Model.ft ? UIAlertActionStyleDestructive : UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                           NSInteger ft = [PPYPlayModel getFtForName:action.title];
+                                                           if (ft == self.currentM3u8Model.ft) {
+                                                               return ;
+                                                           }
+                                                           for (PPYPLayM3U8Model *obj in self.currentPlayModel.m3u8sURLArray) {
+                                                               if (ft == obj.ft) {
+                                                                   [self didSelectedRatioWithModel:obj];
+                                                                   break;
+                                                               }
+                                                           }
+                                                           self.viewControlPanel.rateTitle = action.title;
+                                                       }];
+        [alertController addAction:action];
+        index ++;
+    }
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel
+                                                   handler:nil];
+    [alertController addAction:cancel];
+    
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)playControlPanelDidZoom:(JGPlayerControlPanel *)controlPanel {
+    [self switchToWindowPlayer:nil];
+}
+
+- (void)didSelectedRatioWithModel:(PPYPLayM3U8Model *)obj {
+    if (obj) {
+        self.playAddress = obj.m3u8URL;
+        self.currentM3u8Model = obj;
+        //切换码率
+        [self presentFuzzyViewOnView:self.view WithMessage:@"正在拼命加载..." loadingNeeded:YES];
+        NSTimeInterval time = [PPYPlayEngine shareInstance].currentPlaybackTime;
+        self.playTimeSaved = time;
+        [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
+        [self startPlayBack];
+    }
 }
 
 #pragma mark ---PlayBack---
@@ -356,7 +448,14 @@
         case PPYPlayEngineInfo_BufferingUpdatePercent:
             break;
         case PPYPlayEngineInfo_Duration:
-            [[PPYPlayEngine shareInstance] resume];
+        
+        [[PPYPlayEngine shareInstance] resume];
+        
+        if (self.playTimeSaved > 0) {
+            [[PPYPlayEngine shareInstance] seekToPosition:self.playTimeSaved];
+            NSLog(@"seek duration : %.2f",self.playTimeSaved);
+            self.playTimeSaved = 0;
+        }
             self.viewControlPanel.duration = value;
             self.viewControlPanel.state = JGPlayerControlState_Start;
             [self dismissFuzzyView];
@@ -448,22 +547,13 @@
 }
 
 #pragma mark --UIElelment--
-
-//VOD控制界面展示逻辑
--(UIButton *)btnLitteWindow{
-    if(_btnLitteWindow == nil){
-        
-        _btnLitteWindow = [UIButton buttonWithType:UIButtonTypeCustom];
-        _btnLitteWindow.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
-        [_btnLitteWindow setTitle:@"小窗" forState:UIControlStateNormal];
-        [_btnLitteWindow setFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 47, [UIScreen mainScreen].bounds.size.height - 47, 47, 47)];
-        [_btnLitteWindow addTarget:self action:@selector(switchToWindowPlayer:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _btnLitteWindow;
-}
 -(JGPlayerControlPanel *)viewControlPanel{
     if(_viewControlPanel == nil){
-        _viewControlPanel = [JGPlayerControlPanel playerControlPanel];
+        if (self.windowPlayerDisabled) {
+            _viewControlPanel = [JGPlayerControlPanel playerControlPanel]; //直播结束回看
+        } else {
+            _viewControlPanel = [JGPlayerControlPanel vodPlayerControlPanel]; //vod 回看
+        }
         _viewControlPanel.delegate = self;
     }
     return _viewControlPanel;
@@ -476,11 +566,9 @@
         self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width ,47);
         [self.view addSubview:self.viewControlPanel];
     }else{
-        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - 47, self.view.frame.size.width - 47,47);
+        CGFloat height = 70;
+        self.viewControlPanel.frame = CGRectMake(0, self.view.frame.size.height - height, self.view.frame.size.width,height);
         [self.view addSubview:self.viewControlPanel];
-        
-        self.btnLitteWindow.frame = CGRectMake(self.view.frame.size.width - 47, self.view.frame.size.height - 47, 47, 47);
-        [self.view addSubview:self.btnLitteWindow];
     }
 }
 
@@ -488,12 +576,6 @@
     if(self.viewControlPanel){
         if(self.viewControlPanel.superview){
             [self.viewControlPanel removeFromSuperview];
-        }
-    }
-    
-    if(self.btnLitteWindow){
-        if(self.btnLitteWindow.superview){
-            [self.btnLitteWindow removeFromSuperview];
         }
     }
 }
@@ -542,7 +624,6 @@
     self.lblRes.textColor = [UIColor whiteColor];
     
     [self.btnRes setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.btnLitteWindow setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.btnPlayProtocol setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.btnWindowPlay setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.viewLivingPlayCtr setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.2]];
