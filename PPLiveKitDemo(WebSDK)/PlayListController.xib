@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,14 +24,8 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faD-EU-Apy">
-                    <rect key="frame" x="0.0" y="22" width="375" height="44"/>
-                    <items>
-                        <navigationItem title="聚力云Demo" id="yje-r0-iQR"/>
-                    </items>
-                </navigationBar>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="nYD-fI-C5A">
-                    <rect key="frame" x="0.0" y="115.5" width="375" height="551.5"/>
+                    <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="bXt-Mw-aqV">
                         <size key="itemSize" width="200" height="200"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -56,6 +50,12 @@
                     <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faD-EU-Apy">
+                    <rect key="frame" x="0.0" y="22" width="375" height="44"/>
+                    <items>
+                        <navigationItem title="聚力云Demo" id="yje-r0-iQR"/>
+                    </items>
+                </navigationBar>
             </subviews>
             <color key="backgroundColor" red="0.96045541763305664" green="0.96060246229171753" blue="0.96038520336151123" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -64,12 +64,12 @@
                 <constraint firstAttribute="trailing" secondItem="nYD-fI-C5A" secondAttribute="trailing" id="4Gf-kj-vXO"/>
                 <constraint firstAttribute="bottom" secondItem="nYD-fI-C5A" secondAttribute="bottom" id="57K-7a-vHr"/>
                 <constraint firstItem="faD-EU-Apy" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="22" id="CeT-v4-Kho"/>
-                <constraint firstItem="nYD-fI-C5A" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="-177" id="EMj-Qj-84c"/>
                 <constraint firstItem="qVq-g4-EBp" firstAttribute="top" secondItem="s9D-3C-wJb" secondAttribute="bottom" constant="8" id="RSN-U4-S7N"/>
                 <constraint firstItem="qVq-g4-EBp" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="fQ9-ys-Tbm"/>
                 <constraint firstItem="faD-EU-Apy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="hos-vB-J5A"/>
                 <constraint firstItem="s9D-3C-wJb" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="-81" id="kwg-Ls-1Od"/>
                 <constraint firstAttribute="trailing" secondItem="faD-EU-Apy" secondAttribute="trailing" id="pdm-3t-HpE"/>
+                <constraint firstItem="nYD-fI-C5A" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="64" id="upB-nx-e9e"/>
             </constraints>
             <point key="canvasLocation" x="147" y="161"/>
         </view>
