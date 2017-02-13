@@ -794,8 +794,8 @@
 				TargetAttributes = {
 					BF375CC41D6F12B6009C0E57 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 3BLAQEXJ3N;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = K259LN949A;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1091,7 +1091,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: PPLive Corporation";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3BLAQEXJ3N;
+				DEVELOPMENT_TEAM = K259LN949A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1100,10 +1100,10 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pptv.ppyun.LiveKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "0fa8b55a-ef0d-490a-99b1-fc0105dab835";
+				PROVISIONING_PROFILE_SPECIFIER = "Develop com.pptv.ppyun.LiveKit";
 			};
 			name = Debug;
 		};
@@ -1112,8 +1112,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: PPLive Corporation";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3BLAQEXJ3N;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEVELOPMENT_TEAM = K259LN949A;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1122,10 +1122,10 @@
 				INFOPLIST_FILE = "PPLiveKitDemo(WebSDK)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.plive.livekitDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pptv.ppyun.LiveKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "b3edf33e-269e-45f9-bf63-a4703f4c0eda";
+				PROVISIONING_PROFILE_SPECIFIER = "PPTV PPYun LiveKit InHouse";
 			};
 			name = Release;
 		};
