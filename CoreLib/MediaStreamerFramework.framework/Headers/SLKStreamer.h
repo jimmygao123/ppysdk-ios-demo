@@ -22,6 +22,7 @@ enum slk_media_streamer_error_type {
     SLK_MEDIA_STREAMER_ERROR_AUDIO_ENCODE_FAIL = 5,
     SLK_MEDIA_STREAMER_ERROR_AUDIO_CAPTURE_STOP_FAIL = 6,
     SLK_MEDIA_STREAMER_ERROR_POOR_NETWORK = 7,
+    SLK_MEDIA_STREAMER_ERROR_AUDIO_FILTER_FAIL = 8,
 };
 
 enum slk_media_streamer_info_type {
@@ -41,8 +42,8 @@ enum slk_media_streamer_info_type {
 - (void)didConnected;
 - (void)gotStreaming;
 - (void)didPaused;
-- (void)gotErrorWithErrorType:(int)errorType;
-- (void)gotInfoWithInfoType:(int)infoType InfoValue:(int)infoValue;
+- (void)gotStreamerErrorWithErrorType:(int)errorType;
+- (void)gotStreamerInfoWithInfoType:(int)infoType InfoValue:(int)infoValue;
 - (void)didEndStreaming;
 @optional
 @end

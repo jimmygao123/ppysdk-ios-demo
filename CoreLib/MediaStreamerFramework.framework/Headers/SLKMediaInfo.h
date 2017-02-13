@@ -25,6 +25,8 @@
 @interface SLKMediaInfo : NSObject
 
 + (NSTimeInterval)syncGetMediaDurationWithInputFile:(NSString*)inputMediaFile;
++ (BOOL)syncGetCoverImageFileWithInputFile:(NSString*)inputMediaFile OutputWidth:(int)width OutputHeight:(int)height OutputPNGFile:(NSString*)outputPNGFile;
++ (BOOL)syncGetCoverImageFileWithInputFile:(NSString*)inputMediaFile Position:(NSTimeInterval)position OutputWidth:(int)width OutputHeight:(int)height OutputPNGFile:(NSString*)outputPNGFile;
 
 - (instancetype) init;
 

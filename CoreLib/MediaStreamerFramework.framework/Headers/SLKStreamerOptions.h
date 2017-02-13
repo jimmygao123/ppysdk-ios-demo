@@ -18,6 +18,7 @@
 @property (nonatomic) CGSize videoSize;
 @property (nonatomic) NSInteger fps;
 @property (nonatomic) NSInteger videoBitrate;
+@property (nonatomic) NSInteger maxKeyFrameIntervalMs;
 
 @property (nonatomic) BOOL hasAudio;
 @property (nonatomic) NSInteger audioBitrate;
