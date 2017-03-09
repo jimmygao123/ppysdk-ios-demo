@@ -13,6 +13,7 @@
 		4BE28D9B1DEBE0F300EF0F90 /* MediaStreamerFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4BE28D9D1DEBE0F300EF0F90 /* PPYLiveKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7541DE814B50064802B /* PPYLiveKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4BF8E7571DE814B50064802B /* PPYLiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF8E7541DE814B50064802B /* PPYLiveKit.framework */; };
+		7610327D1E70FBAA007FCAD6 /* NSTimer+YYAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 7610327C1E70FBAA007FCAD6 /* NSTimer+YYAdd.m */; };
 		766F47491E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 766F47481E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib */; };
 		766F474F1E4AC41A0067E4F1 /* PPYBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F474E1E4AC41A0067E4F1 /* PPYBaseModel.m */; };
 		766F47521E4AC45A0067E4F1 /* PPYPlayModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 766F47511E4AC45A0067E4F1 /* PPYPlayModel.m */; };
@@ -204,6 +205,8 @@
 		4BF8E7521DE814B50064802B /* MediaPlayerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MediaPlayerFramework.framework; sourceTree = "<group>"; };
 		4BF8E7531DE814B50064802B /* MediaStreamerFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MediaStreamerFramework.framework; sourceTree = "<group>"; };
 		4BF8E7541DE814B50064802B /* PPYLiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PPYLiveKit.framework; sourceTree = "<group>"; };
+		7610327B1E70FBAA007FCAD6 /* NSTimer+YYAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+YYAdd.h"; sourceTree = "<group>"; };
+		7610327C1E70FBAA007FCAD6 /* NSTimer+YYAdd.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+YYAdd.m"; sourceTree = "<group>"; };
 		766F47481E4AC18F0067E4F1 /* JGVodPlayerControlPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = JGVodPlayerControlPanel.xib; path = Player/JGVodPlayerControlPanel.xib; sourceTree = "<group>"; };
 		766F474D1E4AC41A0067E4F1 /* PPYBaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPYBaseModel.h; sourceTree = "<group>"; };
 		766F474E1E4AC41A0067E4F1 /* PPYBaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPYBaseModel.m; sourceTree = "<group>"; };
@@ -451,6 +454,15 @@
 				4BF8E7541DE814B50064802B /* PPYLiveKit.framework */,
 			);
 			path = CoreLib;
+			sourceTree = "<group>";
+		};
+		7610327A1E70FBAA007FCAD6 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				7610327B1E70FBAA007FCAD6 /* NSTimer+YYAdd.h */,
+				7610327C1E70FBAA007FCAD6 /* NSTimer+YYAdd.m */,
+			);
+			path = Categories;
 			sourceTree = "<group>";
 		};
 		766F47531E4AFE000067E4F1 /* YYWebImage */ = {
@@ -866,6 +878,7 @@
 		BFFADA5F1D9123CF007ADF56 /* OpenSource */ = {
 			isa = PBXGroup;
 			children = (
+				7610327A1E70FBAA007FCAD6 /* Categories */,
 				84E1DDD11DB06D740079D0B6 /* SVPullToRefresh */,
 				766F47531E4AFE000067E4F1 /* YYWebImage */,
 				84E1DE371DB9E2F50079D0B6 /* YYModel */,
@@ -1123,6 +1136,7 @@
 				BFEA36391DB34C64007D5164 /* JGPlayerControlPanel.m in Sources */,
 				766F47521E4AC45A0067E4F1 /* PPYPlayModel.m in Sources */,
 				84E1DD521DAF1FEA0079D0B6 /* PlayListController.m in Sources */,
+				7610327D1E70FBAA007FCAD6 /* NSTimer+YYAdd.m in Sources */,
 				766F477D1E4AFE000067E4F1 /* YYDiskCache.m in Sources */,
 				766F47811E4AFE000067E4F1 /* CALayer+YYWebImage.m in Sources */,
 				766F47841E4AFE000067E4F1 /* UIImage+YYWebImage.m in Sources */,

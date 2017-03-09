@@ -15,6 +15,7 @@
 #import "WatchModel.h"
 #import "PlayListController.h"
 #import "PPYPlayModel.h"
+#import "NSTimer+YYAdd.h"
 
 #define JPlayControllerLog(format, ...) NSLog((@"PlayerController_"format), ##__VA_ARGS__)
 
@@ -38,6 +39,7 @@
 @property (strong, nonatomic) JGPlayerControlPanel *viewControlPanel;
 @property (strong, nonatomic) IBOutlet UIView *viewLivingPlayCtr;
 @property (strong, nonatomic) NSTimer *timer;
+@property (strong, nonatomic) NSTimer *bufferTimer;
 
 @property (assign, nonatomic) BOOL isPlaying;
 @property (assign, nonatomic) BOOL isReconnecting;
@@ -389,6 +391,7 @@
 -(void)doStopWhenCachingMoreThanTenSeconds{
     __weak typeof(self) weakSelf = self;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"----------%s",__FUNCTION__);
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
         if(weakSelf.sourceType == PPYSourceType_VOD){
             weakSelf.viewControlPanel.state = JGPlayerControlState_Init;
@@ -463,17 +466,29 @@
 }
 
 -(void)didPPYPlayEngineStateChanged:(PPYPlayEngineStatus)state{
-    __weak typeof(self) weakSelf = self;
+    
 
     switch (state) {
         case PPYPlayEngineStatus_StartCaching:
         {
-            [weakSelf performSelector:@selector(doStopWhenCachingMoreThanTenSeconds) withObject:weakSelf afterDelay:10];
+            if (self.bufferTimer) {
+                [self.bufferTimer invalidate];
+                self.bufferTimer = nil;
+            }
+            __weak typeof(self) weakSelf = self;
+            self.bufferTimer = [NSTimer scheduledTimerWithTimeInterval:10.0
+                                                                 block:^(NSTimer * _Nonnull timer) {
+                                                                     [weakSelf doStopWhenCachingMoreThanTenSeconds];
+                                                                 }
+                                                               repeats:NO];
             [self throwError:4];
         }
             break;
         case PPYPlayEngineStatus_EndCaching:
-            [NSObject cancelPreviousPerformRequestsWithTarget:weakSelf selector:@selector(doStopWhenCachingMoreThanTenSeconds) object:nil];
+            if (self.bufferTimer) {
+                [self.bufferTimer invalidate];
+                self.bufferTimer = nil;
+            }
             [self throwError:5];
             break;
         case PPYPlayEngineStatus_FisrtKeyFrameComing:
