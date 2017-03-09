@@ -12,6 +12,7 @@
 typedef NS_ENUM(int,PPYSourceType){
     PPYSourceType_VOD = 1,    //m3u8
     PPYSourceType_Live = 2,   //rtmp, flv-http,
+    PPYSourceType_RTSP = 3
 };
 
 typedef NS_ENUM (int,PPYPlayEngineErrorType)  {

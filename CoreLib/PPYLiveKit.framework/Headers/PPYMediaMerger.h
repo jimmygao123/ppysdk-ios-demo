@@ -15,11 +15,16 @@ enum ppy_media_processer_info_type {
     PPY_MEDIA_PROCESSER_INFO_WRITE_TIMESTAMP = 1,
 };
 
+typedef NS_ENUM(NSInteger,PPYMediaMergerType) {
+    PPYMediaMergerTypeVideoOnly,
+    PPYMediaMergerTypeMusicVideoMix
+};
+
 @protocol PPYMediaMergerDelegate <NSObject>
 @required
 - (void)gotErrorWithErrorType:(int)errorType;
 - (void)gotInfoWithInfoType:(int)infoType InfoValue:(int)infoValue;
-- (void)didEnd;
+- (void)didEndWithMergeType:(PPYMediaMergerType)type;
 @optional
 @end
 
@@ -29,6 +34,7 @@ enum ppy_media_processer_info_type {
 @property (nonatomic, strong) NSString *mediaPath;
 @property (nonatomic, assign) NSTimeInterval startPos;
 @property (nonatomic, assign) NSTimeInterval endPos;
+@property (nonatomic, assign) float weight;
 
 @end
 
@@ -46,11 +52,11 @@ enum ppy_media_processer_info_type {
 
 @property (nonatomic, strong) PPYMediaProduct *mediaProduct;
 
--(instancetype)initWithProductPath:(NSString *)path  andVideoSize:(CGSize)videoSize;
+@property (nonatomic, strong) NSString *productPath;
+- (instancetype)initWithProductPath:(NSString *)path  andVideoSize:(CGSize)videoSize;
 
-//每段视频都要调用一次
-- (void)addMediaMaterial:(PPYMediaInfo*)mediaMaterial;
+- (void)mergeVideoMedias:(NSArray <PPYMediaInfo *> *)medias;
 
-- (void)start;
+- (void)addMusicMedia:(PPYMediaInfo *)musicMedia toVideoMedia:(PPYMediaInfo *)videoMedia;
 
 @end
