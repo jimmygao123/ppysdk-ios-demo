@@ -21,7 +21,7 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 #define kURLGetDetailInfo @"http://115.231.44.26:8081/live/detail"
 #define kURLGetLiveList @"http://115.231.44.26:8081/live/living/list"
 #define kURLGetVODList @"http://115.231.44.26:8081/live/vod/list"
-#define kURLGetPlayURL @"http://115.231.44.26:8081/live/playstr/"
+#define kURLGetPlayURL @"http://115.231.44.26:8081/live/playstr"
 
 @interface HTTPManager ()
 @property (strong, nonatomic) AFHTTPSessionManager *httpManager;

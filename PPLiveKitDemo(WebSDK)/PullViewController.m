@@ -206,11 +206,6 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showNetworkState:) name:kNotification_NetworkStateChanged object:nil];
     
-    [PPYPlayEngine shareInstance].vid = @"123456";
-    [PPYPlayEngine shareInstance].dt = @"1";
-    [PPYPlayEngine shareInstance].protocol = (_sourceType == PPYSourceType_VOD) ? 2 : 1;
-    [PPYPlayEngine shareInstance].clent = @"testClient";
-    
     if(self.sourceType == PPYSourceType_Live){
         [self startPullStream];
     }else if(self.sourceType == PPYSourceType_VOD){
@@ -331,6 +326,7 @@
         self.playTimeSaved = time;
         [[PPYPlayEngine shareInstance] stopPlayerBlackDisplayNeeded:NO];
         [self startPlayBack];
+        [PPYPlayEngine shareInstance].dt = [NSString stringWithFormat:@"%ld",obj.ft];
     }
 }
 
