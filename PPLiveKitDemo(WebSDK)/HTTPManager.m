@@ -13,15 +13,21 @@
 
 NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 
-#define kURLGetPushRTMPAddr @"http://115.231.44.26:8081/live/create"
-#define kURLGetPullRTMPAddr @"http://115.231.44.26:8081/live/watch"
-#define kURLSyncPushStateToServer @"http://115.231.44.26:8081/live/start"
-#define kURLSyncPushStopToServer @"http://115.231.44.26:8081/live/stop"
-#define kURLGetStreamStatus @"http://115.231.44.26:8081/live/status"
-#define kURLGetDetailInfo @"http://115.231.44.26:8081/live/detail"
-#define kURLGetLiveList @"http://115.231.44.26:8081/live/living/list"
-#define kURLGetVODList @"http://115.231.44.26:8081/live/vod/list"
-#define kURLGetPlayURL @"http://115.231.44.26:8081/live/playstr"
+#ifdef TEST
+    #define kBaseURL @"http://10.200.20.139:8080" //http://115.231.44.26:8081
+#else
+    #define kBaseURL @"http://115.231.44.26:8081"
+#endif
+
+#define kURLGetPushRTMPAddr [NSString stringWithFormat:@"%@/live/create",kBaseURL]
+#define kURLGetPullRTMPAddr [NSString stringWithFormat:@"%@/live/watch",kBaseURL]
+#define kURLSyncPushStateToServer [NSString stringWithFormat:@"%@/live/start",kBaseURL]
+#define kURLSyncPushStopToServer [NSString stringWithFormat:@"%@/live/stop",kBaseURL]
+#define kURLGetStreamStatus [NSString stringWithFormat:@"%@/live/status",kBaseURL]
+#define kURLGetDetailInfo [NSString stringWithFormat:@"%@/live/detail",kBaseURL]
+#define kURLGetLiveList [NSString stringWithFormat:@"%@/live/living/list",kBaseURL]
+#define kURLGetVODList [NSString stringWithFormat:@"%@/live/vod/list",kBaseURL]
+#define kURLGetPlayURL [NSString stringWithFormat:@"%@/live/playstr",kBaseURL]
 
 @interface HTTPManager ()
 @property (strong, nonatomic) AFHTTPSessionManager *httpManager;
