@@ -14,7 +14,7 @@
 NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
 
 #ifdef TEST
-    #define kBaseURL @"http://10.200.20.139:8080" //http://115.231.44.26:8081
+    #define kBaseURL @"http://10.200.20.139:8080"
 #else
     #define kBaseURL @"http://115.231.44.26:8081"
 #endif
@@ -48,7 +48,7 @@ NSString * const kNotification_NetworkStateChanged = @"kNetworkStateChanged";
     if(self = [super init]){
         self.httpManager = [AFHTTPSessionManager manager];
         self.httpManager.requestSerializer = [AFJSONRequestSerializer serializer];
-        self.httpManager.requestSerializer.timeoutInterval = 5;
+        self.httpManager.requestSerializer.timeoutInterval = 30;
         
         AFJSONResponseSerializer *jsonSerizlizer = [AFJSONResponseSerializer serializer];
         jsonSerizlizer.removesKeysWithNullValues = YES;
